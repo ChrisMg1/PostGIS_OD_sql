@@ -1,27 +1,18 @@
--- add geometry column (line)
-ALTER TABLE lvm_od 
-  ADD COLUMN geom43
-    geometry(Linestring);
-   
--- fill geometry column 
-UPDATE lvm_od set
-	geom43= st_setsrid(
-		st_makeline(
-			st_makepoint(fromzone_xcoord,  fromzone_ycoord),
-			st_makepoint(tozone_xcoord,  tozone_ycoord)
-					), 4326
-				);
+-- count entries
+select count(*) from lvm_od_996286;
+			
+-- add geometry columns (points and line)
+ALTER TABLE lvm_od_996286
+ADD COLUMN geom_point_fromOD geometry(Point),
+ADD COLUMN geom_point_toOD geometry(Point),
+ADD COLUMN ODconnect geometry(Linestring);
 
-			
-			
-			
--- add geometry column (points)
-ALTER TABLE lvm_od 
-  ADD COLUMN geom_point_toOD
-    geometry(Point);
+-- fill geometry columns 
+UPDATE lvm_od_996286
+set geom_point_fromOD = st_setsrid(st_makepoint(fromzone_xcoord, fromzone_ycoord), 4326);
 
--- fill geometry column 
-UPDATE lvm_od set
-	geom_point_toOD = st_setsrid(
-			st_makepoint(tozone_xcoord, tozone_ycoord), 4326
-				);
+UPDATE lvm_od_996286
+set geom_point_toOD = st_setsrid(st_makepoint(tozone_xcoord, tozone_ycoord), 4326);
+
+UPDATE lvm_od_996286
+set	ODconnect = st_makeline(geom_point_fromOD, geom_point_toOD);

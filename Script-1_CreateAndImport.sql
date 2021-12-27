@@ -1,6 +1,6 @@
 
 -- create and specify table
-create table LVM_OD (
+create table LVM_OD_996286 (
 FROMZONE_NO int,
 FROMZONE_NAME text,
 FROMZONE_XCOORD float,
@@ -22,8 +22,8 @@ wkt_geom text
 )
 
 --- import csv
-COPY lvm_od
-FROM 'C:\temp\test.csv' 
+COPY LVM_OD_996286
+FROM 'C:\temp\test2.csv' 
 DELIMITER E'\t' 
 CSV HEADER;
 
