@@ -1,5 +1,4 @@
--- count entries
-select count(*) from lvm_od_996286;
+
 			
 -- add geometry columns (points and line)
 ALTER TABLE lvm_od_996286

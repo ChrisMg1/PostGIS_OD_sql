@@ -1,5 +1,5 @@
 --- names:
-LVM_OD_996286
+DROP TABLE IF exists LVM_OD_996286
 
 
 -- create and specify table
@@ -10,14 +10,14 @@ FROMZONE_XCOORD float,
 FROMZONE_YCOORD float,
 FROMZONE_AGS text,
 FROMZONE_AKS int,
-FROMZONE_BY int,
+FROMZONE_BY bool,
 TOZONE_NO int,
 TOZONE_NAME text,
 TOZONE_XCOORD float,
 TOZONE_YCOORD float,
 TOZONE_AGS text,
 TOZONE_AKS int,
-TOZONE_BY int,
+TOZONE_BY bool,
 DIRECTDIST float,
 Time_PrT float,
 Time_PuT float,
@@ -40,45 +40,7 @@ ENCODING 'UTF8'
 CSV HEADER;
 
 
-
-
----check length
-SELECT
-   COUNT(*) 
-FROM 
-   LVM_OD_996286;
+-- check length
+--SELECT COUNT(*) from LVM_OD_996286;
   
   
----check content
-SELECT
-   *
-FROM 
-   LVM_OD_996286;
-
-create table GPS_full (
-assetId text,
-country text,
-created text,
-direction int,
-distfrom text,
-district text,
-distto text,
-federalstate text,
-forwardDir text,
-isdirectionvalid text,
-lastlatitude int,
-lastlongitude int,
-latitude int,
-longitude int,
-oid text,
-poshint text,
-providerId text,
-status text,
-timestamputc timestamp,
-tmc_latitude text,
-tmc_longitude text,
-tmcsegmentid text,
-town text,
-vehicletype text,
-velocity int
-)
