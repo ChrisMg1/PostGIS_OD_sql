@@ -27,3 +27,43 @@ FROM
 WHERE
     speed_ratio < 0.5
 AND fromzone_no != tozone_no;
+
+
+-------------
+-- Create different sub-tables as scenarios
+-------------
+
+-- Reisezeitverhältnis ÖV/IV
+SELECT *
+INTO TABLE lvm_od_AKS_AGG_st0p7
+FROM lvm_od_AKS_AGG
+where new_speed_ratio < 0.7
+AND fromzone_aks != tozone_aks;
+
+
+-- nur Binnenverkehr Bayern (ohne Gürtel) 
+SELECT *
+INTO TABLE lvm_od_AKS_AGG_onlyBY
+FROM lvm_od_AKS_AGG
+where from_aks_name notnull
+AND to_aks_name notnull;
+
+
+-- von/nach Ingolstadt
+SELECT *
+INTO TABLE lvm_od_AKS_AGG_IN
+FROM lvm_od_AKS_AGG
+where from_aks_name like 'Ingolstadt'
+OR to_aks_name like 'Ingolstadt';
+
+-- Gemäß RIN werden die beiden Metropolen (M+N, FFM ist außerhalb) ausgewählt und noch Vor- und Nachlauf eingearbeitet. Nachfrage nicht berücksichtigt. 
+SELECT *
+INTO TABLE lvm_od_AKS_AGG_RIN1
+FROM lvm_od_AKS_AGG
+where (fromzone_aks = 9162 and tozone_aks = 9564) -- München -> Nürnberg
+OR (fromzone_aks = 9564 and tozone_aks = 9162) -- Nürnberg -> München
+OR (fromzone_aks = 9162 and new_direct < 50) -- München access
+OR (tozone_aks = 9162 and new_direct < 50) -- München egress
+OR (fromzone_aks = 9564 and new_direct < 50) -- Nürnberg access
+OR (tozone_aks = 9564 and new_direct < 50) -- Nürnberg egress
+;
