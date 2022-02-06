@@ -1,4 +1,33 @@
 --filter various travel time classes
+
+-- Bad PuT trvael time
+DROP TABLE IF exists LVM_OD_bad_put
+
+SELECT
+    *
+INTO TABLE LVM_OD_bad_put
+FROM
+    lvm_od_996286
+WHERE
+    speed_ratio > 15.0
+	AND fromzone_no != tozone_no
+	AND fromzone_by = true 
+	and tozone_by = true;
+
+select * from LVM_OD_bad_put order by speed_ratio asc;
+
+SELECT
+    *
+INTO TABLE LVM_OD_badbad_put
+FROM
+    lvm_od_996286
+WHERE
+    speed_ratio > 20.0
+	AND fromzone_no != tozone_no
+	AND fromzone_by = true 
+	and tozone_by = true;
+
+
 SELECT
     *
 INTO TABLE lvm_od_fast_put_st1p0

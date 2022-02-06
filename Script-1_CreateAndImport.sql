@@ -41,6 +41,6 @@ CSV HEADER;
 
 
 -- check length
---SELECT COUNT(*) from LVM_OD_996286;
+SELECT COUNT(*) from LVM_OD_996286;
   
   
