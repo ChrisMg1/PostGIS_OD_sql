@@ -35,7 +35,8 @@ FROM
     lvm_od_996286
 WHERE
     speed_ratio < 1.0
-AND fromzone_no != tozone_no;
+	AND fromzone_no != tozone_no	
+	and (fromzone_by = true or tozone_by = true);
 
    
 SELECT
@@ -43,9 +44,9 @@ SELECT
 INTO TABLE lvm_od_fast_put_st0p7
 FROM
     lvm_od_996286
-WHERE
-    speed_ratio < 0.7
-AND fromzone_no != tozone_no;
+	where speed_ratio < 0.7
+	AND fromzone_no != tozone_no
+	and (fromzone_by = true or tozone_by = true);
 
 
 SELECT
@@ -53,10 +54,18 @@ SELECT
 INTO TABLE lvm_od_fast_put_st0p5
 FROM
     lvm_od_996286
-WHERE
-    speed_ratio < 0.5
-AND fromzone_no != tozone_no;
+	where speed_ratio < 0.5
+	AND fromzone_no != tozone_no	
+	and (fromzone_by = true or tozone_by = true);
 
+SELECT
+    *
+INTO TABLE lvm_od_fast_put_st0p5_agg
+FROM
+    lvm_od_AKS_AGG
+	where speed_ratio < 0.5
+	AND fromzone_aks != tozone_aks	
+	and (fromzone_by = true or tozone_by = true);
 
 -------------
 -- Create different sub-tables as scenarios
