@@ -19,8 +19,8 @@ TOZONE_AGS text,
 TOZONE_AKS int,
 TOZONE_BY bool,
 DIRECTDIST float,
-Time_PrT float,
-Time_PuT float,
+TTime_PrT float,
+TTime_PuT float,
 Demand_Pkw float,
 Demand_PkwM float,
 Demand_PuT float,
@@ -28,8 +28,8 @@ Demand_Bike float,
 Demand_Walk float,
 Demand_all float,
 Demand_IVOEV float,
-beeline_speed_PuT float,
-speed_ratio float
+beeline_speed_PuT_kmh float,
+TTime_ratio float
 )
 
 --- import csv
@@ -38,6 +38,9 @@ FROM 'C:\temp\test4.csv'
 DELIMITER E'\t'
 ENCODING 'UTF8'
 CSV HEADER;
+
+
+
 
 
 -- check length

@@ -1,4 +1,14 @@
-----
+---- delaunay triangulation
+
+SELECT
+    ST_DelaunayTriangles(geom)
+INTO TABLE DT_test
+from verkehrs_und_sonderlandeplaetze;
+
+
+select * from DT_test;
+
+
 
 -- optional: Perform checks
 select * from lvm_od_AKS_AGG;
