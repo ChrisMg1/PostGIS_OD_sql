@@ -59,11 +59,13 @@ ADD COLUMN ODconnect geometry(Linestring);
 -- fill new geometry columns
 -- Bayern is UTM32 is EPSG:25832
 -- Zunächst Punkt auf Basis Mittelwerte, Lkr-Centroid dann im nächsten Schritt
+
+--TODO: Koordinatensystem ändern
 UPDATE lvm_od_AKS_AGG
-set geom_point_fromOD = st_setsrid(st_makepoint(fromzone_xcoord, fromzone_ycoord), 25832);
+--set geom_point_fromOD = st_setsrid(st_makepoint(fromzone_xcoord, fromzone_ycoord), 25832);
 
 UPDATE lvm_od_AKS_AGG
-set geom_point_toOD = st_setsrid(st_makepoint(tozone_xcoord, tozone_ycoord), 25832);
+--set geom_point_toOD = st_setsrid(st_makepoint(tozone_xcoord, tozone_ycoord), 25832);
 
 
 
