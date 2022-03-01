@@ -1,7 +1,6 @@
 --- names:
 DROP TABLE IF exists LVM_OD_996286
 
-
 -- create and specify table
 create table LVM_OD_996286 (
 FROMZONE_NO int,
@@ -39,11 +38,7 @@ DELIMITER E'\t'
 ENCODING 'UTF8'
 CSV HEADER;
 
-
-
-
-
 -- check length
-SELECT COUNT(*) from LVM_OD_996286;
+SELECT count(*) from LVM_OD_996286;
   
   

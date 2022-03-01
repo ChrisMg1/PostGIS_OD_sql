@@ -1,6 +1,6 @@
 --filter various travel time classes
 
--- Bad PuT trvael time
+-- Bad PuT travel time
 DROP TABLE IF exists LVM_OD_bad_put
 
 SELECT
@@ -12,7 +12,8 @@ WHERE
     TTime_ratio > 15.0
 	AND fromzone_no != tozone_no
 	AND fromzone_by = true 
-	and tozone_by = true;
+	and tozone_by = true
+	and DIRECTDIST > 50;
 
 select * from LVM_OD_bad_put order by TTime_ratio asc;
 

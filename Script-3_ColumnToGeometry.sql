@@ -7,7 +7,7 @@ ADD COLUMN geom_point_toOD geometry(Point),
 ADD COLUMN ODconnect geometry(Linestring);
 
 -- fill geometry columns
--- Bayern is UTM32 is 32632 (old EPSG:25832)
+-- Bayern is UTM32 is 32632 im LVM-export (old and 'official' EPSG:25832)
 UPDATE lvm_od_996286
 set geom_point_fromOD = st_setsrid(st_makepoint(fromzone_xcoord, fromzone_ycoord), 32632);
 
@@ -18,11 +18,7 @@ UPDATE lvm_od_996286
 set	ODconnect = st_makeline(geom_point_fromOD, geom_point_toOD);
 
 
-select * from verkehrs_und_sonder_parsed;
-select * from "Verkehrsflughaefen";
-select * from "Segelflug_parsed";
-
-
+-- Subset on Bavaria
 select *
 into table Verkehrs_und_Sonderlandeplaetze_BY
 from verkehrs_und_sonder_parsed
@@ -34,22 +30,27 @@ from "Segelflug_parsed"
 where "bundesland" = 'Bayern';
 
 
+-- fit coordinate systems
 ALTER TABLE verkehrs_und_sonder_parsed
   ALTER COLUMN geom 
   TYPE Geometry(Point, 32632) 
   USING ST_Transform(geom, 32632);
  
- ALTER TABLE "Segelflug_parsed"
-  ALTER COLUMN geom 
-  TYPE Geometry(Point, 32632) 
-  USING ST_Transform(geom, 32632);
+ALTER TABLE "Segelflug_parsed"
+ ALTER COLUMN geom 
+ TYPE Geometry(Point, 32632) 
+ USING ST_Transform(geom, 32632);
 
-  ALTER TABLE "Verkehrsflughaefen"
-  ALTER COLUMN geom 
-  TYPE Geometry(Point, 32632) 
-  USING ST_Transform(geom, 32632);
+ALTER TABLE "Verkehrsflughaefen"
+ ALTER COLUMN geom 
+ TYPE Geometry(Point, 32632) 
+ USING ST_Transform(geom, 32632);
 
-select * from nearest_airport;
+ALTER TABLE "lkr_ex_by"
+ ALTER COLUMN geom 
+ TYPE Geometry(MultiPolygon, 32632) 
+ USING ST_Transform(geom, 32632);
+
 
 ALTER TABLE nearest_airport
 ADD COLUMN geom2 geometry(Linestring);
