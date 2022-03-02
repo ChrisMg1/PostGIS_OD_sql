@@ -1,37 +1,46 @@
 --filter various travel time classes
 
 -- Bad PuT travel time
-DROP TABLE IF exists LVM_OD_bad_put
+DROP TABLE IF exists LVM_OD_bad_put_gt5p0;
+DROP TABLE IF exists LVM_OD_bad_put_gt5p0and60km;
 
 SELECT
     *
-INTO TABLE LVM_OD_bad_put
+INTO TABLE LVM_OD_bad_put_gt5p0and60km
 FROM
     lvm_od_996286
 WHERE
-    TTime_ratio > 15.0
+    TTime_ratio > 5.0
 	AND fromzone_no != tozone_no
-	AND fromzone_by = true 
+	AND fromzone_by = true
 	and tozone_by = true
-	and DIRECTDIST > 50;
-
-select * from LVM_OD_bad_put order by TTime_ratio asc;
+	and DIRECTDIST > 60;
 
 SELECT
     *
-INTO TABLE LVM_OD_badbad_put
+INTO TABLE LVM_OD_bad_put_gt5p0
 FROM
     lvm_od_996286
 WHERE
-    TTime_ratio > 20.0
+    TTime_ratio > 5.0
 	AND fromzone_no != tozone_no
-	AND fromzone_by = true 
+	AND fromzone_by = true
 	and tozone_by = true;
 
+SELECT
+    *
+INTO TABLE LVM_OD_bad_put_gt2p0
+FROM
+    lvm_od_996286
+WHERE
+    TTime_ratio > 2.0
+	AND fromzone_no != tozone_no
+	AND fromzone_by = true
+	and tozone_by = true;
 
 SELECT
     *
-INTO TABLE lvm_od_fast_put_st1p0
+INTO TABLE lvm_od_good_put_st1p0
 FROM
     lvm_od_996286
 WHERE
@@ -39,25 +48,16 @@ WHERE
 	AND fromzone_no != tozone_no	
 	and (fromzone_by = true or tozone_by = true);
 
-   
 SELECT
     *
-INTO TABLE lvm_od_fast_put_st0p7
+INTO TABLE lvm_od_good_put_st0p5
 FROM
     lvm_od_996286
-	where TTime_ratio < 0.7
-	AND fromzone_no != tozone_no
-	and (fromzone_by = true or tozone_by = true);
-
-
-SELECT
-    *
-INTO TABLE lvm_od_fast_put_st0p5
-FROM
-    lvm_od_996286
-	where TTime_ratio < 0.5
+WHERE
+    TTime_ratio < 0.5
 	AND fromzone_no != tozone_no	
 	and (fromzone_by = true or tozone_by = true);
+
 
 SELECT
     *
