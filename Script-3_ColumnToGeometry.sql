@@ -2,9 +2,10 @@
 			
 -- add geometry columns (points and line)
 ALTER TABLE lvm_od_996286
-ADD COLUMN geom_point_fromOD geometry(Point),
-ADD COLUMN geom_point_toOD geometry(Point),
-ADD COLUMN ODconnect geometry(Linestring);
+ADD COLUMN IF NOT EXISTS geom_point_fromOD geometry(Point),
+ADD COLUMN IF NOT EXISTS geom_point_toOD geometry(Point),
+ADD COLUMN IF NOT EXISTS ODconnect geometry(Linestring),
+ADD COLUMN IF NOT EXISTS allpoints geometry(Point); -- planned as merge/union to have all start/end-points only once. 
 
 -- fill geometry columns
 -- Bayern is UTM32 is 32632 im LVM-export (old and 'official' EPSG:25832)
