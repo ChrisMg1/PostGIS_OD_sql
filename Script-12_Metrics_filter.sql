@@ -4,6 +4,9 @@
 DROP TABLE IF exists LVM_OD_bad_put_gt5p0;
 DROP TABLE IF exists LVM_OD_bad_put_gt5p0and60km;
 
+
+-- SElect 'bad' PuT OD-connections (Aktuell im Produktiv QGIS)
+-- PArameters are arbitrar at this point; difficult to choose
 SELECT
     *
 INTO TABLE LVM_OD_bad_put_gt5p0and60km
@@ -15,6 +18,16 @@ WHERE
 	AND fromzone_by = true
 	and tozone_by = true
 	and DIRECTDIST > 60;
+
+-- Extract Points (from and to) from the latter subset to have a) proper labeling and b) vertices for further network generaltion
+-- (Has to be performed for all further subsets)
+-- union merges only unique points (use union all else). Information from/to is lost this way
+Create table LVM_OD_bad_put_gt5p0and60km_merged as
+Select fromzone_name, geom_point_fromod from LVM_OD_bad_put_gt5p0and60km
+union
+select tozone_name, geom_point_tood from LVM_OD_bad_put_gt5p0and60km;
+
+
 
 SELECT
     *
