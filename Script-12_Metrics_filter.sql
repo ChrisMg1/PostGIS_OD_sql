@@ -27,6 +27,23 @@ Select fromzone_name, geom_point_fromod from LVM_OD_bad_put_gt5p0and60km
 union
 select tozone_name, geom_point_tood from LVM_OD_bad_put_gt5p0and60km;
 
+SELECT
+    *
+INTO TABLE TEST11_LVM_OD_bad_put
+FROM
+    lvm_od_996286
+WHERE
+    TTime_ratio > 7.0
+	AND fromzone_no != tozone_no
+	--and directdist > 60
+	AND fromzone_by = true
+	and tozone_by = true;
+
+-- Add a column with the value of the metric
+
+alter table TEST11_LVM_OD_bad_put add column IF NOT EXISTS cm_metric float;
+update only TEST11_LVM_OD_bad_put set cm_metric = 2 * directdist;
+
 
 
 SELECT
