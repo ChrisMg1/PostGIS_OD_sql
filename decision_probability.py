@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 # from utility_functions import simple_utility
 
-plot_type = 'compare'
+plot_type = 'logit'
 
 beta = 0.2
 
