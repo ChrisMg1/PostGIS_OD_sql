@@ -22,7 +22,7 @@ beta = 7
 F=15
 
 def my_phi(x_in, a, b, c):
-    return (a/(1+np.exp(b-(c*x))))
+    return (a/(1+np.exp(b-(c*x_in))))
 
 
 
@@ -43,8 +43,8 @@ f8_x = 1 / ((x**b)+(c*(x**a)))  # TModel
 
 plt.figure()
 axes = plt.axes()
-axes.set_ylim([0, 3])
-plt.title('Vergleich verschiedener Bewertungsfunktionen')
+axes.set_ylim([0, 1.3])
+#plt.title('Vergleich verschiedener Bewertungsfunktionen')
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 
 
@@ -70,6 +70,4 @@ plt.ylabel('Utility')
 
 plt.show()
 
-
-print(max(2,4))
 
