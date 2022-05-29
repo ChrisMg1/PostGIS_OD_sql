@@ -31,6 +31,21 @@ beeline_speed_PuT_kmh float,
 TTime_ratio float
 )
 
+create table UAM_TEST (
+FROMZONE_NO int,
+TOZONE_NO int,
+DIRECTDIST float,
+TTime_PrT float,
+TTime_PuT float,
+Demand_PrT float,
+Demand_PuT float,
+beeline_speed_PuT_kmh float,
+TTime_ratio float,
+R_scen_1 float,
+R_scen_2 float,
+R_scen_3 float
+)
+
 --- import csv
 COPY LVM_OD_996286
 FROM 'C:\temp\test4.csv' 
