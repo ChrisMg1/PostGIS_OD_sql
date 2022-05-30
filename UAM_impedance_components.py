@@ -11,11 +11,9 @@ from scipy.stats import maxwell
 
 def bathtub (x_in, shift_left=-1, shift_right=-350):
     if (x_in < 350):
-        # return 0.5 + 0 * x_in
         return (1+((x_in+shift_left)/c_dist)**b_dist)**(-a_dist)
     elif (x_in >=350):
         return max(0, min(1, 1-((1+((x_in+shift_right)/c_dist)**b_dist)**(-a_dist)) ) )
-    
     else:
         return None
 
@@ -54,7 +52,7 @@ plt.figure()
 ## cut canvas
 axes = plt.axes()
 #axes.set_xlim([1, 5])
-axes.set_ylim([0, 1.1])
+#axes.set_ylim([0, 1.1])
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 
 
