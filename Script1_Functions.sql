@@ -85,6 +85,13 @@ update UAM_TEST set R_SCEN_1 = TTIME_LOGIT_WEIGHT(TTIME_RATIO);
 update UAM_TEST set R_SCEN_2 = DEMAND_MAX_ADAPT_WEIGHT(demand_prt+demand_put);
 update UAM_TEST set R_SCEN_3 = DISTANCE_BATHTUB_WEIGHT(directdist);
 
+-- Work with the full table
+-- Add a column with the value of the continous metric
+--TODO: Maximum Value issue
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric float;
+update only lvm_od_996286_cont_metric set cm_metric = TTIME_LOGIT_WEIGHT(TTIME_RATIO) + DISTANCE_BATHTUB_WEIGHT(directdist) + DEMAND_MAX_ADAPT_WEIGHT(Demand_all/100);
+
 -- show content
 select * from UAM_TEST;
+select * from lvm_od_996286_cont_metric order by cm_metric asc;
 
