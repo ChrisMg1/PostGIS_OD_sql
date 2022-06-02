@@ -101,6 +101,6 @@ plt.ylabel('UAM Impedance (normalized)')
 
 plt.show()
 
+test_PAX = 60
 
-
-
+print(1-1.7*maxwell.pdf(0.35*test_PAX))

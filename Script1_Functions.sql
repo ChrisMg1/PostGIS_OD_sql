@@ -43,8 +43,12 @@ DECLARE a_m float:=1.0;
 DECLARE b_m float:=1.7;
 DECLARE c_m float:=0.35;
 imp_in float=imp*c_m;
-begin	
-   RETURN a_m-b_m*( sqrt(2/pi())*imp_in*imp_in*exp(-imp_in*imp_in/2.0) );
+begin
+	if imp < 100.0 then
+		RETURN a_m-b_m*( sqrt(2/pi())*imp_in*imp_in*exp(-imp_in*imp_in/2.0) );
+	else
+		return 1.0;  -- function would be out-of-range-error
+	end if;
 END;
 $$ language 'plpgsql' STRICT;
 
@@ -87,11 +91,10 @@ update UAM_TEST set R_SCEN_3 = DISTANCE_BATHTUB_WEIGHT(directdist);
 
 -- Work with the full table
 -- Add a column with the value of the continous metric
---TODO: Maximum Value issue
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric float;
-update only lvm_od_996286_cont_metric set cm_metric = TTIME_LOGIT_WEIGHT(TTIME_RATIO) + DISTANCE_BATHTUB_WEIGHT(directdist) + DEMAND_MAX_ADAPT_WEIGHT(Demand_all/100);
+update only lvm_od_996286_cont_metric set cm_metric = TTIME_LOGIT_WEIGHT(TTIME_RATIO) + DISTANCE_BATHTUB_WEIGHT(directdist) + DEMAND_MAX_ADAPT_WEIGHT(Demand_all);
 
 -- show content
 select * from UAM_TEST;
-select * from lvm_od_996286_cont_metric order by cm_metric asc;
+select * from lvm_od_996286_cont_metric order by Demand_all desc;
 
