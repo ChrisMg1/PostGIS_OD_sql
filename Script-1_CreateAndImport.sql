@@ -54,6 +54,10 @@ ENCODING 'UTF8'
 CSV HEADER;
 
 -- check length
-SELECT count(*) from LVM_OD_996286;
+SELECT count(*) from LVM_OD_996286;-- where fromzone_no = tozone_no;
+
+
+
+
   
   

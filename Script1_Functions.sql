@@ -91,10 +91,26 @@ update UAM_TEST set R_SCEN_3 = DISTANCE_BATHTUB_WEIGHT(directdist);
 
 -- Work with the full table
 -- Add a column with the value of the continous metric
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS ttime_weight float;
+update only lvm_od_996286_cont_metric set ttime_weight = TTIME_LOGIT_WEIGHT(TTIME_RATIO);
+
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS distance_weight float;
+update only lvm_od_996286_cont_metric set distance_weight = DISTANCE_BATHTUB_WEIGHT(directdist);
+
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS demand_weight float;
+update only lvm_od_996286_cont_metric set demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all);
+
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric float;
-update only lvm_od_996286_cont_metric set cm_metric = TTIME_LOGIT_WEIGHT(TTIME_RATIO) + DISTANCE_BATHTUB_WEIGHT(directdist) + DEMAND_MAX_ADAPT_WEIGHT(Demand_all);
+update only lvm_od_996286_cont_metric set cm_metric = (ttime_weight / 3) + (distance_weight / 3) + (demand_weight / 3);
+
+
 
 -- show content
-select * from UAM_TEST;
-select * from lvm_od_996286_cont_metric order by Demand_all desc;
+select count(*) from lvm_od_996286_cont_metric;
+select * from lvm_od_996286_cont_metric order by cm_validate asc;
+
+
+--- exprt csv (for histogram); run python script after this step
+COPY lvm_od_996286_cont_metric(cm_metric, ttime_weight, distance_weight, demand_weight) TO 'C:\temp\cm_metric.csv' DELIMITER ',' CSV HEADER;
+
 

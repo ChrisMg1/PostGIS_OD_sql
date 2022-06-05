@@ -4,8 +4,9 @@
 
 
 with drb_stats as (
-    select min(cm_metric) as min,
-           max(cm_metric) as max
+    select 
+    		min(cm_metric) as min,
+          	max(cm_metric) as max
       from lvm_od_996286_cont_metric
 ),
      histogram as (
@@ -19,7 +20,7 @@ with drb_stats as (
  order by bucket
 )
  select bucket, range, freq,
-        repeat('?',
+        repeat('x',
                (   freq::float
                  / max(freq) over()
                  * 30
