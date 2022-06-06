@@ -65,6 +65,7 @@ DECLARE shift_r float:=-350;
 begin	
 	
 	--!!todo: Translate and check
+	-- todo: work with variables /weighting
    if dist < 350 then
         return power((1+power(((dist+shift_l)/c_dist),b_dist)),(-a_dist));
    else
@@ -101,7 +102,7 @@ alter table lvm_od_996286_cont_metric add column IF NOT EXISTS demand_weight flo
 update only lvm_od_996286_cont_metric set demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all);
 
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric float;
-update only lvm_od_996286_cont_metric set cm_metric = (ttime_weight / 3) + (distance_weight / 3) + (demand_weight / 3);
+update only lvm_od_996286_cont_metric set cm_metric = ((1 * ttime_weight) / 3) + ((1 * distance_weight) / 3) + ((1 * demand_weight) / 3);
 
 
 
