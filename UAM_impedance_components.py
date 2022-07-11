@@ -9,42 +9,36 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import maxwell
 
-def bathtub (x_in, shift_left=-1, shift_right=-350):
-    if (x_in < 350):
-        return (1+((x_in+shift_left)/c_dist)**b_dist)**(-a_dist)
-    elif (x_in >=350):
-        return max(0, min(1, 1-((1+((x_in+shift_right)/c_dist)**b_dist)**(-a_dist)) ) )
+def bathtub2 (x_in, l, r, a1):
+    if (x_in < ((l + r) / 2)):
+        return (1 / (1 + np.exp( a1 * (x_in - l)) ))
+    elif (x_in >= ((l + r) / 2)):
+        return (1 / (1 + np.exp(-a1 * (x_in - r)) ))
     else:
         return None
 
-def imp_rel(x):
-    return min(((1+((x+shift)/c)**b)**(-a)), 1)
 
+def imp_rel2(x_in, p, a2):
+    return (1 / (1 + np.exp(a2 * (x_in - p)) ))
+
+
+## Create values for variables
 max_PAX = 15
 max_rat = 5
 max_dist = 500
 
-a = 0.9
-b = 3
-c = 0.9
-
-shift=-1
-
-x_rat = np.linspace(0.01, max_rat, 10*max_rat)
+x_rat = np.arange(0.01, max_rat, 0.1).tolist()
 x_PAX = np.linspace(0.01, max_PAX, 10*max_PAX)
-x_dist = np.linspace(0.01, max_dist, 10*max_dist)
+x_dist = np.arange(0, max_dist, 0.1).tolist()
 
 
-a_dist = 9
-b_dist = 3
-c_dist = 60
+## Set parametrs
+shift_right = 350
+shift_left = 75
+a1_in=0.1
+a2_in = 3
+p_in = 2.5
 
-#imp_rel = (1+((x_rat+shift)/c)**b)**(-a) 
-
-
-# https://de.wikipedia.org/wiki/Aizermansche_Potentialfunktion
-# oder
-# https://de.wikipedia.org/wiki/Normalverteilung
 
 ## Plot travel time impedance (Logit)
 plt.figure()
@@ -56,19 +50,20 @@ axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 
 
-
-## Create values with function and plot
+## Create values with function and plot relation PuT / PrT
 imp_rel_vals = []
 for i in x_rat:
-    imp_rel_vals.append(imp_rel(i))
+    imp_rel_vals.append(imp_rel2(i, p_in, a2_in))
 plt.plot(x_rat, imp_rel_vals)
 
 plt.xlabel('Travel Time Ratio PuT/PrT')
 plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
-plt.scatter(0,1, s=100, facecolors='none', edgecolors='#1f77b4') 
+plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
+plt.savefig('plots/TTratio_logit.png')
 plt.show()
+plt.clf()
 
 
 
@@ -83,7 +78,9 @@ plt.plot(x_PAX, 1-1.7*maxwell.pdf(0.35*x_PAX))
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
 
+plt.savefig('plots/demand_Maxwell.png')
 plt.show()
+plt.clf()
 
 
 ## plot distance impedence (bathtub)
@@ -93,14 +90,16 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 ## Create values with function and plot
 bathtub_vals = []
 for i in x_dist:
-    bathtub_vals.append(bathtub(i))
+    bathtub_vals.append(bathtub2(i, shift_left, shift_right, a1_in))
 plt.plot(x_dist, bathtub_vals)
 
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
 
+plt.savefig('plots/Distance_bathtub.png')
 plt.show()
+plt.clf()
 
 test_PAX = 60
 
-print(1-1.7*maxwell.pdf(0.35*test_PAX))
+# todo: im SQL anpassen
