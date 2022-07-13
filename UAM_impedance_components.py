@@ -21,6 +21,7 @@ def bathtub2 (x_in, l, r, a1):
 def imp_rel2(x_in, p, a2):
     return (1 / (1 + np.exp(a2 * (x_in - p)) ))
 
+
 def PAX_max(x_in, d, w, s):
 	return 1-d*maxwell.pdf(w*(x_in - s))
 
