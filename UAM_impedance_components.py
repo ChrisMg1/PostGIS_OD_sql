@@ -3,6 +3,11 @@
 Created on Sat Apr 23 17:46:26 2022
 
 @author: chris
+
+This is only for function plot at the moment. 
+
+The metric application is done in the rsp. SQL-scripts. 
+
 """
 
 import numpy as np
@@ -39,34 +44,8 @@ x_dist = np.arange(0, max_dist, 0.1).tolist()
 shift_right = 350
 shift_left = 75
 a1_in=0.1
-a2_in = 3
-p_in = 2.5
 
 
-## Plot travel time impedance (Logit)
-plt.figure()
-
-## cut canvas
-axes = plt.axes()
-#axes.set_xlim([1, 5])
-#axes.set_ylim([0, 1.1])
-plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-
-
-## Create values with function and plot relation PuT / PrT
-imp_rel_vals = []
-for i in x_rat:
-    imp_rel_vals.append(imp_rel2(i, p_in, a2_in))
-plt.plot(x_rat, imp_rel_vals)
-
-plt.xlabel('Travel Time Ratio PuT/PrT')
-plt.ylabel('UAM Impedance (normalized)')
-
-# Plot singularity
-plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-plt.savefig('plots/TTratio_logit.png')
-plt.show()
-plt.clf()
 
 
 ## plot distance impedence (bathtub)
@@ -109,4 +88,31 @@ plt.show()
 plt.clf()
 
 
-# todo: im SQL anpassen
+## Plot travel time impedance (Logit)
+plt.figure()
+
+## cut canvas
+axes = plt.axes()
+#axes.set_xlim([1, 5])
+#axes.set_ylim([0, 1.1])
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+
+
+## Create values with function and plot relation PuT / PrT
+
+a2_in = 3
+p_in = 2.5
+
+imp_rel_vals = []
+for i in x_rat:
+    imp_rel_vals.append(imp_rel2(i, p_in, a2_in))
+plt.plot(x_rat, imp_rel_vals)
+
+plt.xlabel('Travel Time Ratio PuT/PrT')
+plt.ylabel('UAM Impedance (normalized)')
+
+# Plot singularity
+plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
+plt.savefig('plots/TTratio_logit.png')
+plt.show()
+plt.clf()
