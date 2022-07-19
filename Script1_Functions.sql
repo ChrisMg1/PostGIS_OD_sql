@@ -94,17 +94,16 @@ alter table lvm_od_996286_cont_metric add column IF NOT EXISTS distance_weight f
 update only lvm_od_996286_cont_metric set distance_weight = DISTANCE_BATHTUB_WEIGHT(directdist);
 
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS demand_weight float;
-update only lvm_od_996286_cont_metric set demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all);  --divide by number of flights to have PAX/flight (min at 4)
+update only lvm_od_996286_cont_metric set demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all / 24);  --divide by number of flights to have PAX/flight (e.g. 1 flight/hour)
 
-alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric float;
-update only lvm_od_996286_cont_metric set cm_metric = ( (0 * ttime_weight) + (0 * distance_weight) + (1 * demand_weight) ) / (0 + 0 + 1) ;
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric_scen1 float;
+update only lvm_od_996286_cont_metric set cm_metric_scen1 = ( (1 * ttime_weight) + (1 * distance_weight) + (1 * demand_weight) ) / (1 + 1 + 1) ;
 
 
 -- show content
-select count(*) from lvm_od_996286_cont_metric where cm_metric < 0.1;
 select count(*) from lvm_od_996286;
 select * from lvm_od_996286_cont_metric order by directdist desc;
 
 
 --- exprt csv (for histogram); run python script after this step
-COPY lvm_od_996286_cont_metric(cm_metric, ttime_weight, distance_weight, demand_weight, directdist) TO 'C:\temp\cm_metric.csv' DELIMITER ',' CSV HEADER;
+COPY lvm_od_996286_cont_metric(cm_metric_scen1, ttime_weight, distance_weight, demand_weight, directdist) TO 'C:\temp\cm_metric.csv' DELIMITER ',' CSV HEADER;
