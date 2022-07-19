@@ -85,11 +85,11 @@ plt.clf()
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('OD Metric Value')
+plt.xlabel('OD Total Impedance')
 plt.ylabel('Frequency (n=861,497)')
 
-plt.hist(for_hist['cm_metric_scen1'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
-plt.savefig('plots/TOTAL_weight_hist.png', bbox_inches='tight')
+plt.hist(for_hist['total_impedance'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+#plt.savefig('plots/TOTAL_weight_hist.png', bbox_inches='tight')
 plt.show()
 plt.clf()
 
@@ -98,12 +98,27 @@ plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('OD Distance')
-plt.ylabel('Frequency')
+plt.ylabel('Frequency (n=861,497)')
 
-plt.hist(for_hist['directdist'], edgecolor='darkgrey')
+plt.hist(for_hist['directdist'], edgecolor='darkgrey', bins = bin_number)
 #plt.savefig('plots/directdist_hist.png', bbox_inches='tight')
 #plt.show()
 plt.clf()
+
+
+## Checks: Utility 1
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('OD Metric (Utility) Scenario 1')
+plt.ylabel('Frequency (n=861,497)')
+
+plt.hist(for_hist['cm_metric_scen1'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
+plt.show()
+plt.clf()
+
+
 
 
 print(len(for_hist))
