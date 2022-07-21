@@ -43,6 +43,15 @@ print ('Bins: ', bins)
 
 #print('Plot:', plot[0])
 
+print(len(for_hist))
+
+print(len(for_hist[for_hist['cm_metric_scen1'] >= 0.6]))
+
+## Print span of each metric
+print(min(for_hist['cm_metric_scen1']), max(for_hist['cm_metric_scen1']))
+print(min(for_hist['cm_metric_scen2']), max(for_hist['cm_metric_scen2']))
+print(min(for_hist['cm_metric_scen3']), max(for_hist['cm_metric_scen3']))
+
 ## Plot simple histos from all cols including total ("cm_metric")
 
 ## Demand impedance
@@ -81,15 +90,77 @@ plt.savefig('plots/ttime_weight_hist.png', bbox_inches='tight')
 plt.show()
 plt.clf()
 
-## Total impedance (watch out for weighting/parameters)
+## Total impedance Scenario 1 (watch out for weighting/parameters)
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('OD Total Impedance')
+plt.xlabel('OD Total Impedance (Equal Weighting)')
 plt.ylabel('Frequency (n=861,497)')
 
-plt.hist(for_hist['total_impedance'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+plt.hist(for_hist['total_impedance1'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
 #plt.savefig('plots/TOTAL_weight_hist.png', bbox_inches='tight')
+plt.show()
+plt.clf()
+
+## Metric / Utility Scenario 1
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('OD Metric (Equal Weighting)')
+plt.ylabel('Frequency (n=861,497)')
+
+plt.hist(for_hist['cm_metric_scen1'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
+plt.show()
+plt.clf()
+
+
+## Total impedance Scenario 2 (watch out for weighting/parameters)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('OD Total Impedance (Scenario 2)')
+plt.ylabel('Frequency (n=861,497)')
+
+plt.hist(for_hist['total_impedance2'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+#plt.savefig('plots/TOTAL_weight_hist.png', bbox_inches='tight')
+plt.show()
+plt.clf()
+
+## Metric / Utility Scenario 2
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('OD Metric (Scenario 2)')
+plt.ylabel('Frequency (n=861,497)')
+
+plt.hist(for_hist['cm_metric_scen2'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
+plt.show()
+plt.clf()
+
+
+## Total impedance Scenario 3 (watch out for weighting/parameters)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('OD Total Impedance (Scenario 3)')
+plt.ylabel('Frequency (n=861,497)')
+
+plt.hist(for_hist['total_impedance3'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+#plt.savefig('plots/TOTAL_weight_hist.png', bbox_inches='tight')
+plt.show()
+plt.clf()
+
+## Metric / Utility Scenario 3
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('OD Metric (Scenario 3)')
+plt.ylabel('Frequency (n=861,497)')
+
+plt.hist(for_hist['cm_metric_scen3'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
 plt.show()
 plt.clf()
 
@@ -106,19 +177,3 @@ plt.hist(for_hist['directdist'], edgecolor='darkgrey', bins = bin_number)
 plt.clf()
 
 
-## Checks: Utility 1
-plt.figure()
-axes = plt.axes()
-plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('OD Metric (Utility) Scenario 1')
-plt.ylabel('Frequency (n=861,497)')
-
-plt.hist(for_hist['cm_metric_scen1'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
-plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
-plt.show()
-plt.clf()
-
-
-
-
-print(len(for_hist))

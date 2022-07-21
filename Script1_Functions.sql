@@ -96,18 +96,26 @@ update only lvm_od_996286_cont_metric set distance_weight = DISTANCE_BATHTUB_WEI
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS demand_weight float;
 update only lvm_od_996286_cont_metric set demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all / 24);  --divide by number of flights to have PAX/flight (e.g. 1 flight/hour)
 
-alter table lvm_od_996286_cont_metric add column IF NOT EXISTS total_impedance float;
-update only lvm_od_996286_cont_metric set total_impedance = ( (1 * ttime_weight) + (1 * distance_weight) + (1 * demand_weight) ) / (1 + 1 + 1) ;
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS total_impedance1 float;
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS total_impedance2 float;
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS total_impedance3 float;
+--- calculate impedance according to scenario
+update only lvm_od_996286_cont_metric set total_impedance1 = ( (1 * ttime_weight) + (1 * distance_weight) + (1 * demand_weight) ) / (1 + 1 + 1) ;
+update only lvm_od_996286_cont_metric set total_impedance2 = ( (1 * ttime_weight) + (0.1 * distance_weight) + (0.1 * demand_weight) ) / (1 + 0.1 + 0.1) ;
+update only lvm_od_996286_cont_metric set total_impedance3 = ( (0.1 * ttime_weight) + (0.1 * distance_weight) + (1 * demand_weight) ) / (0.1 + 0.1 + 1) ;
 
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric_scen1 float;
-update only lvm_od_996286_cont_metric set cm_metric_scen1 = exp(-ln(4)*total_impedance)
-
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric_scen2 float;
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric_scen3 float;
+update only lvm_od_996286_cont_metric set cm_metric_scen1 = exp(-ln(4)*total_impedance1);
+update only lvm_od_996286_cont_metric set cm_metric_scen2 = exp(-ln(4)*total_impedance2);
+update only lvm_od_996286_cont_metric set cm_metric_scen3 = exp(-ln(4)*total_impedance3);
 
 
 -- show content
 select count(*) from lvm_od_996286;
-select * from lvm_od_996286_cont_metric order by cm_metric_scen1 asc;
+select * from lvm_od_996286_cont_metric order by total_impedance3 desc;
 
 
 --- exprt csv (for histogram); run python script after this step
-COPY lvm_od_996286_cont_metric(cm_metric_scen1, ttime_weight, distance_weight, demand_weight, directdist, total_impedance) TO 'C:\temp\cm_metric.csv' DELIMITER ',' CSV HEADER;
+COPY lvm_od_996286_cont_metric(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, ttime_weight, distance_weight, demand_weight, directdist, total_impedance1, total_impedance2, total_impedance3) TO 'C:\temp\cm_metric.csv' DELIMITER ',' CSV HEADER;
