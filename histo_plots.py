@@ -45,9 +45,34 @@ print ('Bins: ', bins)
 
 print(len(for_hist))
 
-print(len(for_hist[for_hist['cm_metric_scen1'] >= 0.6]))
+## Generate some statistics
+print('stats')
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.0, "cm_metric_scen1"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.4, "cm_metric_scen1"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.6, "cm_metric_scen1"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.8, "cm_metric_scen1"].mean())
+
+print(len(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.8, "cm_metric_scen1"]))
+
+
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.0, "cm_metric_scen2"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.4, "cm_metric_scen2"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.6, "cm_metric_scen2"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.8, "cm_metric_scen2"].mean())
+
+print(len(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.6, "cm_metric_scen2"]))
+
+
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.0, "cm_metric_scen3"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.4, "cm_metric_scen3"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.6, "cm_metric_scen3"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.8, "cm_metric_scen3"].mean())
+
+print(len(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.8, "cm_metric_scen3"]))
+
 
 ## Print span of each metric
+print('\nspan')
 print(min(for_hist['cm_metric_scen1']), max(for_hist['cm_metric_scen1']))
 print(min(for_hist['cm_metric_scen2']), max(for_hist['cm_metric_scen2']))
 print(min(for_hist['cm_metric_scen3']), max(for_hist['cm_metric_scen3']))
@@ -94,7 +119,7 @@ plt.clf()
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('OD Total Impedance (Equal Weighting)')
+plt.xlabel('OD Total Impedance (Scenario 1)')
 plt.ylabel('Frequency (n=861,497)')
 
 plt.hist(for_hist['total_impedance1'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
@@ -106,10 +131,11 @@ plt.clf()
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('OD Metric (Equal Weighting)')
+plt.xlabel('OD Metric (Scenario 1)')
 plt.ylabel('Frequency (n=861,497)')
 
-plt.hist(for_hist['cm_metric_scen1'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
+plt.hist(for_hist['cm_metric_scen1'], color = 'orange', edgecolor='darkgrey', bins = bin_number, label=r'$\mathcal{M}_u$')
+plt.legend()
 plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
 plt.show()
 plt.clf()
@@ -134,8 +160,9 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('OD Metric (Scenario 2)')
 plt.ylabel('Frequency (n=861,497)')
 
-plt.hist(for_hist['cm_metric_scen2'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
-plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
+plt.hist(for_hist['cm_metric_scen2'], color = 'orange', edgecolor='darkgrey', bins = bin_number, label=r'$\mathcal{M}_u$')
+plt.legend()
+plt.savefig('plots/metricUtil_s2.png', bbox_inches='tight')
 plt.show()
 plt.clf()
 
@@ -159,8 +186,9 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('OD Metric (Scenario 3)')
 plt.ylabel('Frequency (n=861,497)')
 
-plt.hist(for_hist['cm_metric_scen3'], color = 'orange', edgecolor='darkgrey', bins = bin_number)
-plt.savefig('plots/metricUtil_s1.png', bbox_inches='tight')
+plt.hist(for_hist['cm_metric_scen3'], color = 'orange', edgecolor='darkgrey', bins = bin_number, label=r'$\mathcal{M}_u$')
+plt.legend()
+plt.savefig('plots/metricUtil_s3.png', bbox_inches='tight')
 plt.show()
 plt.clf()
 
