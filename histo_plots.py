@@ -47,26 +47,26 @@ print(len(for_hist))
 
 ## Generate some statistics
 print('stats')
-print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.0, "cm_metric_scen1"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.4, "cm_metric_scen1"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.6, "cm_metric_scen1"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.8, "cm_metric_scen1"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.0, "cm_metric_scen1"].mean(), for_hist.loc[for_hist["cm_metric_scen1"] >= 0.0, "cm_metric_scen1"].std())
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.4, "cm_metric_scen1"].mean(), for_hist.loc[for_hist["cm_metric_scen1"] >= 0.4, "cm_metric_scen1"].std())
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.6, "cm_metric_scen1"].mean(), for_hist.loc[for_hist["cm_metric_scen1"] >= 0.6, "cm_metric_scen1"].std())
+print(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.8, "cm_metric_scen1"].mean(), for_hist.loc[for_hist["cm_metric_scen1"] >= 0.8, "cm_metric_scen1"].std())
 
 print(len(for_hist.loc[for_hist["cm_metric_scen1"] >= 0.8, "cm_metric_scen1"]))
 
 
-print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.0, "cm_metric_scen2"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.4, "cm_metric_scen2"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.6, "cm_metric_scen2"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.8, "cm_metric_scen2"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.0, "cm_metric_scen2"].mean(), for_hist.loc[for_hist["cm_metric_scen2"] >= 0.0, "cm_metric_scen2"].std())
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.4, "cm_metric_scen2"].mean(), for_hist.loc[for_hist["cm_metric_scen2"] >= 0.4, "cm_metric_scen2"].std())
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.6, "cm_metric_scen2"].mean(), for_hist.loc[for_hist["cm_metric_scen2"] >= 0.6, "cm_metric_scen2"].std())
+print(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.8, "cm_metric_scen2"].mean(), for_hist.loc[for_hist["cm_metric_scen2"] >= 0.8, "cm_metric_scen2"].std())
 
 print(len(for_hist.loc[for_hist["cm_metric_scen2"] >= 0.6, "cm_metric_scen2"]))
 
 
-print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.0, "cm_metric_scen3"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.4, "cm_metric_scen3"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.6, "cm_metric_scen3"].mean())
-print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.8, "cm_metric_scen3"].mean())
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.0, "cm_metric_scen3"].mean(), for_hist.loc[for_hist["cm_metric_scen3"] >= 0.0, "cm_metric_scen3"].std())
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.4, "cm_metric_scen3"].mean(), for_hist.loc[for_hist["cm_metric_scen3"] >= 0.4, "cm_metric_scen3"].std())
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.6, "cm_metric_scen3"].mean(), for_hist.loc[for_hist["cm_metric_scen3"] >= 0.6, "cm_metric_scen3"].std())
+print(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.8, "cm_metric_scen3"].mean(), for_hist.loc[for_hist["cm_metric_scen3"] >= 0.8, "cm_metric_scen3"].std())
 
 print(len(for_hist.loc[for_hist["cm_metric_scen3"] >= 0.8, "cm_metric_scen3"]))
 
