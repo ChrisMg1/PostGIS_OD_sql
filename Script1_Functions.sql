@@ -96,14 +96,18 @@ update only lvm_od_996286_cont_metric set distance_weight = DISTANCE_BATHTUB_WEI
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS demand_weight float;
 update only lvm_od_996286_cont_metric set demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all / 24);  --divide by number of flights to have PAX/flight (e.g. 1 flight/hour)
 
+
+--- calculate impedance according to scenario
+--- there is one column for each scenario
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS total_impedance1 float;
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS total_impedance2 float;
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS total_impedance3 float;
---- calculate impedance according to scenario
 update only lvm_od_996286_cont_metric set total_impedance1 = ( (1 * ttime_weight) + (1 * distance_weight) + (1 * demand_weight) ) / (1 + 1 + 1) ;
 update only lvm_od_996286_cont_metric set total_impedance2 = ( (1 * ttime_weight) + (0.1 * distance_weight) + (0.1 * demand_weight) ) / (1 + 0.1 + 0.1) ;
 update only lvm_od_996286_cont_metric set total_impedance3 = ( (0.1 * ttime_weight) + (0.1 * distance_weight) + (1 * demand_weight) ) / (0.1 + 0.1 + 1) ;
 
+
+--- step from impedance to utility (logit, obviously), ln(4) ist for normalizing IMHO
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric_scen1 float;
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric_scen2 float;
 alter table lvm_od_996286_cont_metric add column IF NOT EXISTS cm_metric_scen3 float;
@@ -112,9 +116,19 @@ update only lvm_od_996286_cont_metric set cm_metric_scen2 = exp(-ln(4)*total_imp
 update only lvm_od_996286_cont_metric set cm_metric_scen3 = exp(-ln(4)*total_impedance3);
 
 
+--- create a column with passengers x travel time BASE SCENARIO (no AAM)
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS PAX_h_BASE float;
+update only lvm_od_996286_cont_metric set PAX_h_BASE = ((demand_pkw + demand_pkwm) * ttime_prt) + (demand_put * ttime_put);
+
+--- ...and for each scenario
+--- assume UAM link if matrix value geq ('arbitrary') threshold
+alter table lvm_od_996286_cont_metric add column IF NOT EXISTS PAX_h_SCEN1 float;
+update only lvm_od_996286_cont_metric set PAX_h_SCEN1 = 1.2 where cm_metric_scen1 > 0.3;
+
+
 -- show content
 select count(*) from lvm_od_996286;
-select * from lvm_od_996286_cont_metric order by total_impedance3 desc;
+select * from lvm_od_996286_cont_metric order by PAX_h_SCEN1 desc;
 
 
 --- exprt csv (for histogram); run python script after this step
