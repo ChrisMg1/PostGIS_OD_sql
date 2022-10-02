@@ -1,19 +1,7 @@
+SELECT postgis_full_version();
+
 --- names:
 DROP TABLE IF exists LVM_OD_996286
-
-SELECT usename AS role_name,
-  CASE 
-     WHEN usesuper AND usecreatedb THEN 
-	   CAST('superuser, create database' AS pg_catalog.text)
-     WHEN usesuper THEN 
-	    CAST('superuser' AS pg_catalog.text)
-     WHEN usecreatedb THEN 
-	    CAST('create database' AS pg_catalog.text)
-     ELSE 
-	    CAST('' AS pg_catalog.text)
-  END role_attributes
-FROM pg_catalog.pg_user
-ORDER BY role_name desc;
 
 -- create and specify table
 create table LVM_OD_996286 (
@@ -45,21 +33,6 @@ beeline_speed_PuT_kmh float,
 TTime_ratio float
 )
 
-create table UAM_TEST (
-FROMZONE_NO int,
-TOZONE_NO int,
-DIRECTDIST float,
-TTime_PrT float,
-TTime_PuT float,
-Demand_PrT float,
-Demand_PuT float,
-beeline_speed_PuT_kmh float,
-TTime_ratio float,
-R_scen_1 float,
-R_scen_2 float,
-R_scen_3 float
-)
-
 --- import csv
 COPY LVM_OD_996286
 FROM 'C:\temp\test4.csv' 
@@ -67,11 +40,60 @@ DELIMITER E'\t'
 ENCODING 'UTF8'
 CSV HEADER;
 
--- check length
-SELECT count(*) from LVM_OD_996286;-- where fromzone_no = tozone_no;
+
+
+--- Adapt strcuture to existing scripts
+-- 'new' columns: demand_pkwbusy
+
+-- rename columns
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "fromzoneno" TO "fromzone_no";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "tozoneno" TO "tozone_no";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "FROMZONE\NAME" TO "fromzone_name";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "FROMZONE\XCOORD" TO "fromzone_xcoord";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "FROMZONE\YCOORD" TO "fromzone_ycoord";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "FROMZONE\B_AGS" TO "fromzone_ags";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "FROMZONE\B_AKS" TO "fromzone_aks";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "FROMZONE\B_BAYERN" TO "fromzone_by";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\NAME" TO "tozone_name";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\XCOORD" TO "tozone_xcoord";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\YCOORD" TO "tozone_ycoord";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\B_AGS" TO "tozone_ags";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\B_AKS" TO "tozone_aks";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\B_BAYERN" TO "tozone_by";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "directdist" TO "directdist";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(116)" TO "ttime_prt";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(309)" TO "ttime_put";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(1)" TO "demand_pkw";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(2)" TO "demand_pkwm";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(21)" TO "demand_pkwbusy";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(3)" TO "demand_put";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(4)" TO "demand_bike";
+ALTER TABLE odpair_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(5)" TO "demand_walk";
+
+--- add the necessary tables for metrics (that were once created using python)
+ALTER TABLE odpair_fromSQLite_44342281_raw
+	add column IF NOT EXISTS demand_all float8,
+	add column IF NOT EXISTS demand_ivoev float8,
+	add column IF NOT EXISTS beeline_speed_put_kmh float8,
+	add column IF NOT EXISTS ttime_ratio float8;
 
 
 
+-- attention for "division by zero"; handled by python (set to NULL)
+update odpair_fromSQLite_44342281_raw set
+demand_all = demand_pkw + demand_pkwm + demand_put + demand_bike + demand_walk,
+	demand_ivoev = demand_pkw + demand_pkwm + demand_put,
+	beeline_speed_put_kmh = 60 * (directdist / NULLIF(ttime_put, 0)),
+	ttime_ratio = ttime_put / NULLIF(ttime_prt, 0);
 
-  
-  
+--- rebuilt the original import with demand >= 1
+drop table LVM_OD_996286_recap;
+
+SELECT *
+INTO TABLE LVM_OD_996286_recap
+FROM odpair_fromSQLite_44342281_raw
+where demand_ivoev >= 1;
+
+select count(*) from odpair_fromSQLite_44342281_raw;
+select count(*) from LVM_OD_996286_recap;
+
