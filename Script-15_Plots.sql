@@ -45,7 +45,7 @@ $func$ LANGUAGE plpgsql;
 
 drop table  hist_test;
 
-SELECT * into table hist_test FROM histogram('(SELECT * FROM lvm_od_996286_cont_metric) as foo', 'cm_metric');
+SELECT * into table hist_test FROM histogram('(SELECT * FROM lvm_od_996286_recap) as foo', 'directdist');
 
 select * from hist_test;
 
