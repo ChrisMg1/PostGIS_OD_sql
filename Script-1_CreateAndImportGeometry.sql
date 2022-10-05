@@ -155,7 +155,7 @@ select * from LVM_OD_onlyBAV where fromzone_no != tozone_no order by pax_h_uam_a
 
 select * from LVM_OD_onlyBAV where fromzone_no != tozone_no and pax_h_base = pax_h_uam_all;
 
-select count(*) from LVM_OD_onlyBAV;
-select count(*) from LVM_OD_onlyBAV where (ttime_put = ttime_uam_min);
-select count(*) from LVM_OD_onlyBAV where (ttime_prt = ttime_uam_min);
+select * from LVM_OD_onlyBAV where (fromzone_no = tozone_no);
+select * from LVM_OD_onlyBAV where (ttime_put = ttime_uam_min);
+
 
