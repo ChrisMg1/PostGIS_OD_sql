@@ -158,4 +158,7 @@ select * from LVM_OD_onlyBAV where fromzone_no != tozone_no and pax_h_base = pax
 select * from LVM_OD_onlyBAV where (fromzone_no = tozone_no);
 select * from LVM_OD_onlyBAV where (ttime_put = ttime_uam_min);
 
+select * from lvm_od_996286;
+select * from lvm_od_996286_cont_metric;
+select * from lvm_od_onlybav;
 
