@@ -137,4 +137,4 @@ select * from LVM_OD_onlyBAV LVM_OD_onlyBAV order by PAX_h_UAM_test asc;
 
 
 --- export csv (for histogram); run python script after this step
-COPY lvm_od_996286_cont_metric(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, ttime_weight, distance_weight, demand_weight, directdist, total_impedance1, total_impedance2, total_impedance3) TO 'C:\temp\cm_metric.csv' DELIMITER ',' CSV HEADER;
+COPY lvm_od_996286_cont_metric(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, ttime_weight, distance_weight, demand_weight, directdist, total_impedance1, total_impedance2, total_impedance3) TO 'C:\TUMdissDATA\cm_metric.csv' DELIMITER ',' CSV HEADER;

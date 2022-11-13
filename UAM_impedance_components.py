@@ -61,7 +61,7 @@ plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
 
-plt.savefig('plots/Distance_bathtub.png')
+plt.savefig('C:/Users/chris/plots/Distance_bathtub.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()
 
@@ -83,7 +83,7 @@ plt.plot(x_PAX, PAX_vals)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
 
-plt.savefig('plots/demand_Maxwell.png')
+plt.savefig('C:/Users/chris/plots/demand_Maxwell.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()
 
@@ -113,6 +113,6 @@ plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
 plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-plt.savefig('plots/TTratio_logit.png')
+plt.savefig('C:/Users/chris/plots/TTratio_logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()
