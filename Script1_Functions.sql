@@ -128,13 +128,18 @@ update only lvm_od_onlybav set PAX_h_UAM_test =
 
 	
 	
-select count(*) from LVM_OD_onlyBAV LVM_OD_onlyBAV;
+select count(*) from LVM_OD_onlyBAV where PAX_h_BASE < PAX_h_UAM_all;
 select * from LVM_OD_onlyBAV LVM_OD_onlyBAV order by PAX_h_UAM_test desc;
 select * from LVM_OD_onlyBAV LVM_OD_onlyBAV order by PAX_h_UAM_test asc;
 
+select sum(PAX_h_BASE), sum(PAX_h_UAM_all) from lvm_od_onlybav;
+
+select cm_metric_scen1, demand_ivoev - demand_pkw - demand_pkwm - demand_put from LVM_OD_onlyBAV order by demand_ivoev - demand_pkw - demand_pkwm - demand_put asc;
 
 
-
-
---- export csv (for histogram); run python script after this step
+--- export csv (e.g. for histogram); run python script after this steps
 COPY lvm_od_996286_cont_metric(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, ttime_weight, distance_weight, demand_weight, directdist, total_impedance1, total_impedance2, total_impedance3) TO 'C:\TUMdissDATA\cm_metric.csv' DELIMITER ',' CSV HEADER;
+
+
+COPY lvm_od_onlybav(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, PAX_h_BASE, PAX_h_UAM_all) TO 'C:\TUMdissDATA\cm_metrics_with_PAXh.csv' DELIMITER ',' CSV HEADER;
+
