@@ -75,8 +75,6 @@ update only lvm_od_onlybav set
 	demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all / 24);  --divide by number of flights to have PAX/flight (e.g. 1 flight/hour)
 
 
-
-
 --- calculate impedance according to scenario
 --- there is one column for each scenario
 alter table lvm_od_onlybav add column IF NOT EXISTS total_impedance_scen1 float;
@@ -129,8 +127,7 @@ update only lvm_od_onlybav set PAX_h_UAM_test =
 	
 	
 select count(*) from LVM_OD_onlyBAV where PAX_h_BASE < PAX_h_UAM_all;
-select * from LVM_OD_onlyBAV LVM_OD_onlyBAV order by PAX_h_UAM_test desc;
-select * from LVM_OD_onlyBAV LVM_OD_onlyBAV order by PAX_h_UAM_test asc;
+select * from LVM_OD_onlyBAV order by PAX_h_UAM_all asc;
 
 select sum(PAX_h_BASE), sum(PAX_h_UAM_all) from lvm_od_onlybav;
 
