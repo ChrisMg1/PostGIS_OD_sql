@@ -138,5 +138,5 @@ select cm_metric_scen1, demand_ivoev - demand_pkw - demand_pkwm - demand_put fro
 COPY lvm_od_996286_cont_metric(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, ttime_weight, distance_weight, demand_weight, directdist, total_impedance1, total_impedance2, total_impedance3) TO 'C:\TUMdissDATA\cm_metric.csv' DELIMITER ',' CSV HEADER;
 
 
-COPY lvm_od_onlybav(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, PAX_h_BASE, PAX_h_UAM_all) TO 'C:\TUMdissDATA\cm_metrics_with_PAXh.csv' DELIMITER ',' CSV HEADER;
+COPY lvm_od_onlybav(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, directdist, demand_ivoev, PAX_h_BASE, PAX_h_UAM_all) TO 'C:\TUMdissDATA\cm_metrics_with_PAXh.csv' DELIMITER ',' CSV HEADER;
 

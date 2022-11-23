@@ -158,7 +158,7 @@ select * from LVM_OD_onlyBAV where fromzone_no != tozone_no and pax_h_base = pax
 select * from LVM_OD_onlyBAV where (fromzone_no = tozone_no);
 select * from LVM_OD_onlyBAV where (ttime_put = ttime_uam_min);
 
-select count(*) from lvm_od_onlybav;
+select * from lvm_od_onlybav order by pax_h_base desc;
 select * from odpair_fromsqlite_44342281_raw order by demand_all asc;
 select * from lvm_od_996286_cont_metric;
 select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from lvm_od_onlybav;
