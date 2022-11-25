@@ -14,25 +14,7 @@ from scipy.interpolate import interpn
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
-#import numpy as np
 
-# pd.options.display.width = 0
-pd.set_option('display.expand_frame_repr', False)
-
-font = {'family' : 'normal',
-        'weight' : 'normal',
-        'size'   : 18}
-
-plt.rc('font', **font)
-
-in_file = 'C:/TUMdissDATA/cm_metrics_with_PAXh.csv'
-
-for_hist = pd.read_csv(in_file)
-
-print(for_hist)
-
-def monoExp(x, m, t, b):
-    return m * np.exp(-t * x) + b
 
 def ret_cumsum(scenario, od_df_data):
     # sum values
@@ -56,39 +38,10 @@ def ret_cumsum(scenario, od_df_data):
     return for_hist_sort['pax_h_total_SCENARIO'].copy()
 
 
-pax_h_total_S1 = ret_cumsum('cm_metric_scen1', for_hist).reset_index(drop=True)
-pax_h_total_S2 = ret_cumsum('cm_metric_scen2', for_hist).reset_index(drop=True)
-pax_h_total_S3 = ret_cumsum('cm_metric_scen3', for_hist).reset_index(drop=True)
-
-pax_h_total_dist = ret_cumsum('directdist', for_hist).reset_index(drop=True)
-
-
-plt.figure()
-plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-
-# Optional: Set x-axis as percentage values
-plt.gca().xaxis.set_major_formatter(mtick.PercentFormatter(xmax=len(pax_h_total_S1)))
-
-plt.plot(pax_h_total_S1, label='metric 1')
-plt.plot(pax_h_total_S2, label='metric 2')
-plt.plot(pax_h_total_S3, label='metric 3')
-
-plt.plot(pax_h_total_dist, label='distance')
-
-plt.xlabel('UAM conn ercentage')
-plt.ylabel('PAXh system')
-
-plt.legend()
-
-plt.savefig('C:/Users/chris/plots/PAXh.png', dpi=1200, bbox_inches='tight', transparent=False) ## from ',dpi...': for hi-res poster-plot
-plt.show()
-plt.clf()
-
-
-#TODO: Plot PAXh vs. distance
 def density_scatter( x , y, ax = None, sort = True, bins = 20, addXlabel='', addYlabel='', **kwargs )   :
     """
     Scatter plot colored by 2d histogram
+    from "https://stackoverflow.com/questions/20105364/how-can-i-make-a-scatter-plot-colored-by-density-in-matplotlib"
     """
     if ax is None :
         fig , ax = plt.subplots()
@@ -112,20 +65,101 @@ def density_scatter( x , y, ax = None, sort = True, bins = 20, addXlabel='', add
 
     norm = Normalize(vmin = np.min(z), vmax = np.max(z))
     cbar = fig.colorbar(cm.ScalarMappable(norm = norm), ax=ax)
-    cbar.ax.set_ylabel('Point Density')
+    cbar.ax.set_ylabel('Point density')
 
     return ax
 
-# Optional for test data only
-x = np.random.normal(size=1000)
-y = x * 3 + np.random.normal(size=1000)
 
-# Test vs. final plot
-plot_dense_out = density_scatter( x,y, bins = [30,30], addXlabel = 'Distance [km]', addYlabel = 'Demand [PAX]' )
-#plot_dense_out = density_scatter( for_hist['directdist'], for_hist['demand_ivoev'], bins = [30,30] )
+if __name__ == "__main__":    
+    
+    bigletters=False   
+    
+    if bigletters:
+        # pd.options.display.width = 0
+        pd.set_option('display.expand_frame_repr', False)
+        
+        font = {'family' : 'normal',
+                'weight' : 'normal',
+                'size'   : 18}
+        
+        plt.rc('font', **font)
+    
+    in_file = 'C:/TUMdissDATA/cm_metrics_with_PAXh.csv'
+    
+    for_hist = pd.read_csv(in_file)
+    
+    print(for_hist)
+    
+    
+    ## Get metric-sorted data
+    pax_h_total_S1 = ret_cumsum('cm_metric_scen1', for_hist).reset_index(drop=True)
+    pax_h_total_S2 = ret_cumsum('cm_metric_scen2', for_hist).reset_index(drop=True)
+    pax_h_total_S3 = ret_cumsum('cm_metric_scen3', for_hist).reset_index(drop=True)
+    pax_h_total_dist = ret_cumsum('directdist', for_hist).reset_index(drop=True)
+    
+    
+    ## Plot PAXh vs replaced AAM connections
+    perc = np.linspace(0,100,len(pax_h_total_dist))
 
-plot_dense_out.figure.savefig('C:/Users/chris/plots/distVSdemand_dense_scatter.png', dpi=1200, bbox_inches='tight', transparent=False)
+    fig = plt.figure()
+    
+    ax = fig.add_subplot(1,1,1)
+    ax.grid(True, color='grey', linestyle='dotted', linewidth=0.5)
+    
+    ## comment out for single plots
+    ax.plot(perc, pax_h_total_S1, label='metric 1', color='blue')
+    ax.plot(perc, pax_h_total_S2, label='metric 2', color='green')
+    ax.plot(perc, pax_h_total_S3, label='metric 3', color='magenta')
+    ax.plot(perc, pax_h_total_dist, label='distance ("naive")', color='red')
+    
+    ## transparent ("empty") coordinate system; maybe comment legend out
+    #ax.plot(perc, pax_h_total_dist, color='white', alpha=0)
+
+    
+    
+    ax.set_xlabel('Connections replaced by AAM [%]')
+    ax.set_ylabel('Total travel time [PAXh / day]')
+
+    fmt = '%.0f%%' # Format you want the ticks, e.g. '40%'
+    xticks = mtick.FormatStrFormatter(fmt)
+    ax.xaxis.set_major_formatter(xticks)
+    ax.legend()
+    
+    
+    plt.savefig('C:/Users/chris/plots/PAXh.png', dpi=1200, bbox_inches='tight', transparent=False) ## from ',dpi...': for hi-res poster-plot
+    plt.show()
+
+    plt.clf()
+    
+    
+    
+    ## 'Simple' scatter plot of demand vs. distance
+    # Test vs. final plot
+    cm_scatter = 'test'  # or 'plot'
+    
+    plt.figure()
+    
+    if cm_scatter == 'test':
+        x = np.random.normal(size=1000)
+        y = x * 3 + np.random.normal(size=1000)
+        plot_dense_out = density_scatter( x,y, bins = [30,30], addXlabel = 'Distance [km]', addYlabel = 'Demand [PAX / day]' )
+    
+    
+    elif cm_scatter == 'plot':
+        plot_dense_out = density_scatter( for_hist['directdist'], for_hist['demand_ivoev'], bins = [30,30], addXlabel = 'Distance [km]', addYlabel = 'Demand [PAX]' )
+    
+    # Show / save latest figure (example or data)
+
+    plot_dense_out.figure.savefig('C:/Users/chris/plots/distVSdemand_dense_scatter.png', dpi=1200, bbox_inches='tight', transparent=False)
 
 
+    plt.clf()
 
 
+    
+    
+    
+    
+    
+    
+    
