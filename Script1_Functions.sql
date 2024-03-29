@@ -74,6 +74,7 @@ update only lvm_od_onlybav set
 	distance_weight = DISTANCE_BATHTUB_WEIGHT(directdist),
 	demand_weight = DEMAND_MAX_ADAPT_WEIGHT(Demand_all / 24);  --divide by number of flights to have PAX/flight (e.g. 1 flight/hour)
 
+-- todo: summe der weights und schauen, was das minimum ist; es sind m. E. immer nur 2 auf einmal "0"
 
 --- calculate impedance according to scenario
 --- there is one column for each scenario
@@ -125,7 +126,7 @@ update only lvm_od_onlybav set PAX_h_UAM_test =
 	least( (demand_pkw + demand_pkwm), (4*24*4) ) + 1;	-- and blah2
 
 	
-	
+select count(*) from odpair_2035_fromsqlite_44342281_raw;
 select count(*) from LVM_OD_onlyBAV where PAX_h_BASE < PAX_h_UAM_all;
 select * from LVM_OD_onlyBAV order by PAX_h_UAM_all asc;
 
