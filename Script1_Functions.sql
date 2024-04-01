@@ -125,14 +125,6 @@ update only lvm_od_onlybav set PAX_h_UAM_test =
 	greatest( ((demand_pkw + demand_pkwm) - (4*24*4) ), 0) - -- reduce prt_demand by UAM_demand and assure that demand not negative
 	least( (demand_pkw + demand_pkwm), (4*24*4) ) + 1;	-- and blah2
 
-	
-select count(*) from odpair_2035_fromsqlite_44342281_raw;
-select count(*) from LVM_OD_onlyBAV where PAX_h_BASE < PAX_h_UAM_all;
-select * from LVM_OD_onlyBAV order by PAX_h_UAM_all asc;
-
-select sum(PAX_h_BASE), sum(PAX_h_UAM_all) from lvm_od_onlybav;
-
-select cm_metric_scen1, demand_ivoev - demand_pkw - demand_pkwm - demand_put from LVM_OD_onlyBAV order by demand_ivoev - demand_pkw - demand_pkwm - demand_put asc;
 
 
 --- export csv (e.g. for histogram); run python script after this steps
