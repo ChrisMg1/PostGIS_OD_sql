@@ -106,7 +106,7 @@ plt.savefig('C:/Users/chris/plots/distance_weight_hist_HIRES.png', dpi=1200, bbo
 plt.show()
 plt.clf()
 
-## Distance impedance
+## Travel Time impedance
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)

@@ -133,3 +133,5 @@ COPY lvm_od_996286_cont_metric(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3
 
 COPY lvm_od_onlybav(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, directdist, demand_ivoev, PAX_h_BASE, PAX_h_UAM_all) TO 'C:\TUMdissDATA\cm_metrics_with_PAXh.csv' DELIMITER ',' CSV HEADER;
 
+-- Export for comparing total demand of all od with only bavarian od connections
+COPY odpair_2035_fromsqlite_44342281_raw(demand_all_person, fromzone_by, tozone_by) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG.csv' DELIMITER ',' CSV HEADER;
