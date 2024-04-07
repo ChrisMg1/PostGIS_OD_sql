@@ -174,7 +174,8 @@ select * from lvm_od_996286_cont_metric;
 select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from lvm_od_onlybav;
 
 
-select min("MATVALUE(1)") from odpair_2035_fromsqlite_44342281_raw;
+select min("demand_all_person") from odpair_2035_fromsqlite_44342281_raw;
+select min("demand_all_person") from odpair_LVM2035_23716900_onlyBAV;
 
 SELECT version(); ---PostgreSQL only
 select sqlite_version(); ---sqlite only
@@ -186,4 +187,4 @@ SELECT count(*) FROM odpair_LVM2035_23716900_onlyBAV;
 
 --- Select row with max in a specific column
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw 
-	WHERE "MATVALUE(1)" = ( SELECT MIN("MATVALUE(1)") FROM odpair_2035_fromsqlite_44342281_raw );
+	WHERE "demand_all_person" = ( SELECT max("demand_all_person") FROM odpair_2035_fromsqlite_44342281_raw );
