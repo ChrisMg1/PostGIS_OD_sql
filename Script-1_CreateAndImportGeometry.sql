@@ -181,7 +181,8 @@ select sqlite_version(); ---sqlite only
 
 select cm_metric_scen1, demand_ivoev - demand_pkw - demand_pkwm - demand_put from LVM_OD_onlyBAV order by demand_ivoev - demand_pkw - demand_pkwm - demand_put asc;
 
-SELECT max(demand_all_person) FROM odpair_2035_fromsqlite_44342281_raw;
+SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
+SELECT count(*) FROM odpair_LVM2035_23716900_onlyBAV;
 
 --- Select row with max in a specific column
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw 
