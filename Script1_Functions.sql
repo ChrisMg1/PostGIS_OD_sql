@@ -128,10 +128,12 @@ update only lvm_od_onlybav set PAX_h_UAM_test =
 
 
 --- export csv (e.g. for histogram); run python script after this steps
-COPY lvm_od_996286_cont_metric(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, ttime_weight, distance_weight, demand_weight, directdist, total_impedance1, total_impedance2, total_impedance3) TO 'C:\TUMdissDATA\cm_metric.csv' DELIMITER ',' CSV HEADER;
+
+COPY odpair_2035_fromsqlite_44342281_raw(fromzone_by, tozone_by, demand_all_person, demand_all_person_purged) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG.csv' DELIMITER ',' CSV HEADER;
 
 
-COPY lvm_od_onlybav(cm_metric_scen1, cm_metric_scen2, cm_metric_scen3, directdist, demand_ivoev, PAX_h_BASE, PAX_h_UAM_all) TO 'C:\TUMdissDATA\cm_metrics_with_PAXh.csv' DELIMITER ',' CSV HEADER;
 
--- Export for comparing total demand of all od with only bavarian od connections
-COPY odpair_2035_fromsqlite_44342281_raw(demand_all_person, fromzone_by, tozone_by) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG.csv' DELIMITER ',' CSV HEADER;
+
+
+
+

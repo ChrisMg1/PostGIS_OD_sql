@@ -26,11 +26,7 @@ Demand_Pkw float,
 Demand_PkwM float,
 Demand_PuT float,
 Demand_Bike float,
-Demand_Walk float,
-Demand_all float,
-Demand_IVOEV float,
-beeline_speed_PuT_kmh float,
-TTime_ratio float
+Demand_Walk float
 )
 
 --- import csv
@@ -77,20 +73,19 @@ ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(14)" TO 
 --- add the necessary tables for metrics (that were once created using python)
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw
 	add column IF NOT EXISTS demand_all_person float8,
-	add column IF NOT EXISTS demand_ivoev float8,
+	add column IF NOT EXISTS demand_all_person_purged float8,
+	add column IF NOT EXISTS demand_ivoev_purged float8,
 	add column IF NOT EXISTS beeline_speed_put_kmh float8,
 	add column IF NOT EXISTS ttime_ratio float8;
 
 -- attention for "division by zero"; handled by python (set to NULL)
 update odpair_2035_fromSQLite_44342281_raw set
 	demand_all_person = demand_pkw + demand_pkwm + demand_put + demand_bike + demand_walk,
-	demand_ivoev = demand_pkw + demand_pkwm + demand_put,
+	demand_all_person_purged = GREATEST(0, demand_pkw) + GREATEST(0, demand_pkwm) + GREATEST(0, demand_put) + GREATEST(0, demand_bike) + GREATEST(0, demand_walk), --- get rid of the negative demand values
+	demand_ivoev_purged = GREATEST(0, demand_pkw) + GREATEST(0, demand_pkwm) + GREATEST(0, demand_put),
 	beeline_speed_put_kmh = 60 * (directdist / NULLIF(ttime_put, 0)),
-	ttime_ratio = ttime_put / NULLIF(ttime_prt, 0);
+	ttime_ratio = NULLIF(ttime_put, 0) / NULLIF(ttime_prt, 0);
 
-
---- Table names: odpair_fromSQLite_44342281_raw | lvm_od_996286
-			
 -- add geometry columns (points and line)
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw
 	ADD COLUMN IF NOT EXISTS geom_point_fromOD geometry(Point),
@@ -98,7 +93,7 @@ ALTER TABLE odpair_2035_fromSQLite_44342281_raw
 	ADD COLUMN IF NOT EXISTS ODconnect geometry(Linestring);
 	
 	
-	-- ADD COLUMN IF NOT EXISTS allpoints geometry(Point); -- planned as merge/union to have all start/end-points only once. 
+-- ADD COLUMN IF NOT EXISTS allpoints geometry(Point); -- planned as merge/union to have all start/end-points only once. 
 
 --- fill geometry columns
 -- Bayern is UTM32 is 32632 im LVM-export (old and 'official' EPSG:25832)
@@ -111,48 +106,31 @@ UPDATE odpair_2035_fromSQLite_44342281_raw
 	set	ODconnect = st_makeline(geom_point_fromOD, geom_point_toOD);
 
 
-UPDATE odpair_2035_fromSQLite_44342281_raw set
-	demand_all = demand_pkw + demand_pkwm + demand_put + demand_bike + demand_walk,
-	demand_ivoev = demand_pkw + demand_pkwm + demand_put;
-
-
---- SUBTABLE: rebuilt the original import with demand >= 1
-
-SELECT *
-INTO TABLE LVM_OD_996286_recap
-FROM odpair_fromSQLite_44342281_raw
-where demand_ivoev >= 1;
-
---- SUBTABLE: Only inner-Bavaria connections; demand >= 0
-
-SELECT count(*) FROM odpair_LVM2035_23716900_onlyBAV;
+--- from here SUBTABLE: Only inner-Bavaria connections and possibly additional filters
 
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw
 	where fromzone_by = 1
-	and tozone_by = 1;
+	and tozone_by = 1
+	and demand_all_person_purged >= 1;
+
+SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw
+	where demand_all_person_purged >= 1;
+
 
 SELECT * INTO TABLE odpair_LVM2035_23716900_onlyBAV
 	FROM odpair_2035_fromsqlite_44342281_raw
 	where fromzone_by = 1
 	and tozone_by = 1;
 
---- get rid of the negative demand values
-UPDATE LVM_OD_onlyBAV SET
-	demand_pkw = GREATEST(0, demand_pkw),
-	demand_pkwm = GREATEST(0, demand_pkwm),
-	demand_put = GREATEST(0, demand_put),
-	demand_bike = GREATEST(0, demand_bike),
-	demand_walk = GREATEST(0, demand_walk);
 
-UPDATE LVM_OD_onlyBAV SET
-	demand_all = demand_pkw + demand_pkwm + demand_put + demand_bike + demand_walk,
-	demand_ivoev = demand_pkw + demand_pkwm + demand_put;
 
---- add possible UAM travel time TODO: Add somewhere in "raw"
+--- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
 ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
 --- params: v_uam = 250km/h
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
+
+
 
 
 ---some selects
@@ -174,8 +152,8 @@ select * from lvm_od_996286_cont_metric;
 select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from lvm_od_onlybav;
 
 
-select min("demand_all_person") from odpair_2035_fromsqlite_44342281_raw;
-select min("demand_all_person") from odpair_LVM2035_23716900_onlyBAV;
+select min(ttime_prt) from odpair_2035_fromsqlite_44342281_raw;
+select min(ttime_put) from odpair_2035_fromsqlite_44342281_raw;
 
 SELECT version(); ---PostgreSQL only
 select sqlite_version(); ---sqlite only
