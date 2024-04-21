@@ -16,8 +16,9 @@ import matplotlib.pyplot as plt
 
 #plt.rc('font', **font)
 
-
+# todo: Change to xxx2.csv
 in_file = 'C:/TUMdissDATA/demandWITHbavariaFLAG.csv'
+#*purged: min(0, demand)
 
 for_hist = pd.read_csv(in_file)
 
@@ -67,57 +68,53 @@ print(len_bav_fil)
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('Passenger demand model area')
+plt.xlabel('Passenger demand model area [PAX/day]')
 plt.ylabel('Frequency (n=' + format(len_tot, ',') + ')')
 plt.ylim( (pow(10,0),pow(10,8)) )
 
-# plt.hist(for_hist['demand_all_person'], edgecolor='darkgrey', bins = bin_number, log=True)
 plt.hist(total_demand, edgecolor='darkgrey', bins = bin_number, log=True)
 plt.savefig('C:/Users/chris/plots/demand_person_ALL.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.show()
 plt.clf()
 
+
 ## Total demand with filter >0
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('Passenger demand model area')
+plt.xlabel('Passenger demand model area [PAX/day]')
 plt.ylabel('Frequency (n=' + format(len_tot_fil, ',') + ')')
 plt.ylim( (pow(10,0),pow(10,8)) )
 
-# plt.hist(for_hist[(for_hist.demand_all_person >= 0)]['demand_all_person'], edgecolor='darkgrey', bins = bin_number, log=True)
 plt.hist(total_demand_filter, edgecolor='darkgrey', bins = bin_number, log=True)
-plt.savefig('C:/Users/chris/plots/demand_person_ALL_filterGT0.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/demand_person_ALL_filterGEQ1.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.show()
 plt.clf()
-
-
 
 
 ## Bavaria demand
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('Passenger demand study area')
+plt.xlabel('Passenger demand study area [PAX/day]')
 plt.ylabel('Frequency (n=' + format(len_bav, ',') + ')')
 plt.ylim( (pow(10,0),pow(10,8)) )
 
-# plt.hist(for_hist[(for_hist.fromzone_by == 1) & (for_hist.tozone_by == 1)]['demand_all_person'], edgecolor='darkgrey', bins = bin_number, log=True)
 plt.hist(bav_demand, edgecolor='darkgrey', bins = bin_number, log=True)
 plt.savefig('C:/Users/chris/plots/demand_person_BAV.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.show()
 plt.clf()
 
+
 ## Bavaria demand with filter >0
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.xlabel('Passenger demand study area')
+plt.xlabel('Passenger demand study area [PAX/day]')
 plt.ylabel('Frequency (n=' + format(len_bav_fil, ',') + ')')
 plt.ylim( (pow(10,0),pow(10,8)) )
 
-# plt.hist(for_hist[(for_hist.fromzone_by == 1) & (for_hist.tozone_by == 1) & (for_hist.demand_all_person >= 0)]['demand_all_person'], edgecolor='darkgrey', bins = bin_number, log=True)
 plt.hist(bav_demand_filter, edgecolor='darkgrey', bins = bin_number, log=True)
-plt.savefig('C:/Users/chris/plots/demand_person_BAV_filterGT0.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/demand_person_BAV_filterGEQ1.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.show()
 plt.clf()

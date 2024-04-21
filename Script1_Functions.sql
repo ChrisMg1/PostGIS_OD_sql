@@ -128,8 +128,10 @@ update only lvm_od_onlybav set PAX_h_UAM_test =
 
 
 --- export csv (e.g. for histogram); run python script after this steps
+-- todo: One single export; no split for plots
+COPY odpair_2035_fromsqlite_44342281_raw(fromzone_by, tozone_by, demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk, demand_all_person, demand_all_person_purged) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG2.csv' DELIMITER ',' CSV HEADER;
 
-COPY odpair_2035_fromsqlite_44342281_raw(fromzone_by, tozone_by, demand_all_person, demand_all_person_purged) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG.csv' DELIMITER ',' CSV HEADER;
+COPY odpair_2035_fromsqlite_44342281_raw(demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk) TO 'C:\TUMdissDATA\demandPERmodeNOod.csv' DELIMITER ',' CSV HEADER;
 
 
 

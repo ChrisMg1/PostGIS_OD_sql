@@ -1,4 +1,6 @@
 SELECT postgis_full_version();
+SELECT version(); ---PostgreSQL only
+select sqlite_version(); ---sqlite only
 
 --- names:
 DROP TABLE IF exists LVM_OD_996286
@@ -127,6 +129,7 @@ SELECT * INTO TABLE odpair_LVM2035_23716900_onlyBAV
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
 ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
+
 --- params: v_uam = 250km/h
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
 
@@ -134,34 +137,32 @@ UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
 
 
 ---some selects
-SELECT distinct fromzone_by FROM odpair_fromSQLite_44342281_raw;
+SELECT fromzone_by FROM odpair_2035_fromsqlite_44342281_raw order by fromzone_by asc;
+SELECT distinct fromzone_by FROM odpair_LVM2035_23716900_onlyBAV;
 select count(*) from odpair_fromSQLite_44342281_raw
 	where demand_ivoev >= 1 and fromzone_by = 1 and tozone_by = 1 and fromzone_no != tozone_no;
 
-select * from LVM_OD_onlyBAV where fromzone_no != tozone_no order by pax_h_base desc;
-select * from LVM_OD_onlyBAV where fromzone_no != tozone_no order by pax_h_uam_all desc;
-
-select * from LVM_OD_onlyBAV where fromzone_no != tozone_no and pax_h_base = pax_h_uam_all;
-
-select * from LVM_OD_onlyBAV where (fromzone_no = tozone_no);
-select * from LVM_OD_onlyBAV where (ttime_put = ttime_uam_min);
-
-select * from lvm_od_onlybav order by pax_h_base desc;
-select * from odpair_fromsqlite_44342281_raw order by demand_all asc;
-select * from lvm_od_996286_cont_metric;
 select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from lvm_od_onlybav;
 
 
 select min(ttime_prt) from odpair_2035_fromsqlite_44342281_raw;
 select min(ttime_put) from odpair_2035_fromsqlite_44342281_raw;
 
-SELECT version(); ---PostgreSQL only
-select sqlite_version(); ---sqlite only
+
+
 
 select cm_metric_scen1, demand_ivoev - demand_pkw - demand_pkwm - demand_put from LVM_OD_onlyBAV order by demand_ivoev - demand_pkw - demand_pkwm - demand_put asc;
 
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
 SELECT count(*) FROM odpair_LVM2035_23716900_onlyBAV;
+
+--quantiles
+select
+  percentile_disc(0.25) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
+  percentile_disc(0.5) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
+  percentile_disc(0.75) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm)
+from odpair_2035_fromsqlite_44342281_raw;
+
 
 --- Select row with max in a specific column
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw 
