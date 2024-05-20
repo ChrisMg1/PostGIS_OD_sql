@@ -32,10 +32,10 @@ def PAX_max(x_in, d, w, s):
 
 ## Create values for variables
 max_PAX = 15
-max_rat = 5
+max_rat = 3
 max_dist = 500
 
-x_rat = np.arange(0.01, max_rat, 0.1).tolist()
+x_rat = np.arange(0.01, max_rat, 0.01).tolist()
 x_PAX = np.linspace(0.01, max_PAX, 10*max_PAX)
 x_dist = np.arange(0, max_dist, 0.1).tolist()
 
@@ -100,8 +100,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 
 ## Create values with function and plot relation PuT / PrT
 
-a2_in = 3
-p_in = 2.5
+a2_in = 15
+p_in = 1.0
 
 imp_rel_vals = []
 for i in x_rat:

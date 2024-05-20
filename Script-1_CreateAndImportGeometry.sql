@@ -58,9 +58,9 @@ ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\YCOORD" TO
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\B_AGS" TO "tozone_ags";
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\B_AKS" TO "tozone_aks";
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "TOZONE\B_BAYERN" TO "tozone_by";
---ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "directdist" TO "directdist";
-ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(116)" TO "ttime_prt";
-ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(309)" TO "ttime_put";
+--ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "directdist" TO "directdist"; ---[km]
+ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(116)" TO "ttime_prt"; ---[min]
+ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(309)" TO "ttime_put"; ---[min]
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(1)" TO "demand_pkw";
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(2)" TO "demand_pkwm";
 ALTER TABLE odpair_2035_fromSQLite_44342281_raw RENAME COLUMN "MATVALUE(21)" TO "demand_pkwbusy"; --- Personenwirtschaftsverkehr?
@@ -88,57 +88,27 @@ update odpair_2035_fromSQLite_44342281_raw set
 	beeline_speed_put_kmh = 60 * (directdist / NULLIF(ttime_put, 0)),
 	ttime_ratio = NULLIF(ttime_put, 0) / NULLIF(ttime_prt, 0);
 
--- add geometry columns (points and line)
-ALTER TABLE odpair_2035_fromSQLite_44342281_raw
-	ADD COLUMN IF NOT EXISTS geom_point_fromOD geometry(Point),
-	ADD COLUMN IF NOT EXISTS geom_point_toOD geometry(Point),
-	ADD COLUMN IF NOT EXISTS ODconnect geometry(Linestring);
-	
-	
--- ADD COLUMN IF NOT EXISTS allpoints geometry(Point); -- planned as merge/union to have all start/end-points only once. 
 
---- fill geometry columns
--- Bayern is UTM32 is 32632 im LVM-export (old and 'official' EPSG:25832)
-UPDATE odpair_2035_fromSQLite_44342281_raw SET
-	geom_point_fromOD = st_setsrid(st_makepoint(fromzone_xcoord, fromzone_ycoord), 32632),
-	geom_point_toOD = st_setsrid(st_makepoint(tozone_xcoord, tozone_ycoord), 32632);
-
-
-UPDATE odpair_2035_fromSQLite_44342281_raw
-	set	ODconnect = st_makeline(geom_point_fromOD, geom_point_toOD);
-
-
---- from here SUBTABLE: Only inner-Bavaria connections and possibly additional filters
 
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw
 	where fromzone_by = 1
 	and tozone_by = 1
-	and demand_all_person_purged >= 1;
+	and fromzone_no != tozone_no;
 
-SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw
-	where demand_all_person_purged >= 1;
-
-
-SELECT * INTO TABLE odpair_LVM2035_23716900_onlyBAV
+SELECT * INTO TABLE odpair_LVM2035_23712030_onlyBAV
 	FROM odpair_2035_fromsqlite_44342281_raw
 	where fromzone_by = 1
-	and tozone_by = 1;
-
-
-
---- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
-ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
-ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
-
---- params: v_uam = 250km/h
-UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
-
+	and tozone_by = 1
+	and fromzone_no != tozone_no;
 
 
 
 ---some selects
+
+SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
+
+
 SELECT fromzone_by FROM odpair_2035_fromsqlite_44342281_raw order by fromzone_by asc;
-SELECT distinct fromzone_by FROM odpair_LVM2035_23716900_onlyBAV;
 select count(*) from odpair_fromSQLite_44342281_raw
 	where demand_ivoev >= 1 and fromzone_by = 1 and tozone_by = 1 and fromzone_no != tozone_no;
 
@@ -149,12 +119,9 @@ select min(ttime_prt) from odpair_2035_fromsqlite_44342281_raw;
 select min(ttime_put) from odpair_2035_fromsqlite_44342281_raw;
 
 
-
-
 select cm_metric_scen1, demand_ivoev - demand_pkw - demand_pkwm - demand_put from LVM_OD_onlyBAV order by demand_ivoev - demand_pkw - demand_pkwm - demand_put asc;
 
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
-SELECT count(*) FROM odpair_LVM2035_23716900_onlyBAV;
 
 --quantiles
 select
@@ -165,5 +132,5 @@ from odpair_2035_fromsqlite_44342281_raw;
 
 
 --- Select row with max in a specific column
-SELECT * FROM odpair_2035_fromsqlite_44342281_raw 
+SELECT * FROM odpair_2035_fromsqlite_44342281_raw
 	WHERE "demand_all_person" = ( SELECT max("demand_all_person") FROM odpair_2035_fromsqlite_44342281_raw );

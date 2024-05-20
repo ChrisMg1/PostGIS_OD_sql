@@ -14,8 +14,8 @@ $$ language 'plpgsql' STRICT;
 CREATE OR REPLACE FUNCTION TTIME_LOGIT_WEIGHT(TTR float)
    RETURNS float AS
 $$
-DECLARE p_w float :=2.5;
-DECLARE a2_w float:=3.0;
+DECLARE p_w float :=1.0;
+DECLARE a2_w float:=15;
 
 BEGIN
    if TTR < 100.0 then
