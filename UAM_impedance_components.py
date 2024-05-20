@@ -22,13 +22,13 @@ def bathtub2 (x_in, l, r, a1):
     else:
         return None
 
+def PAX_max(x_in, d, w, s):
+	return 1-d*maxwell.pdf(w*(x_in - s))
 
-def imp_rel2(x_in, p, a2):
+def TTIME_Logit(x_in, p, a2):
     return (1 / (1 + np.exp(a2 * (x_in - p)) ))
 
 
-def PAX_max(x_in, d, w, s):
-	return 1-d*maxwell.pdf(w*(x_in - s))
 
 ## Create values for variables
 max_PAX = 15
@@ -37,16 +37,13 @@ max_dist = 500
 
 x_rat = np.arange(0.01, max_rat, 0.01).tolist()
 x_PAX = np.linspace(0.01, max_PAX, 10*max_PAX)
-x_dist = np.arange(0, max_dist, 0.1).tolist()
+x_dist = np.arange(0, max_dist, 0.01).tolist()
 
 
 ## Set parametrs
 shift_right = 350
 shift_left = 75
 a1_in=0.1
-
-
-
 
 ## plot distance impedence (bathtub)
 plt.figure()
@@ -61,7 +58,7 @@ plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
 
-plt.savefig('C:/Users/chris/plots/Distance_bathtub.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()
 
@@ -70,10 +67,13 @@ plt.clf()
 plt.figure()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 
+d_in = 1.7034
+w_in = 0.35
+s_in = 0
 
 PAX_vals = []
 for i in x_PAX:
-    PAX_vals.append(PAX_max(i, 1.7034, 0.35, 0))
+    PAX_vals.append(PAX_max(i, d_in, w_in, s_in))
 ## play with parameters and plot
 plt.plot(x_PAX, PAX_vals)
 
@@ -83,7 +83,7 @@ plt.plot(x_PAX, PAX_vals)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
 
-plt.savefig('C:/Users/chris/plots/demand_Maxwell.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()
 
@@ -100,19 +100,19 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 
 ## Create values with function and plot relation PuT / PrT
 
-a2_in = 15
+a2_in = 5.0
 p_in = 1.0
 
-imp_rel_vals = []
+TTIME_Logit_vals = []
 for i in x_rat:
-    imp_rel_vals.append(imp_rel2(i, p_in, a2_in))
-plt.plot(x_rat, imp_rel_vals)
+    TTIME_Logit_vals.append(TTIME_Logit(i, p_in, a2_in))
+plt.plot(x_rat, TTIME_Logit_vals)
 
 plt.xlabel('Travel Time Ratio PuT/PrT')
 plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
 plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-plt.savefig('C:/Users/chris/plots/TTratio_logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()

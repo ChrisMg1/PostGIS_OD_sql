@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION TTIME_LOGIT_WEIGHT(TTR float)
    RETURNS float AS
 $$
 DECLARE p_w float :=1.0;
-DECLARE a2_w float:=15;
+DECLARE a2_w float:=5;
 
 BEGIN
    if TTR < 100.0 then
@@ -52,11 +52,11 @@ $$
 DECLARE a_dist float:=0.1;
 DECLARE shift_l float:=75;
 DECLARE shift_r float:=350;
-begin	
+begin
    if (dist < ((shift_l + shift_r) / 2)) then
         return (1 / (1 + exp( a_dist * (dist - shift_l)) ));
    elsif (dist >= ((shift_l + shift_r) / 2)) then
-        return (1 / (1 + exp(-a_dist * (dist - shift_r)) ));    
+        return (1 / (1 + exp(-a_dist * (dist - shift_r)) ));
    else
    		return -1; -- should not happen; just test if function works
    end if;

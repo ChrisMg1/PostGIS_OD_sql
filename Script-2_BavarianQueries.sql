@@ -1,8 +1,8 @@
 --- here only querys for bavarian table
 --- export: Prepare data in database cm_UAM2035fromSQLite, table odpair_2035_fromsqlite_44342281_raw
 --- export to odpair_lvm2035_23716900_onlybav
----- filter: only bav taz's, from != to
----- filter: 
+---- filter: only bav taz's
+---- filter: from != to
 --- finally transfer to new database xyz
 
 
@@ -26,7 +26,17 @@ UPDATE odpair_LVM2035_23712030_onlyBAV SET
 UPDATE odpair_LVM2035_23712030_onlyBAV
 	set	ODconnect = st_makeline(geom_point_fromOD, geom_point_toOD);
 	
-
+CREATE INDEX fromOD_geom_idx
+  ON odpair_LVM2035_23712030_onlyBAV
+  USING GIST (geom_point_fromOD);
+ 
+ CREATE INDEX toOD_geom_idx
+  ON odpair_LVM2035_23712030_onlyBAV
+  USING GIST (geom_point_toOD);
+ 
+ CREATE INDEX conn_geom_idx
+  ON odpair_LVM2035_23712030_onlyBAV
+  USING GIST (ODconnect);
 
 -----???-----
 
@@ -37,6 +47,9 @@ ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
 
 --- params: v_uam = 250km/h
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
+
+
+
 
 
 
