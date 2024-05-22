@@ -14,11 +14,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import maxwell
 
-def bathtub2 (x_in, l, r, a1):
+def bathtub2 (x_in, l, r, a1l, a1r):
     if (x_in < ((l + r) / 2)):
-        return (1 / (1 + np.exp( a1 * (x_in - l)) ))
+        return (1 / (1 + np.exp( a1l * (x_in - l)) ))
     elif (x_in >= ((l + r) / 2)):
-        return (1 / (1 + np.exp(-a1 * (x_in - r)) ))
+        return (1 / (1 + np.exp(-a1r * (x_in - r)) ))
     else:
         return None
 
@@ -36,37 +36,38 @@ max_rat = 3
 max_dist = 500
 
 x_rat = np.arange(0.01, max_rat, 0.01).tolist()
-x_PAX = np.linspace(0.01, max_PAX, 10*max_PAX)
+# x_PAX = np.linspace(0.01, max_PAX, 10*max_PAX)
+x_PAX = np.arange(0.01, max_PAX, 0.01).tolist()
 x_dist = np.arange(0, max_dist, 0.01).tolist()
 
 
-## Set parametrs
-shift_right = 350
-shift_left = 75
-a1_in=0.1
 
-## plot distance impedence (bathtub)
-plt.figure()
-plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+#### (1) plot distance impedence (bathtub)
+
+## Set parameters
+shift_left_dist = 75
+shift_right_dist = 350
+a1l_in=0.1
+a1r_in=0.1
 
 ## Create values with function and plot
 bathtub_vals = []
 for i in x_dist:
-    bathtub_vals.append(bathtub2(i, shift_left, shift_right, a1_in))
-plt.plot(x_dist, bathtub_vals)
+    bathtub_vals.append(bathtub2(i, shift_left_dist, shift_right_dist, a1l_in, a1r_in))
 
+plt.figure()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
-
 plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()
 
 
-## plot capacity impedence (Maxwell)
-plt.figure()
-plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+#### (2.1) plot capacity impedence (Maxwell)
 
+## Set parameters
 d_in = 1.7034
 w_in = 0.35
 s_in = 0
@@ -74,40 +75,52 @@ s_in = 0
 PAX_vals = []
 for i in x_PAX:
     PAX_vals.append(PAX_max(i, d_in, w_in, s_in))
-## play with parameters and plot
+
+plt.figure()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals)
-
-#print(min(PAX_vals))
-
-
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-
 plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
 plt.show()
 plt.clf()
 
 
-## Plot travel time impedance (Logit)
+#### (2.2) plot capacity impedence (Maxwell)
+
+## Set parameters
+shift_left_PAX = 1
+shift_right_PAX = 7
+a1l_in_pax=3.5
+a1r_in_pax=2
+
+PAX_vals2 = []
+for i in x_PAX:
+    PAX_vals2.append(bathtub2(i, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
+
 plt.figure()
-
-## cut canvas
-axes = plt.axes()
-#axes.set_xlim([1, 5])
-#axes.set_ylim([0, 1.1])
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.plot(x_PAX, PAX_vals2)
+plt.xlabel('Demand [PAX / flight]')
+plt.ylabel('UAM Impedance (normalized)')
+plt.savefig('C:/Users/chris/plots/Imp_demand_Logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+plt.show()
+plt.clf()
 
 
-## Create values with function and plot relation PuT / PrT
+#### (3) Plot travel time impedance (Logit)
 
+## Set parameters
 a2_in = 5.0
 p_in = 1.0
 
 TTIME_Logit_vals = []
 for i in x_rat:
     TTIME_Logit_vals.append(TTIME_Logit(i, p_in, a2_in))
+    
+plt.figure()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_rat, TTIME_Logit_vals)
-
 plt.xlabel('Travel Time Ratio PuT/PrT')
 plt.ylabel('UAM Impedance (normalized)')
 

@@ -49,14 +49,15 @@ CREATE OR REPLACE FUNCTION DISTANCE_BATHTUB_WEIGHT(dist float)
    RETURNS float AS
 $$
 -- Calibration factors to make things suitable for transport modelling
-DECLARE a_dist float:=0.1;
 DECLARE shift_l float:=75;
 DECLARE shift_r float:=350;
+DECLARE a_dist_l float:=0.1;
+DECLARE a_dist_r float:=0.1;
 begin
    if (dist < ((shift_l + shift_r) / 2)) then
-        return (1 / (1 + exp( a_dist * (dist - shift_l)) ));
+        return (1 / (1 + exp( a_dist_l * (dist - shift_l)) ));
    elsif (dist >= ((shift_l + shift_r) / 2)) then
-        return (1 / (1 + exp(-a_dist * (dist - shift_r)) ));
+        return (1 / (1 + exp(-a_dist_r * (dist - shift_r)) ));
    else
    		return -1; -- should not happen; just test if function works
    end if;
