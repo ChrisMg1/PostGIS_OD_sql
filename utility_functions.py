@@ -26,7 +26,8 @@ def my_phi(x_in, a, b, c):
 
 
 
-x = np.linspace(0.01, max_u, 100*max_u)
+x  = np.linspace(0.01, max_u, 100*max_u)
+x2 = np.linspace(0, 3, 599)
 
 
 f1_x = (x**(-a)) # Kirchhoff bzw. Potenz
@@ -64,7 +65,7 @@ plt.plot(x, f8_x, label='TModel')
 # horizontal / vertical ines
 #plt.axvline(x=max_u/2, color='r', linestyle = 'dotted')
 #plt.axhline(y=1, color='black', linestyle = 'dotted')
-#plt.legend()
+plt.legend()
 
 plt.xlabel('Impedance')
 plt.ylabel('Utility')
@@ -74,6 +75,43 @@ plt.ylabel('Utility')
 plt.show()
 plt.clf()
 
-print(a)
-print(np.exp(-a*0.5))
-print(np.exp(-a*1))
+
+#### (2) Plot exp w/different parameters
+
+## Set parameters
+d_in = 1.7034
+w_in = 0.35
+s_in = 0
+
+#PAX_vals = []
+#for i in x_PAX:
+#    PAX_vals.append(PAX_max(i, d_in, w_in, s_in))
+
+a1 = 0.5
+a2 = 1.0
+a3 = np.log(4)
+a4 = 2.0
+a5 = 10.0
+
+
+fa1_x = np.exp(-a1 * x2)  # Logit bzw. Exponent
+fa2_x = np.exp(-a2 * x2)  # Logit bzw. Exponent
+fa3_x = np.exp(-a3 * x2)  # Logit bzw. Exponent
+fa4_x = np.exp(-a4 * x2)  # Logit bzw. Exponent
+fa5_x = np.exp(-a5 * x2)  # Logit bzw. Exponent
+
+plt.figure()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.plot(x2, fa1_x, label=r'$ \beta = $' + str(a1))
+plt.plot(x2, fa2_x, label=r'$ \beta = $' + str(a2))
+plt.plot(x2, fa3_x, label=r'$ \beta = $' + 'ln(4)')
+plt.plot(x2, fa4_x, label=r'$ \beta = $' + str(a4))
+plt.plot(x2, fa5_x, label=r'$ \beta = $' + str(a5))
+plt.xlabel('Impedance')
+plt.ylabel('Utility')
+plt.legend()
+#plt.savefig('C:/Users/chris/plots/Imp_Logit_param.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig('C:/Users/chris/plots/Imp_Logit_param.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
+

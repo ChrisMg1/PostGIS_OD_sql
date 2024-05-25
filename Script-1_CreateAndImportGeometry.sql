@@ -83,7 +83,7 @@ ALTER TABLE odpair_2035_fromSQLite_44342281_raw
 -- attention for "division by zero"; handled by python (set to NULL)
 update odpair_2035_fromSQLite_44342281_raw set
 	demand_all_person = demand_pkw + demand_pkwm + demand_put + demand_bike + demand_walk,
-	demand_all_person_purged = GREATEST(0, demand_pkw) + GREATEST(0, demand_pkwm) + GREATEST(0, demand_put) + GREATEST(0, demand_bike) + GREATEST(0, demand_walk), --- get rid of the negative demand values
+	demand_all_person_purged = GREATEST(0, demand_pkw) + GREATEST(0, demand_pkwm) + GREATEST(0, demand_put) + GREATEST(0, demand_bike) + GREATEST(0, demand_walk), --- get rid of the negative demand values (from calibration)
 	demand_ivoev_purged = GREATEST(0, demand_pkw) + GREATEST(0, demand_pkwm) + GREATEST(0, demand_put),
 	beeline_speed_put_kmh = 60 * (directdist / NULLIF(ttime_put, 0)),
 	ttime_ratio = NULLIF(ttime_put, 0) / NULLIF(ttime_prt, 0);
@@ -106,6 +106,9 @@ SELECT * INTO TABLE odpair_LVM2035_23712030_onlyBAV
 ---some selects
 
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
+
+SELECT * FROM odpair_LVM2035_23712030_onlyBAV where imp_demand < 0.5 or imp_ttime < 0.5 or imp_distance < 0.5  ;
+SELECT * FROM odpair_LVM2035_23712030_onlyBAV where imp_demand > 1 or imp_ttime > 1 or imp_distance > 1  ;
 
 
 SELECT fromzone_by FROM odpair_2035_fromsqlite_44342281_raw order by fromzone_by asc;
@@ -134,3 +137,9 @@ from odpair_2035_fromsqlite_44342281_raw;
 --- Select row with max in a specific column
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw
 	WHERE "demand_all_person" = ( SELECT max("demand_all_person") FROM odpair_2035_fromsqlite_44342281_raw );
+
+
+--- export csv (e.g. for histogram); run python script after this steps
+-- todo: One single export; no split for plots
+COPY odpair_2035_fromsqlite_44342281_raw(fromzone_by, tozone_by, demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk, demand_all_person, demand_all_person_purged) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG2.csv' DELIMITER ',' CSV HEADER;
+COPY odpair_2035_fromsqlite_44342281_raw(demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk) TO 'C:\TUMdissDATA\demandPERmodeNOod.csv' DELIMITER ',' CSV HEADER;

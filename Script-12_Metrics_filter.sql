@@ -98,7 +98,7 @@ FROM
 -- Create different sub-tables as scenarios
 -------------
 
--- Reisezeitverhältnis ÖV/IV
+-- ReisezeitverhÃ¤ltnis PuT/PrT
 SELECT *
 INTO TABLE lvm_od_AKS_AGG_st0p7
 FROM lvm_od_AKS_AGG
@@ -106,7 +106,7 @@ where speed_ratio < 0.7
 AND fromzone_aks != tozone_aks;
 
 
--- nur Binnenverkehr Bayern (ohne Gürtel) 
+-- nur Binnenverkehr Bayern (ohne GÃ¼rtel)
 SELECT *
 INTO TABLE lvm_od_AKS_AGG_onlyBY
 FROM lvm_od_AKS_AGG
@@ -121,14 +121,14 @@ FROM lvm_od_AKS_AGG
 where from_aks_name like 'Ingolstadt'
 OR to_aks_name like 'Ingolstadt';
 
--- Gemäß RIN werden die beiden Metropolen (M+N, FFM ist außerhalb) ausgewählt und noch Vor- und Nachlauf eingearbeitet. Nachfrage nicht berücksichtigt. 
+-- Gemï¿½ï¿½ RIN werden die beiden Metropolen (M+N, FFM ist auï¿½erhalb) ausgewï¿½hlt und noch Vor- und Nachlauf eingearbeitet. Nachfrage nicht berï¿½cksichtigt. 
 SELECT *
 INTO TABLE lvm_od_AKS_AGG_RIN1
 FROM lvm_od_AKS_AGG
-where (fromzone_aks = 9162 and tozone_aks = 9564) -- München -> Nürnberg
-OR (fromzone_aks = 9564 and tozone_aks = 9162) -- Nürnberg -> München
-OR (fromzone_aks = 9162 and directdist < 50) -- München access
-OR (tozone_aks = 9162 and directdist < 50) -- München egress
-OR (fromzone_aks = 9564 and directdist < 50) -- Nürnberg access
-OR (tozone_aks = 9564 and directdist < 50) -- Nürnberg egress
+where (fromzone_aks = 9162 and tozone_aks = 9564) -- Mï¿½nchen -> Nï¿½rnberg
+OR (fromzone_aks = 9564 and tozone_aks = 9162) -- Nï¿½rnberg -> Mï¿½nchen
+OR (fromzone_aks = 9162 and directdist < 50) -- Mï¿½nchen access
+OR (tozone_aks = 9162 and directdist < 50) -- Mï¿½nchen egress
+OR (fromzone_aks = 9564 and directdist < 50) -- Nï¿½rnberg access
+OR (tozone_aks = 9564 and directdist < 50) -- Nï¿½rnberg egress
 ;

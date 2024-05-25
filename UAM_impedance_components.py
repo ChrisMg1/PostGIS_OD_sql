@@ -29,18 +29,14 @@ def TTIME_Logit(x_in, p, a2):
     return (1 / (1 + np.exp(a2 * (x_in - p)) ))
 
 
-
-## Create values for variables
-max_PAX = 15
+## Create values for variables (visualization/plot only, not parametrization)
 max_rat = 3
+max_PAX = 15
 max_dist = 500
 
 x_rat = np.arange(0.01, max_rat, 0.01).tolist()
-# x_PAX = np.linspace(0.01, max_PAX, 10*max_PAX)
 x_PAX = np.arange(0.01, max_PAX, 0.01).tolist()
 x_dist = np.arange(0, max_dist, 0.01).tolist()
-
-
 
 #### (1) plot distance impedence (bathtub)
 
@@ -60,7 +56,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.pdf', dpi=1200, bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -81,9 +78,11 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
+
 
 
 #### (2.2) plot capacity impedence (Maxwell)
@@ -103,7 +102,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals2)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_demand_Logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_demand_Logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_demand_Logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -126,6 +126,17 @@ plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
 plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## from ',dpi...': for hi-res poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
+
+
+
+bathtub2(92.034, shift_left_dist, shift_right_dist, a1l_in, a1r_in)
+PAX_max(0.01, d_in, w_in, s_in)
+TTIME_Logit(0.977, p_in, a2_in)
+
+
+
+
