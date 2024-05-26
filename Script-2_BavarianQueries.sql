@@ -25,18 +25,47 @@ UPDATE odpair_LVM2035_23712030_onlyBAV SET
 
 UPDATE odpair_LVM2035_23712030_onlyBAV
 	set	ODconnect = st_makeline(geom_point_fromOD, geom_point_toOD);
+
+--- Create geometry indexes
 	
 CREATE INDEX fromOD_geom_idx
   ON odpair_LVM2035_23712030_onlyBAV
   USING GIST (geom_point_fromOD);
  
- CREATE INDEX toOD_geom_idx
+CREATE INDEX toOD_geom_idx
   ON odpair_LVM2035_23712030_onlyBAV
   USING GIST (geom_point_toOD);
  
- CREATE INDEX conn_geom_idx
+CREATE INDEX conn_geom_idx
   ON odpair_LVM2035_23712030_onlyBAV
   USING GIST (ODconnect);
+ 
+ 
+ 
+ select * from odpair_LVM2035_23712030_onlyBAV order by od_concat asc;
+ 
+-- Merge back-and-forth
+--- 0) Create Column
+ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS od_concat text;
+--- 1) Concatenate
+UPDATE odpair_LVM2035_23712030_onlyBAV set
+	od_concat = CONCAT(LEAST(fromzone_no, tozone_no), '-', GREATEST(fromzone_no, tozone_no));
+
+---1.1) Index
+CREATE EXTENSION btree_gist;
+
+CREATE INDEX od_merge_idx
+  ON odpair_LVM2035_23712030_onlyBAV
+  USING GIST (od_concat);
+
+--- 2) Merge into new table --TODO, NOT YET RUN!!! (if table does not exist yet, obviously)
+SELECT od_concat, count(*)
+	FROM odpair_LVM2035_23712030_onlyBAV
+	group by od_concat;
+ 
+SELECT max(fromzone_name), min(tozone_name), max(directdist), min(imp_ttime), min(imp_distance), min(imp_demand), max(odconnect) INTO TABLE odpair_LVM2035_23712030_onlyBAV_merged
+	FROM odpair_LVM2035_23712030_onlyBAV
+	group by od_concat;
 
 -----???-----
 

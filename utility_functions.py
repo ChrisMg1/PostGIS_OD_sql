@@ -93,7 +93,6 @@ a3 = np.log(4)
 a4 = 2.0
 a5 = 10.0
 
-
 fa1_x = np.exp(-a1 * x2)  # Logit bzw. Exponent
 fa2_x = np.exp(-a2 * x2)  # Logit bzw. Exponent
 fa3_x = np.exp(-a3 * x2)  # Logit bzw. Exponent
@@ -115,3 +114,6 @@ plt.savefig('C:/Users/chris/plots/Imp_Logit_param.pdf', bbox_inches='tight', tra
 plt.show()
 plt.clf()
 
+np.exp(-a3 * 0.25)
+
+1 / np.exp(1)

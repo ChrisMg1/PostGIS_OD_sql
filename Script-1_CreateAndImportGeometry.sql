@@ -101,14 +101,11 @@ SELECT * INTO TABLE odpair_LVM2035_23712030_onlyBAV
 	and tozone_by = 1
 	and fromzone_no != tozone_no;
 
-
-
 ---some selects
 
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
 
-SELECT * FROM odpair_LVM2035_23712030_onlyBAV where imp_demand < 0.5 or imp_ttime < 0.5 or imp_distance < 0.5  ;
-SELECT * FROM odpair_LVM2035_23712030_onlyBAV where imp_demand > 1 or imp_ttime > 1 or imp_distance > 1  ;
+SELECT demand_all_person_purged, imp_demand FROM odpair_LVM2035_23712030_onlyBAV where demand_all_person_purged > 10;
 
 
 SELECT fromzone_by FROM odpair_2035_fromsqlite_44342281_raw order by fromzone_by asc;
