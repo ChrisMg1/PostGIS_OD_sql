@@ -39,12 +39,11 @@ CREATE INDEX toOD_geom_idx
 CREATE INDEX conn_geom_idx
   ON odpair_LVM2035_23712030_onlyBAV
   USING GIST (ODconnect);
- 
- 
- 
- select * from odpair_LVM2035_23712030_onlyBAV order by od_concat asc;
- 
--- Merge back-and-forth
+
+
+select * from odpair_LVM2035_23712030_onlyBAV order by od_concat asc;
+
+-- Merge back-and-forth connections for _final evaluation_
 --- 0) Create Column
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS od_concat text;
 --- 1) Concatenate
@@ -58,16 +57,14 @@ CREATE INDEX od_merge_idx
   ON odpair_LVM2035_23712030_onlyBAV
   USING GIST (od_concat);
 
---- 2) Merge into new table --TODO, NOT YET RUN!!! (if table does not exist yet, obviously)
-SELECT od_concat, count(*)
-	FROM odpair_LVM2035_23712030_onlyBAV
-	group by od_concat;
+--- 2) Merge into new table --TODO, TEST at the moment, merge by avg(U) in the end
+SELECT COUNT(*) FROM (SELECT DISTINCT od_concat FROM odpair_LVM2035_23712030_onlyBAV) AS temp; --first: count possible/future rows
  
-SELECT max(fromzone_name), min(tozone_name), max(directdist), min(imp_ttime), min(imp_distance), min(imp_demand), max(odconnect) INTO TABLE odpair_LVM2035_23712030_onlyBAV_merged
+SELECT max(fromzone_name) as fromzone_name_gd, min(tozone_name) as tozone_name_gd, max(directdist) as directdist_gd, max(odconnect) as odconnect_gd INTO TABLE odpair_LVM2035_11856015_onlyBAV_grouped --index _gd stands for "grouped"; TODO: index weg
 	FROM odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
 
------???-----
+select * from odpair_lvm2035_11856015_onlybav_grouped;
 
 
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area

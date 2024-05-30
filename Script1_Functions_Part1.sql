@@ -76,5 +76,3 @@ update only odpair_LVM2035_23712030_onlyBAV set
 	imp_demand = DEMAND_MAX_ADAPT_WEIGHT(demand_all_person_purged / 24);  --divide by number of flights per day to have PAX/flight (e.g. 1 flight/hour)
 
 
-
-
