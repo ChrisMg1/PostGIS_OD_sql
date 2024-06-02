@@ -24,7 +24,7 @@ tau_bc = 0.5
 beta_sl = 0.5
 Rmin_sl = min(R1)
 
-alpha_tm = 0.3
+alpha_tm = 2
 beta_tm = 0.5
 c_tm = 15
 

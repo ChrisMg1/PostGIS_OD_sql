@@ -60,7 +60,7 @@ CREATE INDEX od_merge_idx
 --- 2) Merge into new table --TODO, TEST at the moment, merge by avg(U) in the end
 SELECT COUNT(*) FROM (SELECT DISTINCT od_concat FROM odpair_LVM2035_23712030_onlyBAV) AS temp; --first: count possible/future rows
  
-SELECT max(fromzone_name) as fromzone_name_gd, min(tozone_name) as tozone_name_gd, max(directdist) as directdist_gd, max(odconnect) as odconnect_gd INTO TABLE odpair_LVM2035_11856015_onlyBAV_grouped --index _gd stands for "grouped"; TODO: index weg
+SELECT max(fromzone_name) as fromzone_name_gd, min(tozone_name) as tozone_name_gd, max(directdist) as directdist_gd, max(odconnect) as odconnect_gd INTO TABLE odpair_LVM2035_11856015_onlyBAV_grouped --index _gd stands for "grouped"; TODO: index weg; TODO: avg(ample)
 	FROM odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
 
@@ -73,6 +73,24 @@ ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
 
 --- params: v_uam = 250km/h
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
+
+--- quantiles
+select
+  percentile_disc(0.25) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
+  percentile_disc(0.5) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
+  percentile_disc(0.75) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm)
+from odpair_2035_fromsqlite_44342281_raw;
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+INTO TABLE u_perc95top_scen4p2_operator
+from odpair_LVM2035_23712030_onlyBAV
+where u_ample_scen4_operator > 
+ (select
+  percentile_cont(0.95) within group (order by u_ample_scen4_operator desc) as percentile
+ from odpair_LVM2035_23712030_onlyBAV);
+
+
 
 
 
