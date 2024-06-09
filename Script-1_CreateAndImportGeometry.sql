@@ -103,34 +103,13 @@ SELECT * INTO TABLE odpair_LVM2035_23712030_onlyBAV
 
 ---some selects
 
-SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
-
 SELECT demand_all_person_purged, imp_demand FROM odpair_LVM2035_23712030_onlyBAV where demand_all_person_purged > 10;
 
 
-SELECT fromzone_by FROM odpair_2035_fromsqlite_44342281_raw order by fromzone_by asc;
 select count(*) from odpair_fromSQLite_44342281_raw
 	where demand_ivoev >= 1 and fromzone_by = 1 and tozone_by = 1 and fromzone_no != tozone_no;
 
 select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from lvm_od_onlybav;
-
-
-select min(ttime_prt) from odpair_2035_fromsqlite_44342281_raw;
-select min(ttime_put) from odpair_2035_fromsqlite_44342281_raw;
-
-
-select cm_metric_scen1, demand_ivoev - demand_pkw - demand_pkwm - demand_put from LVM_OD_onlyBAV order by demand_ivoev - demand_pkw - demand_pkwm - demand_put asc;
-
-SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw;
-
---quantiles
-select
-  percentile_disc(0.25) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
-  percentile_disc(0.5) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
-  percentile_disc(0.75) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm)
-from odpair_2035_fromsqlite_44342281_raw;
-
-
 
 
 --- Select row with max in a specific column

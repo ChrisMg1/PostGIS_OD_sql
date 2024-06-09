@@ -74,26 +74,41 @@ ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
 --- params: v_uam = 250km/h
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
 
---- quantiles
-select
-  percentile_disc(0.25) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
-  percentile_disc(0.5) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm),
-  percentile_disc(0.75) within group (order by odpair_2035_fromsqlite_44342281_raw.demand_pkwm)
-from odpair_2035_fromsqlite_44342281_raw;
+--- quantiles for each scenario to copy to LaTeX
+---- all qantiles for scenario 1
 
+
+----
+
+
+
+---- all qantiles and avg/std for scenario 4
+select  
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_top10,
+  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_25perc_top75perc  
+from odpair_lvm2035_23712030_onlybav;
+
+select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_lvm2035_23712030_onlybav;
+
+
+
+select count(*) from odpair_lvm2035_23712030_onlybav where u_ample_scen4_operator >= 0.31472010559873553;
+
+--- make subtables for QGIS visualization
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
 INTO TABLE u_perc95top_scen4p2_operator
 from odpair_LVM2035_23712030_onlyBAV
-where u_ample_scen4_operator > 
+where u_ample_scen4_operator >= 
  (select
-  percentile_cont(0.95) within group (order by u_ample_scen4_operator desc) as percentile
+  percentile_disc(0.95) within group (order by u_ample_scen4_operator asc) as percentile
  from odpair_LVM2035_23712030_onlyBAV);
+ 
+-- determine percentile for table overview in LaTeX
+select percentile_disc(0.95) within group (order by u_ample_scen4_operator asc) as percentile from odpair_LVM2035_23712030_onlyBAV;
 
-
-
-
-
-
-
+SELECT * FROM odpair_lvm2035_23712030_onlybav order by u_ample_scen4_operator desc;
 
