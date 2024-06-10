@@ -75,12 +75,35 @@ ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
 
 --- quantiles for each scenario to copy to LaTeX
----- all qantiles for scenario 1
+---- all qantiles and avg/std for scenario 1
+select  
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_top10,
+  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_25perc_top75perc  
+from odpair_lvm2035_23712030_onlybav;
+select avg(u_ample_scen1_common) as scen1_avg, stddev(u_ample_scen1_common) as scen1_stddev from odpair_lvm2035_23712030_onlybav;
 
+---- all qantiles and avg/std for scenario 2
+select  
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_top10,
+  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_25perc_top75perc  
+from odpair_lvm2035_23712030_onlybav;
+select avg(u_ample_scen2_society) as scen2_avg, stddev(u_ample_scen2_society) as scen2_stddev from odpair_lvm2035_23712030_onlybav;
 
-----
-
-
+---- all qantiles and avg/std for scenario 3
+select  
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_top10,
+  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_25perc_top75perc  
+from odpair_lvm2035_23712030_onlybav;
+select avg(u_ample_scen3_technology) as scen3_avg, stddev(u_ample_scen3_technology) as scen3_stddev from odpair_lvm2035_23712030_onlybav;
 
 ---- all qantiles and avg/std for scenario 4
 select  
@@ -90,12 +113,11 @@ select
   percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_50perc_top50perc,
   percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_25perc_top75perc  
 from odpair_lvm2035_23712030_onlybav;
-
 select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_lvm2035_23712030_onlybav;
 
 
 
-select count(*) from odpair_lvm2035_23712030_onlybav where u_ample_scen4_operator >= 0.31472010559873553;
+select count(*) from odpair_lvm2035_23712030_onlybav where u_ample_scen3_technology >= 0.890911215269049;
 
 --- make subtables for QGIS visualization
 select
