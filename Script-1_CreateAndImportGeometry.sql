@@ -89,7 +89,6 @@ update odpair_2035_fromSQLite_44342281_raw set
 	ttime_ratio = NULLIF(ttime_put, 0) / NULLIF(ttime_prt, 0);
 
 
-
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw
 	where fromzone_by = 1
 	and tozone_by = 1
@@ -100,16 +99,6 @@ SELECT * INTO TABLE odpair_LVM2035_23712030_onlyBAV
 	where fromzone_by = 1
 	and tozone_by = 1
 	and fromzone_no != tozone_no;
-
----some selects
-
-SELECT demand_all_person_purged, imp_demand FROM odpair_LVM2035_23712030_onlyBAV where demand_all_person_purged > 10;
-
-
-select count(*) from odpair_fromSQLite_44342281_raw
-	where demand_ivoev >= 1 and fromzone_by = 1 and tozone_by = 1 and fromzone_no != tozone_no;
-
-select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from lvm_od_onlybav;
 
 
 --- Select row with max in a specific column

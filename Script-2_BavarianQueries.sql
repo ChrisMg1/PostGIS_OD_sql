@@ -41,7 +41,7 @@ CREATE INDEX conn_geom_idx
   USING GIST (ODconnect);
 
 
-select * from odpair_LVM2035_23712030_onlyBAV order by od_concat asc;
+select * from odpair_LVM2035_23712030_onlyBAV where demand_all_person_purged >= 1 order by demand_all_person_purged asc;
 
 -- Merge back-and-forth connections for _final evaluation_
 --- 0) Create Column
@@ -118,6 +118,9 @@ select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) 
 
 
 select count(*) from odpair_lvm2035_23712030_onlybav where u_ample_scen3_technology >= 0.890911215269049;
+SELECT demand_all_person_purged, imp_demand FROM odpair_LVM2035_23712030_onlyBAV where demand_all_person_purged > 10;
+
+select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from odpair_lvm2035_23712030_onlybav;
 
 --- make subtables for QGIS visualization
 select
