@@ -60,16 +60,21 @@ CREATE INDEX od_merge_idx
 --- 2) Merge into new table --TODO, TEST at the moment, merge by avg(U) in the end
 SELECT COUNT(*) FROM (SELECT DISTINCT od_concat FROM odpair_LVM2035_23712030_onlyBAV) AS temp; --first: count possible/future rows
  
-SELECT max(fromzone_name) as fromzone_name_gd, min(tozone_name) as tozone_name_gd, max(directdist) as directdist_gd, max(odconnect) as odconnect_gd INTO TABLE odpair_LVM2035_11856015_onlyBAV_grouped --index _gd stands for "grouped"; TODO: index weg; TODO: avg(ample)
+select	max(fromzone_name) as fromzone_name, 
+		min(tozone_name) as tozone_name, 
+		max(directdist) as directdist, 
+		max(u_ample_scen1_common) as u_ample_scen1_common, 
+		max(u_ample_scen2_society) as u_ample_scen2_society,
+		max(u_ample_scen3_technology) as u_ample_scen3_technology,
+		max(u_ample_scen4_operator) as u_ample_scen4_operator,
+		ST_RemovePoint(st_makeline(odconnect order by odconnect), 0) as odconnect -- geometry column
+INTO TABLE odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
 	FROM odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
 
-select * from odpair_lvm2035_11856015_onlybav_grouped;
-
-
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
-ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
-ALTER TABLE LVM_OD_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
+ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
+ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
 
 --- params: v_uam = 250km/h
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
@@ -77,63 +82,72 @@ UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
 --- quantiles for each scenario to copy to LaTeX
 ---- all qantiles and avg/std for scenario 1
 select  
-  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_top10,
-  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen1_common) as scen1_25perc_top75perc  
-from odpair_lvm2035_23712030_onlybav;
-select avg(u_ample_scen1_common) as scen1_avg, stddev(u_ample_scen1_common) as scen1_stddev from odpair_lvm2035_23712030_onlybav;
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_top10,
+  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_25perc_top75perc  
+from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select avg(u_ample_scen1_common) as scen1_avg, stddev(u_ample_scen1_common) as scen1_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 2
 select  
-  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_top10,
-  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen2_society) as scen2_25perc_top75perc  
-from odpair_lvm2035_23712030_onlybav;
-select avg(u_ample_scen2_society) as scen2_avg, stddev(u_ample_scen2_society) as scen2_stddev from odpair_lvm2035_23712030_onlybav;
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_top10,
+  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_25perc_top75perc  
+from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select avg(u_ample_scen2_society) as scen2_avg, stddev(u_ample_scen2_society) as scen2_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 3
 select  
-  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_top10,
-  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen3_technology) as scen3_25perc_top75perc  
-from odpair_lvm2035_23712030_onlybav;
-select avg(u_ample_scen3_technology) as scen3_avg, stddev(u_ample_scen3_technology) as scen3_stddev from odpair_lvm2035_23712030_onlybav;
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_top10,
+  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_25perc_top75perc  
+from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select avg(u_ample_scen3_technology) as scen3_avg, stddev(u_ample_scen3_technology) as scen3_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 4
 select  
-  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_top10,
-  percentile_disc(0.95) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_lvm2035_23712030_onlybav.u_ample_scen4_operator) as scen4_25perc_top75perc  
-from odpair_lvm2035_23712030_onlybav;
-select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_lvm2035_23712030_onlybav;
+  percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_top10,
+  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_95perc_top5perc,
+  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_75perc_top25perc,
+  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_50perc_top50perc,
+  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_25perc_top75perc  
+from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 
-
-select count(*) from odpair_lvm2035_23712030_onlybav where u_ample_scen3_technology >= 0.890911215269049;
-SELECT demand_all_person_purged, imp_demand FROM odpair_LVM2035_23712030_onlyBAV where demand_all_person_purged > 10;
-
-select sum(ttime_prt) * (demand_pkw+demand_pkwm) , sum(ttime_put) * demand_put, sum(ttime_uam_min) from odpair_lvm2035_23712030_onlybav;
-
---- make subtables for QGIS visualization
+--- make subtable subtables for QGIS visualization
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
-INTO TABLE u_perc95top_scen4p2_operator
-from odpair_LVM2035_23712030_onlyBAV
-where u_ample_scen4_operator >= 
- (select
-  percentile_disc(0.95) within group (order by u_ample_scen4_operator asc) as percentile
- from odpair_LVM2035_23712030_onlyBAV);
- 
--- determine percentile for table overview in LaTeX
-select percentile_disc(0.95) within group (order by u_ample_scen4_operator asc) as percentile from odpair_LVM2035_23712030_onlyBAV;
+INTO TABLE u_scen4p1_operator_top10
+	from odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
-SELECT * FROM odpair_lvm2035_23712030_onlybav order by u_ample_scen4_operator desc;
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+INTO TABLE u_scen4p2_operator_perc95top
+	from odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+INTO TABLE u_scen4p3_operator_perc75top
+	from odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+INTO TABLE u_scen4p4_operator_perc50top
+	from odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+
+
+
+ 
 
