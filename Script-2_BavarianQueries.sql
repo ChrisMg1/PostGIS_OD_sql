@@ -41,8 +41,6 @@ CREATE INDEX conn_geom_idx
   USING GIST (ODconnect);
 
 
-select * from odpair_LVM2035_23712030_onlyBAV where demand_all_person_purged >= 1 order by demand_all_person_purged asc;
-
 -- Merge back-and-forth connections for _final evaluation_
 --- 0) Create Column
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS od_concat text;
@@ -60,17 +58,24 @@ CREATE INDEX od_merge_idx
 --- 2) Merge into new table --TODO, TEST at the moment, merge by avg(U) in the end
 SELECT COUNT(*) FROM (SELECT DISTINCT od_concat FROM odpair_LVM2035_23712030_onlyBAV) AS temp; --first: count possible/future rows
  
-select	max(fromzone_name) as fromzone_name, 
-		min(tozone_name) as tozone_name, 
+select	(array_agg(fromzone_name))[1] as fromzone_name, -- make the from_zone an array, then only retain 1st element (sic! [1] not [0])
+		(array_agg(tozone_name))[1] as tozone_name, -- make the to_zone an array, then only retain 1st element (sic! [1] not [0])
 		max(directdist) as directdist, 
 		max(u_ample_scen1_common) as u_ample_scen1_common, 
 		max(u_ample_scen2_society) as u_ample_scen2_society,
 		max(u_ample_scen3_technology) as u_ample_scen3_technology,
-		max(u_ample_scen4_operator) as u_ample_scen4_operator,
-		ST_RemovePoint(st_makeline(odconnect order by odconnect), 0) as odconnect -- geometry column
+		max(u_ample_scen4_operator) as u_ample_scen4_operator,		
+		ST_GeometryN(ST_Collect(geom_point_fromod), 1) as geom_point_fromod, -- make the from_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); attention for from_zone_name == from_zone_geom
+		ST_GeometryN(ST_Collect(geom_point_tood), 1) as geom_point_tood, -- make the to_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); attention for from_zone_name == from_zone_geom
+		ST_GeometryN(ST_Collect(odconnect), 1) as odconnect -- make the line (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0])
 INTO TABLE odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
 	FROM odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
+
+select count(*) from odpair_LVM2035_23712030_onlyBAV where geom_point_tood != geom_point_fromod;
+select count(*) from odpair_LVM2035_11856015_onlyBAV_groupedBF where geom_point_tood = geom_point_fromod;
+
+select * from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
@@ -80,7 +85,7 @@ ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_m
 UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
 
 --- quantiles for each scenario to copy to LaTeX
----- all qantiles and avg/std for scenario 1
+---- all qantiles and avg/std for scenario 1 (!! Only select, NO 'into...')
 select  
   percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_top10,
   percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_95perc_top5perc,
@@ -90,7 +95,7 @@ select
 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen1_common) as scen1_avg, stddev(u_ample_scen1_common) as scen1_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
----- all qantiles and avg/std for scenario 2
+---- all qantiles and avg/std for scenario 2 (!! Only select, NO 'into...')
 select  
   percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_top10,
   percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_95perc_top5perc,
@@ -100,7 +105,7 @@ select
 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen2_society) as scen2_avg, stddev(u_ample_scen2_society) as scen2_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
----- all qantiles and avg/std for scenario 3
+---- all qantiles and avg/std for scenario 3 (!! Only select, NO 'into...')
 select  
   percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_top10,
   percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_95perc_top5perc,
@@ -110,7 +115,7 @@ select
 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen3_technology) as scen3_avg, stddev(u_ample_scen3_technology) as scen3_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
----- all qantiles and avg/std for scenario 4
+---- all qantiles and avg/std for scenario 4 (!! Only select, NO 'into...')
 select  
   percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_top10,
   percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_95perc_top5perc,
@@ -124,30 +129,24 @@ select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) 
 --- make subtable subtables for QGIS visualization
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
-INTO TABLE u_scen4p1_operator_top10
-	from odpair_LVM2035_11856015_onlyBAV_groupedBF
-where u_ample_scen4_operator >= (select percentile_disc(1.0-(9.0 / 23712030.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
+INTO TABLE public4qgis.u_scen4p1_operator_top10
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
-INTO TABLE u_scen4p2_operator_perc95top
-	from odpair_LVM2035_11856015_onlyBAV_groupedBF
-where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
+INTO TABLE public4qgis.u_scen4p2_operator_perc95top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
-INTO TABLE u_scen4p3_operator_perc75top
-	from odpair_LVM2035_11856015_onlyBAV_groupedBF
-where u_ample_scen4_operator >= (select percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
+INTO TABLE public4qgis.u_scen4p3_operator_perc75top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(0.75) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
-INTO TABLE u_scen4p4_operator_perc50top
-	from odpair_LVM2035_11856015_onlyBAV_groupedBF
-where u_ample_scen4_operator >= (select percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as temp_percentile from odpair_LVM2035_11856015_onlyBAV_groupedBF);
-
-
-
-
- 
-
+INTO TABLE public4qgis.u_scen4p4_operator_perc50top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen4_operator >= (select percentile_disc(0.50) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
