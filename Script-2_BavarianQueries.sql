@@ -72,11 +72,6 @@ INTO TABLE odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
 	FROM odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
 
-select count(*) from odpair_LVM2035_23712030_onlyBAV where geom_point_tood != geom_point_fromod;
-select count(*) from odpair_LVM2035_11856015_onlyBAV_groupedBF where geom_point_tood = geom_point_fromod;
-
-select * from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
@@ -126,27 +121,34 @@ from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 
---- make subtable subtables for QGIS visualization
+--- make subtable subtables for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis')
+-- calculate top percentiles, including top 10 with formula
+
+-- Scenario 4: Technology scenario (weighting on demand)
 select
-  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis.u_scen4p1_operator_top10
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
-  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis.u_scen4p2_operator_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
-  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis.u_scen4p3_operator_perc75top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.75) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
-  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, odconnect
+  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis.u_scen4p4_operator_perc50top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.50) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+
+
+
