@@ -133,22 +133,23 @@ where u_ample_scen4_operator >= (select percentile_disc(1.0-(9.0 / 11856015.0)) 
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis.u_scen4p2_operator_perc95top
+INTO TABLE public4qgis.u_scen4p2_operator_top100
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
-where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+where u_ample_scen4_operator >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis.u_scen4p3_operator_perc75top
+INTO TABLE public4qgis.u_scen4p3_operator_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
-where u_ample_scen4_operator >= (select percentile_disc(0.75) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+--- scenario 4p4
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis.u_scen4p4_operator_perc50top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.50) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
-
-
+-- don't forget to create index
+CREATE INDEX scen4p4_index ON public4qgis.u_scen4p4_operator_perc50top USING gist (odconnect);
 
 
