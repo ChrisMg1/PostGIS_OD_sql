@@ -121,41 +121,71 @@ from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 
---- make subtable subtables for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis')
+--- make subtable subtables for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis_...')
 -- calculate top percentiles, including top 10 with formula
 
--- Scenario 4: Technology scenario (weighting on demand)
+
+-- Scenario 3: Technology scenario (weighting on distance)
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen3.u_scen3p1_technology_top10
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen3_technology >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen3.u_scen3p2_technology_top100
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen3_technology >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+SELECT
+ fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen3.u_scen3p3_technology_top10000
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+ORDER BY u_ample_scen3_technology DESC
+LIMIT 10000; -- different approach; would also work with percentile approach
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen3.u_scen3p4_technology_perc95top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen3_technology >= (select percentile_disc(0.95) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen3.u_scen3p5_technology_perc50top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen3_technology >= (select percentile_disc(0.50) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+
+-- Scenario 4: Operator scenario (weighting on demand)
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis.u_scen4p1_operator_top10
+INTO TABLE public4qgis_scen4.u_scen4p1_operator_top10
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis.u_scen4p2_operator_top100
+INTO TABLE public4qgis_scen4.u_scen4p2_operator_top100
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 SELECT
  fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis.u_scen4p3_operator_top10000
+INTO TABLE public4qgis_scen4.u_scen4p3_operator_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 ORDER BY u_ample_scen4_operator DESC
-LIMIT 10000;
+LIMIT 10000; -- different approach; would also work with percentile approach
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis.u_scen4p4_operator_perc95top
+INTO TABLE public4qgis_scen4.u_scen4p4_operator_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis.u_scen4p5_operator_perc50top
+INTO TABLE public4qgis_scen4.u_scen4p5_operator_perc50top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.50) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
--- don't forget to create index
-CREATE INDEX scen4p4_index ON public4qgis.u_scen4p4_operator_perc50top USING gist (odconnect);
-
-
