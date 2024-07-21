@@ -124,8 +124,62 @@ select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) 
 --- make subtable subtables for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis_...')
 -- calculate top percentiles, including top 10 with formula
 
+-- 1111111111111111111111111111111111111111111111111111111
+-- Scenario 1: Common scenario (equal weighting)
+-- 1111111111111111111111111111111111111111111111111111111
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen1.u_scen1p1_common_top10
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen1_common >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen1.u_scen1p2_technology_top100
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen1_common >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+SELECT
+ fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen1.u_scen1p3_technology_top10000
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+ORDER BY u_ample_scen1_common DESC
+LIMIT 10000; -- different approach; would also work with percentile approach
+
+
+select * from public4qgis_scen1.u_scen1p3_technology_top10000 where u_ample_scen1_common >= 0.63 order by u_ample_scen1_common desc;
+
+---- Cluster (has to be done as 'last step' to cluster results, not input)
+-- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
+
+SELECT ST_ClusterKMeans(odconnect, 96) -- 96 clusters due to number of counties in bavaria
+OVER() AS cid, odconnect 
+INTO TABLE public4qgis_scen1.u_scen1p3_technology_top10000_ClusterKMeans
+FROM       public4qgis_scen1.u_scen1p3_technology_top10000;
+
+-- Get mean ('center') of clusters
+SELECT cid, ST_Centroid(ST_Collect(st_centroid(odconnect))) -- double use of 'ST_Centroid to get 'real' mean according to k-means; tested: Resulting points 'very' close together
+INTO TABLE public4qgis_scen1.u_scen1p3_technology_top10000_ClusterKMeans_centers
+FROM public4qgis_scen1.u_scen1p3_technology_top10000_ClusterKMeans
+GROUP BY cid ORDER BY cid;
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen1.u_scen1p4_technology_perc95top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen1_common >= (select percentile_disc(0.95) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen1.u_scen1p5_technology_perc50top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen1_common >= (select percentile_disc(0.50) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+
+
+-- 3333333333333333333333333333333333333333333333333333333
 -- Scenario 3: Technology scenario (weighting on distance)
+-- 3333333333333333333333333333333333333333333333333333333
 select
   fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen3.u_scen3p1_technology_top10
@@ -145,6 +199,20 @@ INTO TABLE public4qgis_scen3.u_scen3p3_technology_top10000
 ORDER BY u_ample_scen3_technology DESC
 LIMIT 10000; -- different approach; would also work with percentile approach
 
+---- Cluster (has to be done as 'last step' to cluster results, not input)
+-- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
+
+SELECT ST_ClusterKMeans(odconnect, 96) -- 96 clusters due to number of counties in bavaria
+OVER() AS cid, odconnect 
+INTO TABLE public4qgis_scen3.u_scen3p3_technology_top10000_ClusterKMeans
+FROM       public4qgis_scen3.u_scen3p3_technology_top10000;
+
+-- Get mean ('center') of clusters
+SELECT cid, ST_Centroid(ST_Collect(st_centroid(odconnect))) -- double use of 'ST_Centroid to get 'real' mean according to k-means; tested: Resulting points 'very' close together
+INTO TABLE public4qgis_scen3.u_scen3p3_technology_top10000_ClusterKMeans_centers
+FROM public4qgis_scen3.u_scen3p3_technology_top10000_ClusterKMeans
+GROUP BY cid ORDER BY cid;
+
 select
   fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen3.u_scen3p4_technology_perc95top
@@ -157,8 +225,9 @@ INTO TABLE public4qgis_scen3.u_scen3p5_technology_perc50top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen3_technology >= (select percentile_disc(0.50) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
-
+-- 444444444444444444444444444444444444444444444444444
 -- Scenario 4: Operator scenario (weighting on demand)
+-- 444444444444444444444444444444444444444444444444444
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen4.u_scen4p1_operator_top10
@@ -177,6 +246,20 @@ INTO TABLE public4qgis_scen4.u_scen4p3_operator_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 ORDER BY u_ample_scen4_operator DESC
 LIMIT 10000; -- different approach; would also work with percentile approach
+
+---- Cluster (has to be done as 'last step' to cluster results, not input)
+-- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
+
+SELECT ST_ClusterKMeans(odconnect, 96) -- 96 clusters due to number of counties in bavaria
+OVER() AS cid, odconnect 
+INTO TABLE public4qgis_scen4.u_scen4p3_operator_top10000_ClusterKMeans
+FROM       public4qgis_scen4.u_scen4p3_operator_top10000;
+
+-- Get mean ('center') of clusters
+SELECT cid, ST_Centroid(ST_Collect(st_centroid(odconnect))) -- double use of 'ST_Centroid to get 'real' mean according to k-means; tested: Resulting points 'very' close together
+INTO TABLE public4qgis_scen4.u_scen4p3_operator_top10000_ClusterKMeans_centers
+FROM public4qgis_scen4.u_scen4p3_operator_top10000_ClusterKMeans
+GROUP BY cid ORDER BY cid;
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
