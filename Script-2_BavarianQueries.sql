@@ -72,6 +72,8 @@ INTO TABLE odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
 	FROM odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
 
+select * from odpair_LVM2035_11856015_onlyBAV_groupedBF order by u_ample_scen1_common desc;
+
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
@@ -135,45 +137,93 @@ where u_ample_scen1_common >= (select percentile_disc(1.0-(9.0 / 11856015.0)) wi
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis_scen1.u_scen1p2_technology_top100
+INTO TABLE public4qgis_scen1.u_scen1p2_common_top100
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 SELECT
  fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis_scen1.u_scen1p3_technology_top10000
+INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 ORDER BY u_ample_scen1_common DESC
 LIMIT 10000; -- different approach; would also work with percentile approach
 
-
-select * from public4qgis_scen1.u_scen1p3_technology_top10000 where u_ample_scen1_common >= 0.63 order by u_ample_scen1_common desc;
 
 ---- Cluster (has to be done as 'last step' to cluster results, not input)
 -- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
 
 SELECT ST_ClusterKMeans(odconnect, 96) -- 96 clusters due to number of counties in bavaria
 OVER() AS cid, odconnect 
-INTO TABLE public4qgis_scen1.u_scen1p3_technology_top10000_ClusterKMeans
-FROM       public4qgis_scen1.u_scen1p3_technology_top10000;
+INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000_ClusterKMeans
+FROM       public4qgis_scen1.u_scen1p3_common_top10000;
 
 -- Get mean ('center') of clusters
 SELECT cid, ST_Centroid(ST_Collect(st_centroid(odconnect))) -- double use of 'ST_Centroid to get 'real' mean according to k-means; tested: Resulting points 'very' close together
-INTO TABLE public4qgis_scen1.u_scen1p3_technology_top10000_ClusterKMeans_centers
-FROM public4qgis_scen1.u_scen1p3_technology_top10000_ClusterKMeans
+INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000_ClusterKMeans_centers
+FROM       public4qgis_scen1.u_scen1p3_common_top10000_ClusterKMeans
 GROUP BY cid ORDER BY cid;
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis_scen1.u_scen1p4_technology_perc95top
+INTO TABLE public4qgis_scen1.u_scen1p4_common_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(0.95) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 select
   fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
-INTO TABLE public4qgis_scen1.u_scen1p5_technology_perc50top
+INTO TABLE public4qgis_scen1.u_scen1p5_common_perc50top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(0.50) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+
+
+-- 2222222222222222222222222222222222222222222222222222222
+-- Scenario 2: Society scenario (weighting on travel time)
+-- 2222222222222222222222222222222222222222222222222222222
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen2_society, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen2.u_scen2p1_society_top10
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen2_society >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen2_society, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen2.u_scen2p2_society_top100
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen2_society >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+SELECT
+ fromzone_name, tozone_name, directdist, u_ample_scen2_society, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen2.u_scen2p3_society_top10000
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+ORDER BY u_ample_scen2_society DESC
+LIMIT 10000; -- different approach; would also work with percentile approach
+
+---- Cluster (has to be done as 'last step' to cluster results, not input)
+-- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
+
+SELECT ST_ClusterKMeans(odconnect, 96) -- 96 clusters due to number of counties in bavaria
+OVER() AS cid, odconnect 
+INTO TABLE public4qgis_scen2.u_scen2p3_society_top10000_ClusterKMeans
+FROM       public4qgis_scen2.u_scen2p3_society_top10000;
+
+-- Get mean ('center') of clusters
+SELECT cid, ST_Centroid(ST_Collect(st_centroid(odconnect))) -- double use of 'ST_Centroid to get 'real' mean according to k-means; tested: Resulting points 'very' close together
+INTO TABLE public4qgis_scen2.u_scen2p3_society_top10000_ClusterKMeans_centers
+FROM public4qgis_scen2.u_scen2p3_society_top10000_ClusterKMeans
+GROUP BY cid ORDER BY cid;
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen2_society, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen2.u_scen2p4_society_perc95top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen2_society >= (select percentile_disc(0.95) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+select
+  fromzone_name, tozone_name, directdist, u_ample_scen2_society, geom_point_fromod, geom_point_tood, odconnect
+INTO TABLE public4qgis_scen2.u_scen2p5_society_perc50top
+	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
+where u_ample_scen2_society >= (select percentile_disc(0.50) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 
 
