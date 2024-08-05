@@ -72,8 +72,6 @@ INTO TABLE odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
 	FROM odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
 
-select * from odpair_LVM2035_11856015_onlyBAV_groupedBF order by u_ample_scen1_common desc;
-
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
@@ -129,6 +127,8 @@ select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) 
 -- 1111111111111111111111111111111111111111111111111111111
 -- Scenario 1: Common scenario (equal weighting)
 -- 1111111111111111111111111111111111111111111111111111111
+CREATE INDEX scen1_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen1_common); -- index on affected utility column
+
 select
   fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen1.u_scen1p1_common_top10
@@ -146,7 +146,7 @@ SELECT
 INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 ORDER BY u_ample_scen1_common DESC
-LIMIT 10000; -- different approach; would also work with percentile approach
+LIMIT 10000; -- different approach; would also work with percentile approach; todo: percentile approach to get exact value
 
 
 ---- Cluster (has to be done as 'last step' to cluster results, not input)
@@ -169,6 +169,7 @@ INTO TABLE public4qgis_scen1.u_scen1p4_common_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(0.95) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+-- optional
 select
   fromzone_name, tozone_name, directdist, u_ample_scen1_common, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen1.u_scen1p5_common_perc50top
@@ -180,6 +181,8 @@ where u_ample_scen1_common >= (select percentile_disc(0.50) within group (order 
 -- 2222222222222222222222222222222222222222222222222222222
 -- Scenario 2: Society scenario (weighting on travel time)
 -- 2222222222222222222222222222222222222222222222222222222
+CREATE INDEX scen2_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen2_society); -- index on affected utility column
+
 select
   fromzone_name, tozone_name, directdist, u_ample_scen2_society, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen2.u_scen2p1_society_top10
@@ -197,7 +200,7 @@ SELECT
 INTO TABLE public4qgis_scen2.u_scen2p3_society_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 ORDER BY u_ample_scen2_society DESC
-LIMIT 10000; -- different approach; would also work with percentile approach
+LIMIT 10000; -- different approach; would also work with percentile approach; todo: percentile approach to get exact value
 
 ---- Cluster (has to be done as 'last step' to cluster results, not input)
 -- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
@@ -219,6 +222,7 @@ INTO TABLE public4qgis_scen2.u_scen2p4_society_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen2_society >= (select percentile_disc(0.95) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+-- optional
 select
   fromzone_name, tozone_name, directdist, u_ample_scen2_society, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen2.u_scen2p5_society_perc50top
@@ -230,6 +234,8 @@ where u_ample_scen2_society >= (select percentile_disc(0.50) within group (order
 -- 3333333333333333333333333333333333333333333333333333333
 -- Scenario 3: Technology scenario (weighting on distance)
 -- 3333333333333333333333333333333333333333333333333333333
+CREATE INDEX scen3_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen3_technology); -- index on affected utility column
+
 select
   fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen3.u_scen3p1_technology_top10
@@ -247,7 +253,7 @@ SELECT
 INTO TABLE public4qgis_scen3.u_scen3p3_technology_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 ORDER BY u_ample_scen3_technology DESC
-LIMIT 10000; -- different approach; would also work with percentile approach
+LIMIT 10000; -- different approach; would also work with percentile approach; todo: percentile approach to get exact value
 
 ---- Cluster (has to be done as 'last step' to cluster results, not input)
 -- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
@@ -269,6 +275,7 @@ INTO TABLE public4qgis_scen3.u_scen3p4_technology_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen3_technology >= (select percentile_disc(0.95) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+-- optional
 select
   fromzone_name, tozone_name, directdist, u_ample_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen3.u_scen3p5_technology_perc50top
@@ -278,6 +285,8 @@ where u_ample_scen3_technology >= (select percentile_disc(0.50) within group (or
 -- 444444444444444444444444444444444444444444444444444
 -- Scenario 4: Operator scenario (weighting on demand)
 -- 444444444444444444444444444444444444444444444444444
+CREATE INDEX scen4_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen4_operator); -- index on affected utility column
+
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen4.u_scen4p1_operator_top10
@@ -295,7 +304,7 @@ SELECT
 INTO TABLE public4qgis_scen4.u_scen4p3_operator_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 ORDER BY u_ample_scen4_operator DESC
-LIMIT 10000; -- different approach; would also work with percentile approach
+LIMIT 10000; -- different approach; would also work with percentile approach; todo: percentile approach to get exact value
 
 ---- Cluster (has to be done as 'last step' to cluster results, not input)
 -- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
@@ -317,6 +326,7 @@ INTO TABLE public4qgis_scen4.u_scen4p4_operator_perc95top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+-- optional
 select
   fromzone_name, tozone_name, directdist, u_ample_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen4.u_scen4p5_operator_perc50top
