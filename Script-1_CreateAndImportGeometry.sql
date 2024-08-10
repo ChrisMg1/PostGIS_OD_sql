@@ -100,6 +100,8 @@ SELECT * INTO TABLE odpair_LVM2035_23712030_onlyBAV
 	and tozone_by = 1
 	and fromzone_no != tozone_no;
 
+SELECT COUNT(DISTINCT fromzone_name) FROM odpair_2035_fromsqlite_44342281_raw WHERE fromzone_by = 1;
+
 
 --- Select row with max in a specific column
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw
