@@ -99,9 +99,6 @@ SELECT * INTO TABLE odpair_LVM2035_23712030_onlyBAV
 	and tozone_by = 1
 	and fromzone_no != tozone_no;
 
-SELECT COUNT(DISTINCT fromzone_name) FROM odpair_2035_fromsqlite_44342281_raw WHERE fromzone_by = 1;
-
-
 --- Select row with max in a specific column
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw
 	WHERE "demand_all_person" = ( SELECT max("demand_all_person") FROM odpair_2035_fromsqlite_44342281_raw );
@@ -109,8 +106,8 @@ SELECT * FROM odpair_2035_fromsqlite_44342281_raw
 
 --- export csv (e.g. for histogram); run python script after this steps
 -- todo: One single export; no split for plots
-COPY odpair_lvm2035_23712030_onlybav(imp_ttime, imp_distance, imp_demand, imp_tot_scen1_common, imp_tot_scen2_society, imp_tot_scen3_technology, imp_tot_scen4_operator) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_exp.csv' DELIMITER ',' CSV HEADER; -- integrate demand, purged demand for full export
-
+COPY odpair_lvm2035_23712030_onlybav(ttime_ratio, imp_ttime, directdist, imp_distance, demand_all_person_purged, imp_demand, imp_tot_scen1_common, imp_tot_scen2_society, imp_tot_scen3_technology, imp_tot_scen4_operator) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_exp.csv' DELIMITER ',' CSV HEADER; -- integrate demand, purged demand for full export
+COPY odpair_lvm2035_11856015_onlybav_groupedbf(u_ample_scen1_common, u_ample_scen2_society, u_ample_scen3_technology, u_ample_scen4_operator) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_groupedBF_exp.csv' DELIMITER ',' CSV HEADER;
 
 COPY odpair_2035_fromsqlite_44342281_raw(fromzone_by, tozone_by, demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk, demand_all_person, demand_all_person_purged) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG2.csv' DELIMITER ',' CSV HEADER;
 COPY odpair_2035_fromsqlite_44342281_raw(demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk) TO 'C:\TUMdissDATA\demandPERmodeNOod.csv' DELIMITER ',' CSV HEADER;
