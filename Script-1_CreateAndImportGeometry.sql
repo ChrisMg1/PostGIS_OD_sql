@@ -88,7 +88,6 @@ update odpair_2035_fromSQLite_44342281_raw set
 	beeline_speed_put_kmh = 60 * (directdist / NULLIF(ttime_put, 0)),
 	ttime_ratio = NULLIF(ttime_put, 0) / NULLIF(ttime_prt, 0);
 
-
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw
 	where fromzone_by = 1
 	and tozone_by = 1
@@ -110,5 +109,9 @@ SELECT * FROM odpair_2035_fromsqlite_44342281_raw
 
 --- export csv (e.g. for histogram); run python script after this steps
 -- todo: One single export; no split for plots
+COPY odpair_lvm2035_23712030_onlybav(imp_ttime, imp_distance, imp_demand, imp_tot_scen1_common, imp_tot_scen2_society, imp_tot_scen3_technology, imp_tot_scen4_operator) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_exp.csv' DELIMITER ',' CSV HEADER; -- integrate demand, purged demand for full export
+
+
 COPY odpair_2035_fromsqlite_44342281_raw(fromzone_by, tozone_by, demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk, demand_all_person, demand_all_person_purged) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG2.csv' DELIMITER ',' CSV HEADER;
 COPY odpair_2035_fromsqlite_44342281_raw(demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk) TO 'C:\TUMdissDATA\demandPERmodeNOod.csv' DELIMITER ',' CSV HEADER;
+

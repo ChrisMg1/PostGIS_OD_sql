@@ -9,32 +9,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-font = {'family' : 'normal',
-        'weight' : 'normal',
-        'size'   : 18}
 
+font = {'family' : 'normal', 'weight' : 'normal', 'size': 18}
 plt.rc('font', **font)
+
+
+
 
 in_file = 'C:/TUMdissDATA/VisumDatabases/cm_metric.csv'
 
-num_bins = 20
-
 for_hist = pd.read_csv(in_file)
 
-
-
 bin_number = 21
-
-
-#for_hist.hist(bins = 21)
-#for_hist.hist(column=['cm_metric_scen1], bins = bin_number)
 
 
 print(for_hist['directdist'].max())
 
 counts, bins = np.histogram(for_hist['cm_metric_scen1'], bins = bin_number)
-
-#plot = np.histogram(for_hist['cm_metric'])
 
 print ('Counts: ', counts)
 
