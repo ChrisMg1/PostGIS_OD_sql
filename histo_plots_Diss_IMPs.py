@@ -7,6 +7,16 @@ Created on Sat Aug 17 20:40:04 2024
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import cm_params
+
+plt.rc('font', size=cm_params.SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=cm_params.SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=cm_params.MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=cm_params.SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=cm_params.SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=cm_params.SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=cm_params.BIGGER_SIZE)  # fontsize of the figure title
+
 
 
 # Files and df for impedances:
@@ -25,17 +35,6 @@ print(df2.head())
 print(df2.columns)
 
 
-SMALL_SIZE = 12
-MEDIUM_SIZE = 13
-BIGGER_SIZE = 14
-
-plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 
 
@@ -46,7 +45,7 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('Travel time ratio [min/min]')
 plt.ylabel('Frequency (n=' + format(len(df['ttime_ratio']), ',') + ')')
 #plt.ylim( (pow(10,0),pow(10,8)) )
-plt.hist(df['ttime_ratio'], bins='doane', color='blue')
+plt.hist(df['ttime_ratio'], bins='doane', color='blue', range=[0, 12])  # x-range limited due to calibration values
 #plt.savefig('C:/Users/chris/plots/scen0_1a_ttime_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig('C:/Users/chris/plots/scen0_1a_ttime_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -102,7 +101,7 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('Demand [PAX/day]')
 plt.ylabel('Frequency (n=' + format(len(df['demand_all_person_purged']), ',') + ')')
 #plt.ylim( (pow(10,0),pow(10,8)) )
-plt.hist(df['demand_all_person_purged'], bins='doane', color='blue')
+plt.hist(df['demand_all_person_purged'], bins='doane', color='blue', log=True)
 #plt.savefig('C:/Users/chris/plots/scen0_3a_demand_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig('C:/Users/chris/plots/scen0_3a_demand_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -115,7 +114,7 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('Demand (intermediate) impedance [unitless]')
 plt.ylabel('Frequency (n=' + format(len(df['imp_demand']), ',') + ')')
 #plt.ylim( (pow(10,0),pow(10,8)) )
-plt.hist(df['imp_demand'], bins='doane', color='coral')
+plt.hist(df['imp_demand'], bins='doane', color='coral', log=True)
 #plt.savefig('C:/Users/chris/plots/scen0_3b_imp_demand_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig('C:/Users/chris/plots/scen0_3b_imp_demand_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()

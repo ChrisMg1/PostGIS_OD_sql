@@ -7,6 +7,15 @@ Created on Sat Aug 17 09:26:56 2024
 
 
 import matplotlib.pyplot as plt
+import cm_params
+
+plt.rc('font', size=cm_params.SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=cm_params.SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=cm_params.MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=cm_params.SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=cm_params.SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=cm_params.SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=cm_params.BIGGER_SIZE)  # fontsize of the figure title
 
 
 # see '2020_07_08_LVMBY_Daten_Anwendungsdokumentation.pdf'
