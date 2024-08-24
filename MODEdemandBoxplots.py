@@ -35,9 +35,9 @@ plt.boxplot([df['demand_pkwTot'][(df.demand_pkwTot >= 0.0) & (df.fromzone_no != 
              df['demand_bike'][(df.demand_bike >= 0.0) & (df.fromzone_no != df.tozone_no) & (df.fromzone_by == 1) & (df.tozone_by == 1) ], 
              df['demand_walk'][(df.demand_walk >= 0.0) & (df.fromzone_no != df.tozone_no) & (df.fromzone_by == 1) & (df.tozone_by == 1) ]
              ], 
-            showfliers=False, 
+            showfliers=True, 
             labels=modeLABELS,
-            notch=False)
+            notch=True)
 plt.ylabel('Demand per mode [PAX/day]')
 #plt.savefig('C:/Users/chris/plots/box_demand_purged_study.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig('C:/Users/chris/plots/box_demand_purged_study.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
@@ -53,9 +53,9 @@ plt.boxplot([df['demand_pkwTot'][(df.demand_pkwTot >= 1.0) & (df.fromzone_no != 
              df['demand_bike'][(df.demand_bike >= 1.0) & (df.fromzone_no != df.tozone_no) & (df.fromzone_by == 1) & (df.tozone_by == 1) ], 
              df['demand_walk'][(df.demand_walk >= 1.0) & (df.fromzone_no != df.tozone_no) & (df.fromzone_by == 1) & (df.tozone_by == 1) ]
              ], 
-            showfliers=False, 
+            showfliers=True, 
             labels=modeLABELS,
-            notch=False)
+            notch=True)
 plt.ylabel('Demand per mode [PAX/day]')
 #plt.savefig('C:/Users/chris/plots/box_demand_GEQ1_study.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig('C:/Users/chris/plots/box_demand_GEQ1_study.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
@@ -73,9 +73,9 @@ plt.boxplot([df['demand_pkwTot'][(df.demand_pkwTot >= 0.0)],
              df['demand_bike'][(df.demand_bike >= 0.0)], 
              df['demand_walk'][(df.demand_walk >= 0.0)]
              ], 
-            showfliers=False, 
+            showfliers=True, 
             labels=modeLABELS,
-            notch=False)
+            notch=True)
 plt.ylabel('Demand per mode [PAX/day]')
 #plt.savefig('C:/Users/chris/plots/box_demand_purged_model.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 #plt.savefig('C:/Users/chris/plots/box_demand_purged_model.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
@@ -91,9 +91,9 @@ plt.boxplot([df['demand_pkwTot'][(df.demand_pkwTot >= 1.0)],
              df['demand_bike'][(df.demand_bike >= 1.0)], 
              df['demand_walk'][(df.demand_walk >= 1.0)]
              ], 
-            showfliers=False, 
+            showfliers=True, 
             labels=modeLABELS,
-            notch=False)
+            notch=True)
 plt.ylabel('Demand per mode [PAX/day]')
 #plt.savefig('C:/Users/chris/plots/box_demand_GEQ1_model.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 #plt.savefig('C:/Users/chris/plots/box_demand_GEQ1_model.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
