@@ -61,7 +61,6 @@ len_bav_fil = len(bav_demand_filter)
 print('bav_demand_filter: ', len_bav_fil)
 
 
-
 ## Total demand
 plt.figure()
 axes = plt.axes()

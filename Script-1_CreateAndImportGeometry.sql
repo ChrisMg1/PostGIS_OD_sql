@@ -112,6 +112,8 @@ select count(*) from odpair_LVM2035_23712030_onlyBAV where ttime_ratio is null;
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw
 	WHERE "demand_all_person" = ( SELECT max("demand_all_person") FROM odpair_2035_fromsqlite_44342281_raw );
 
+SELECT * FROM odpair_2035_fromsqlite_44342281_raw where demand_pkw < 0 or demand_pkwm < 0 or demand_put < 0 or demand_bike < 0 or demand_walk < 0 order by demand_pkw asc;
+SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw where demand_pkw < 0 or demand_pkwm < 0 or demand_put < 0 or demand_bike < 0 or demand_walk < 0;
 
 --- export csv (e.g. for histogram); run python script after this steps
 -- todo: One single export; no split for plots
