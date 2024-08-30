@@ -121,7 +121,7 @@ for i in x_rat:
 plt.figure()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_rat, TTIME_Logit_vals)
-plt.xlabel('Travel Time Ratio PuT/PrT')
+plt.xlabel('Travel Time Ratio PuT/PrT [min/min]')
 plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
