@@ -46,8 +46,8 @@ plt.xlabel('Travel Time Ratio PuT/PrT [min/min]')
 plt.ylabel('Frequency (n=' + format(len(df['ttime_ratio']), ',') + ')')
 #plt.ylim( (pow(10,0),pow(10,8)) )
 y, x, _ = plt.hist(df['ttime_ratio'], bins='doane', color='blue', range=[0, 12])  # x-range limited due to arbitrary calibration values
-plt.axvline(df['ttime_ratio'][df.ttime_ratio < 12.0].mean(), color='r', linestyle='dashed', linewidth=1)
-plt.text(df['ttime_ratio'][df.ttime_ratio < 12.0].mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['ttime_ratio'][df.ttime_ratio < 12.0].mean()), color = 'r')
+plt.axvline(df['ttime_ratio'][df.ttime_ratio <= 12.0].mean(), color='r', linestyle='dashed', linewidth=1)
+plt.text(df['ttime_ratio'][df.ttime_ratio <= 12.0].mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['ttime_ratio'][df.ttime_ratio <= 12.0].mean()), color = 'r')
 #plt.savefig('C:/Users/chris/plots/scen0_1a_ttime_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig('C:/Users/chris/plots/scen0_1a_ttime_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -129,7 +129,9 @@ plt.clf()
 
 
 
-## Combined impedance Scenario 1 (imp_tot_scen1_common)
+
+
+## Combined impedance Scenario 1 (df$imp_tot_scen1_common)
 plt.figure()
 axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
@@ -157,10 +159,85 @@ plt.show()
 plt.clf()
 
 
+## Combined impedance Scenario 2 (df$imp_tot_scen2_society)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Combined impedance [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df['imp_tot_scen2_society']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df['imp_tot_scen2_society'], bins='doane', color='darkviolet')
+#plt.savefig('C:/Users/chris/plots/imp_tot_scen2_society_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/imp_tot_scen2_society_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
 
-## todo: imp_tot_scen2_society, imp_tot_scen3_technology, imp_tot_scen4_operator
+
+## Utility Scenario 2 (df2$u_ample_scen2_society)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Utility $\mathregular{U_A}$ [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df2['u_ample_scen2_society']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df2['u_ample_scen2_society'], bins='doane', color='forestgreen')
+#plt.savefig('C:/Users/chris/plots/UA_scen2_society_11856015.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/UA_scen2_society_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
 
 
+## Combined impedance Scenario 3 (df$imp_tot_scen3_technology)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Combined impedance [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df['imp_tot_scen3_technology']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df['imp_tot_scen3_technology'], bins='doane', color='darkviolet')
+#plt.savefig('C:/Users/chris/plots/imp_tot_scen3_technology_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/imp_tot_scen3_technology_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
 
 
+## Utility Scenario 3 (df2$u_ample_scen3_technology)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Utility $\mathregular{U_A}$ [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df2['u_ample_scen3_technology']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df2['u_ample_scen3_technology'], bins='doane', color='forestgreen')
+#plt.savefig('C:/Users/chris/plots/UA_scen3_technology_11856015.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/UA_scen3_technology_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
 
+
+## Combined impedance Scenario 4 (df$imp_tot_scen4_operator)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Combined impedance [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df['imp_tot_scen4_operator']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df['imp_tot_scen4_operator'], bins='doane', color='darkviolet')
+#plt.savefig('C:/Users/chris/plots/imp_tot_scen4_operator_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/imp_tot_scen4_operator_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
+
+
+## Utility Scenario 4 (df2$u_ample_scen4_operator)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Utility $\mathregular{U_A}$ [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df2['u_ample_scen4_operator']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df2['u_ample_scen4_operator'], bins='doane', color='forestgreen')
+#plt.savefig('C:/Users/chris/plots/UA_scen4_operator_11856015.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/UA_scen4_operator_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
