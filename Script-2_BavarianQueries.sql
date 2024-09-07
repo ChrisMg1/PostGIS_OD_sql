@@ -84,6 +84,15 @@ CREATE INDEX scen2_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_a
 CREATE INDEX scen3_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen3_technology); -- index on affected utility column
 CREATE INDEX scen4_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen4_operator); -- index on affected utility column
 
+
+
+select min(u_ample_scen1_common) as min_utility_scen1, avg(u_ample_scen1_common) as avg_utility_scen1, max(u_ample_scen1_common) as max_utility_scen1 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select min(u_ample_scen2_society) as min_utility_scen2, avg(u_ample_scen2_society) as avg_utility_scen2, max(u_ample_scen2_society) as max_utility_scen2 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select min(u_ample_scen3_technology) as min_utility_scen3, avg(u_ample_scen3_technology) as avg_utility_scen3, max(u_ample_scen3_technology) as max_utility_scen3 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select min(u_ample_scen4_operator) as min_utility_scen4, avg(u_ample_scen4_operator) as avg_utility_scen4, max(u_ample_scen4_operator) as max_utility_scen4 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+
+
+
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
@@ -207,6 +216,9 @@ INTO TABLE public4qgis_scen2.u_scen2p1_society_top10
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen2_society >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+-- Top 10 for LaTeX
+select * from public4qgis_scen2.u_scen2p1_society_top10 order by u_ample_scen2_society desc;
+
 select
   fromzone_name, tozone_name, u_ample_scen2_society, imp_ttime, imp_distance, imp_demand, directdist, imp_tot_scen2_society, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen2.u_scen2p2_society_top100
@@ -259,6 +271,9 @@ INTO TABLE public4qgis_scen3.u_scen3p1_technology_top10
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen3_technology >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+-- Top 10 for LaTeX
+select * from public4qgis_scen3.u_scen3p1_technology_top10 order by u_ample_scen3_technology desc;
+
 select
   fromzone_name, tozone_name, u_ample_scen3_technology, imp_ttime, imp_distance, imp_demand, directdist, imp_tot_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen3.u_scen3p2_technology_top100
@@ -307,6 +322,9 @@ select
 INTO TABLE public4qgis_scen4.u_scen4p1_operator_top10
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+-- Top 10 for LaTeX
+select * from public4qgis_scen4.u_scen4p1_operator_top10 order by u_ample_scen4_operator desc;
 
 select
   fromzone_name, tozone_name, u_ample_scen4_operator, imp_ttime, imp_distance, imp_demand, directdist, imp_tot_scen4_operator, geom_point_fromod, geom_point_tood, odconnect

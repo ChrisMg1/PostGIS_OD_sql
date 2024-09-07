@@ -13,6 +13,11 @@ update only odpair_LVM2035_23712030_onlyBAV set
 	imp_tot_scen3_technology = ( (0.1 * imp_ttime) + (1.0 * imp_distance) + (0.5 * imp_demand) ) / (0.1 + 1.0 + 0.5) ,
 	imp_tot_scen4_operator = ( (0.5 * imp_ttime) + (0.1 * imp_distance) + (1.0 * imp_demand) ) / (0.5 + 0.1 + 1.0) ;
 
+select min(imp_tot_scen1_common) as min_imp_tot_scen1, avg(imp_tot_scen1_common) as avg_imp_tot_scen1, max(imp_tot_scen1_common) as max_imp_tot_scen1 from odpair_LVM2035_23712030_onlyBAV;
+select min(imp_tot_scen2_society) as min_imp_tot_scen2, avg(imp_tot_scen2_society) as avg_imp_tot_scen2, max(imp_tot_scen2_society) as max_imp_tot_scen2 from odpair_LVM2035_23712030_onlyBAV;
+select min(imp_tot_scen3_technology) as min_imp_tot_scen3, avg(imp_tot_scen3_technology) as avg_imp_tot_scen3, max(imp_tot_scen3_technology) as max_imp_tot_scen3 from odpair_LVM2035_23712030_onlyBAV;
+select min(imp_tot_scen4_operator) as min_imp_tot_scen4, avg(imp_tot_scen4_operator) as avg_imp_tot_scen4, max(imp_tot_scen4_operator) as max_imp_tot_scen4 from odpair_LVM2035_23712030_onlyBAV;
+
 --- step from impedance to utility (logit, obviously), ln(4) is parameter for normalizing intended
 alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS u_ample_scen1_common float;
 alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS u_ample_scen2_society float;

@@ -72,4 +72,13 @@ alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand 
 update only odpair_LVM2035_23712030_onlyBAV set 
 	imp_ttime = TTIME_LOGIT_WEIGHT(ttime_ratio),
 	imp_distance = DISTANCE_BATHTUB_WEIGHT(directdist),
-	imp_demand = DEMAND_MAX_ADAPT_WEIGHT(demand_all_person_purged / 24);  --divide by number of flights per day to have PAX/flight (e.g. 1 flight/hour)
+	imp_demand = DEMAND_MAX_ADAPT_WEIGHT(demand_all_person_purged / 24);  --divide by number of flights per day to have PAX/flight (e.g. 1 flight/hour);
+	
+
+
+
+
+
+
+
+
