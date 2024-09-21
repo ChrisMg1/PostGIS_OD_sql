@@ -241,3 +241,31 @@ y, x, _ = plt.hist(df2['u_ample_scen4_operator'], bins='doane', color='forestgre
 plt.savefig('C:/Users/chris/plots/UA_scen4_operator_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
+
+
+## Combined impedance Scenario 5 (df$imp_tot_scen5_societytec)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Combined impedance $\mathregular{R_{comb}}$ [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df['imp_tot_scen5_societytec']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df['imp_tot_scen5_societytec'], bins='doane', color='darkviolet')
+#plt.savefig('C:/Users/chris/plots/imp_tot_scen5_societyTec_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/imp_tot_scen5_societyTec_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
+
+
+## Utility Scenario 5 (df2$u_ample_scen5_societytec)
+plt.figure()
+axes = plt.axes()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.xlabel('Utility $\mathregular{U_A}$ [unitless]')
+plt.ylabel('Frequency (n=' + format(len(df2['u_ample_scen5_societytec']), ',') + ')')
+#plt.ylim( (pow(10,0),pow(10,8)) )
+y, x, _ = plt.hist(df2['u_ample_scen5_societytec'], bins='doane', color='forestgreen')
+#plt.savefig('C:/Users/chris/plots/UA_scen5_societyTec_11856015.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig('C:/Users/chris/plots/UA_scen5_societyTec_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()

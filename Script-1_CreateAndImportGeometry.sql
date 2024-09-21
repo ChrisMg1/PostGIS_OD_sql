@@ -115,12 +115,11 @@ SELECT * FROM odpair_2035_fromsqlite_44342281_raw
 SELECT * FROM odpair_2035_fromsqlite_44342281_raw where demand_pkw < 0 or demand_pkwm < 0 or demand_put < 0 or demand_bike < 0 or demand_walk < 0 order by demand_pkw asc;
 SELECT count(*) FROM odpair_2035_fromsqlite_44342281_raw where demand_pkw < 0 or demand_pkwm < 0 or demand_put < 0 or demand_bike < 0 or demand_walk < 0;
 
-SELECT * FROM odpair_LVM2035_23712030_onlyBAV order by imp_tot_scen1_common desc;
 
 --- export csv (e.g. for histogram); run python script after this steps
 -- todo: One single export; no split for plots
-COPY odpair_lvm2035_23712030_onlybav(ttime_put, ttime_prt, ttime_ratio, imp_ttime, directdist, imp_distance, demand_all_person_purged, imp_demand, imp_tot_scen1_common, imp_tot_scen2_society, imp_tot_scen3_technology, imp_tot_scen4_operator) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_exp.csv' DELIMITER ',' CSV HEADER; -- integrate demand, purged demand for full export
-COPY odpair_lvm2035_11856015_onlybav_groupedbf(u_ample_scen1_common, u_ample_scen2_society, u_ample_scen3_technology, u_ample_scen4_operator) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_groupedBF_exp.csv' DELIMITER ',' CSV HEADER;
+COPY odpair_lvm2035_23712030_onlybav(ttime_put, ttime_prt, ttime_ratio, imp_ttime, directdist, imp_distance, demand_all_person_purged, imp_demand, imp_tot_scen1_common, imp_tot_scen2_society, imp_tot_scen3_technology, imp_tot_scen4_operator, imp_tot_scen5_societyTec) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_exp.csv' DELIMITER ',' CSV HEADER; -- integrate demand, purged demand for full export
+COPY odpair_lvm2035_11856015_onlybav_groupedbf(u_ample_scen1_common, u_ample_scen2_society, u_ample_scen3_technology, u_ample_scen4_operator, u_ample_scen5_societyTec) TO 'C:\TUMdissDATA\odpair_lvm2035_23712030_onlybav_groupedBF_exp.csv' DELIMITER ',' CSV HEADER;
 
 COPY odpair_2035_fromsqlite_44342281_raw(fromzone_by, tozone_by, fromzone_no, tozone_no, demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk, demand_all_person, demand_all_person_purged) TO 'C:\TUMdissDATA\demandWITHbavariaFLAG2.csv' DELIMITER ',' CSV HEADER;
 COPY odpair_2035_fromsqlite_44342281_raw(demand_pkw, demand_pkwm, demand_put, demand_bike, demand_walk) TO 'C:\TUMdissDATA\demandPERmodeNOod.csv' DELIMITER ',' CSV HEADER;
