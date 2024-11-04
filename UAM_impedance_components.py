@@ -41,8 +41,8 @@ x_dist = np.arange(0, max_dist, 0.01).tolist()
 #### (1) plot distance impedence (bathtub)
 
 ## Set parameters
-shift_left_dist = 75
-shift_right_dist = 350
+shift_left_dist = 75.0
+shift_right_dist = 350.0
 a1l_in=0.1
 a1r_in=0.1
 
@@ -67,7 +67,7 @@ plt.clf()
 ## Set parameters
 d_in = 1.7034
 w_in = 0.35
-s_in = 0
+s_in = 0.0
 
 PAX_vals = []
 for i in x_PAX:
@@ -88,10 +88,10 @@ plt.clf()
 #### (2.2) plot capacity impedence (Maxwell)
 
 ## Set parameters
-shift_left_PAX = 1
-shift_right_PAX = 7
+shift_left_PAX = 1.0
+shift_right_PAX = 7.0
 a1l_in_pax=3.5
-a1r_in_pax=2
+a1r_in_pax=2.0
 
 PAX_vals2 = []
 for i in x_PAX:
@@ -111,8 +111,9 @@ plt.clf()
 #### (3) Plot travel time impedance (Logit)
 
 ## Set parameters
-a2_in = 5.0
 p_in = 1.0
+a2_in = 5.0
+
 
 TTIME_Logit_vals = []
 for i in x_rat:
@@ -135,8 +136,8 @@ plt.clf()
 
 bathtub2(92.034, shift_left_dist, shift_right_dist, a1l_in, a1r_in)
 PAX_max(550.956 / 24, d_in, w_in, s_in)
-TTIME_Logit(0.977, p_in, a2_in)
+TTIME_Logit(3, p_in, a2_in)
 
-
+6/4.0
 
 

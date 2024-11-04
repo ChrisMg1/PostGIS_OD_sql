@@ -35,4 +35,3 @@ update only public.odpair_LVM2035_23712030_onlyBAV set
 	u_ample_scen3_technology = exp(-ln(4)*imp_tot_scen3_technology) ,
 	u_ample_scen4_operator = exp(-ln(4)*imp_tot_scen4_operator) ,
 	u_ample_scen5_societyTec = exp(-ln(4)*imp_tot_scen5_societyTec) ;
-	

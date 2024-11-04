@@ -111,7 +111,7 @@ select
   percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_75perc_top25perc,
   percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_50perc_top50perc,
   percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_25perc_top75perc
-from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen1_common) as scen1_avg, stddev(u_ample_scen1_common) as scen1_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 2 (!! Only select, NO 'into...')
@@ -121,7 +121,7 @@ select
   percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_75perc_top25perc,
   percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_50perc_top50perc,
   percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_25perc_top75perc  
-from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen2_society) as scen2_avg, stddev(u_ample_scen2_society) as scen2_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 3 (!! Only select, NO 'into...')
@@ -131,7 +131,7 @@ select
   percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_75perc_top25perc,
   percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_50perc_top50perc,
   percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_25perc_top75perc  
-from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen3_technology) as scen3_avg, stddev(u_ample_scen3_technology) as scen3_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 4 (!! Only select, NO 'into...')
@@ -141,7 +141,7 @@ select
   percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_75perc_top25perc,
   percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_50perc_top50perc,
   percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_25perc_top75perc  
-from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 5 (!! Only select, NO 'into...')
@@ -151,8 +151,11 @@ select
   percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_75perc_top25perc,
   percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_50perc_top50perc,
   percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_25perc_top75perc  
-from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen5_societyTec) as scen4_avg, stddev(u_ample_scen5_societyTec) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+
+
+
 
 
 --- make subtable subtables for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis_...')
@@ -189,6 +192,33 @@ INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(1.0-(9999.0 / 11856015.0)) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+
+----EXPERIMENT 
+select * from public4qgis_scen1.u_scen1p3_common_top10000 order by u_ample_scen1_common desc;
+
+
+
+SELECT ST_ClusterKMeans(odconnect, 96) -- 96 clusters due to number of counties in bavaria
+OVER() AS cid, odconnect 
+INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000_ClusterKMeans_tempRepro
+FROM       public4qgis_scen1.u_scen1p3_common_top10000;
+
+
+DROP TABLE public4qgis_scen1.u_scen1p3_common_top10000_clusterdbscan_temp;
+
+--SELECT ST_ClusterDBSCAN(ST_pointN(odconnect,1), 10.0, 100)
+SELECT ST_ClusterDBSCAN(odconnect, 1.0, 0)
+over () AS cid, odconnect
+INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000_ClusterDBSCAN_temp
+FROM public4qgis_scen1.u_scen1p3_common_top10000;
+
+select count(*) from public4qgis_scen1.u_scen1p3_common_top10000_clusterdbscan_temp where cid=0;
+SELECT DISTINCT cid FROM public4qgis_scen1.u_scen1p3_common_top10000_clusterdbscan_temp;
+
+select ST_GeometryType(ST_pointN(odconnect,1)), ST_GeometryType(odconnect) from public4qgis_scen1.u_scen1p3_common_top10000_clusterdbscan_temp;
+
+
+----EXPERIMENT 
 
 ---- Cluster (has to be done as 'last step' to cluster results, not input)
 -- Cluster Top 10000 and top 95 percentile, maybe not 'only' 10 or 100 connections
