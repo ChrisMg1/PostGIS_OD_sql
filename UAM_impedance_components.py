@@ -112,7 +112,7 @@ plt.clf()
 
 ## Set parameters
 p_in = 1.0
-a2_in = 5.0
+a2_in = 15.0
 
 
 TTIME_Logit_vals = []

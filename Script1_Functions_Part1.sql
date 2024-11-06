@@ -58,15 +58,29 @@ $$ language 'plpgsql' STRICT;
 
 
 -- Add a column with the respective impedances from the above functions
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_ttime float;
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_distance float;
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand float;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_ttime_temp float;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_distance_temp float;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand_temp float;
 
 update only odpair_LVM2035_23712030_onlyBAV set 
-	imp_ttime = CM_TTIME_LOGIT_WEIGHT(ttime_ratio),
-	imp_distance = CM_DISTANCE_BATHTUB_WEIGHT(directdist),
-	imp_demand = CM_DEMAND_MAX_ADAPT_WEIGHT(demand_all_person_purged / 24.0);  --divide by number of flights per day to have PAX/flight (e.g. 1 flight/hour);
+	imp_ttime_temp = CM_TTIME_LOGIT_WEIGHT(ttime_ratio),
+	imp_distance_temp = CM_DISTANCE_BATHTUB_WEIGHT(directdist),
+	imp_demand_temp = CM_DEMAND_MAX_ADAPT_WEIGHT(demand_all_person_purged / 24.0);  --divide by number of flights per day to have PAX/flight (e.g. 1 flight/hour);
 
+
+
+
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_ttime_abs float;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_distance_abs float;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand_abs float;
+
+
+update only odpair_LVM2035_23712030_onlyBAV set 
+	imp_ttime_abs = abs(imp_ttime_temp - imp_ttime),
+	imp_distance_abs = abs(imp_distance_temp - imp_distance),
+	imp_demand_abs = abs(imp_demand_temp - imp_demand);
 
 -- RUN whole script (not line by line) !
+
+-- toto: optimum demand prüfen; select...
 

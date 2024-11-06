@@ -460,3 +460,8 @@ select
 INTO TABLE public4qgis_scen5.u_scen5p5_societytec_perc50top
 	from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen5_societytec >= (select percentile_disc(0.50) within group (order by u_ample_scen5_societytec) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+
+
+select * from public.odpair_LVM2035_11856015_onlyBAV_groupedBF order by u_ample_scen3_technology desc;
+
