@@ -56,8 +56,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
-#plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -78,8 +78,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-#plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -112,7 +112,7 @@ plt.clf()
 
 ## Set parameters
 p_in = 1.0
-a2_in = 15.0
+a2_in = 5.0
 
 
 TTIME_Logit_vals = []
@@ -127,17 +127,7 @@ plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
 plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-#plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
-
-
-
-bathtub2(92.034, shift_left_dist, shift_right_dist, a1l_in, a1r_in)
-PAX_max(550.956 / 24, d_in, w_in, s_in)
-TTIME_Logit(3, p_in, a2_in)
-
-6/4.0
-
-
