@@ -62,7 +62,32 @@ plt.show()
 plt.clf()
 
 
-#### (2.1) plot capacity impedence (Maxwell)
+#### (2) Plot travel time impedance (Logit)
+
+## Set parameters
+p_in = 1.0
+a2_in = 5.0
+
+
+TTIME_Logit_vals = []
+for i in x_rat:
+    TTIME_Logit_vals.append(TTIME_Logit(i, p_in, a2_in))
+    
+plt.figure()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.plot(x_rat, TTIME_Logit_vals)
+plt.xlabel('Travel Time Ratio PuT/PrT [min/min]')
+plt.ylabel('UAM Impedance (normalized)')
+
+# Plot singularity
+# plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
+plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
+
+
+#### (3.1) plot capacity impedence ('Maxwell')
 
 ## Set parameters
 d_in = 1.7034
@@ -85,13 +110,13 @@ plt.clf()
 
 
 
-#### (2.2) plot capacity impedence (Maxwell)
+#### (3.2) plot capacity impedence ('bathtub2')
 
 ## Set parameters
-shift_left_PAX = 1.0
-shift_right_PAX = 7.0
-a1l_in_pax=3.5
-a1r_in_pax=2.0
+shift_left_PAX = 2.0
+shift_right_PAX = 6.0
+a1l_in_pax = 3.4
+a1r_in_pax = 3.4
 
 PAX_vals2 = []
 for i in x_PAX:
@@ -107,27 +132,12 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.show()
 plt.clf()
 
+print(bathtub2(6.0, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
+print(bathtub2(2.0, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
+print(bathtub2(4.0, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
+print(bathtub2(0.00001, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
+print(bathtub2(10000, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
 
-#### (3) Plot travel time impedance (Logit)
-
-## Set parameters
-p_in = 1.0
-a2_in = 5.0
 
 
-TTIME_Logit_vals = []
-for i in x_rat:
-    TTIME_Logit_vals.append(TTIME_Logit(i, p_in, a2_in))
-    
-plt.figure()
-plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
-plt.plot(x_rat, TTIME_Logit_vals)
-plt.xlabel('Travel Time Ratio PuT/PrT [min/min]')
-plt.ylabel('UAM Impedance (normalized)')
 
-# Plot singularity
-plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
-plt.show()
-plt.clf()

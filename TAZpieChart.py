@@ -22,16 +22,21 @@ plt.rc('figure', titlesize=cm_params.BIGGER_SIZE)  # fontsize of the figure titl
 labels = 'Study Area', 'Influence Area', 'Outer Area'
 sizes = [4870, 1220, 569]
 total = sum(sizes)
-colorsdef=['aqua', 'skyblue', 'slateblue']
+colorsdef=['silver', 'violet', 'skyblue']
 
 plt.figure()
 axes = plt.axes()
 
-plt.pie(sizes, labels=labels, colors=colorsdef, autopct=lambda p: '{:.0f}'.format(p * total / 100))
+plt.pie(sizes, 
+        labels=labels, 
+        colors=colorsdef, 
+        autopct=lambda p: '{:.0f}'.format(p * total / 100),
+        wedgeprops = {"edgecolor" : "black", 'linewidth': 0.5, 'antialiased': True})
 
 
-#plt.savefig('C:/Users/chris/plots/Imp_Logit_param.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/TAZpieChart.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 plt.savefig('C:/Users/chris/plots/TAZpieChart.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig('C:/Users/chris/plots/TAZpieChart.svg', transparent=True)
 
 plt.show()
 plt.clf()
