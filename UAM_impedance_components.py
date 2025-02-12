@@ -133,14 +133,3 @@ plt.ylabel('UAM Impedance (normalized)')
 #plt.savefig('C:/Users/chris/plots/Imp_demand_Logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
-
-print(bathtub2(6.0, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
-print(bathtub2(2.0, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
-print(bathtub2(4.0, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
-print(bathtub2(228.77619379125971, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
-print(bathtub2((159.75430662264216 / 24.0), shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax))
-print(PAX_max((159.75430662264216 / 24.0), d_in, w_in, s_in))
-
-# 6,625
-
-
