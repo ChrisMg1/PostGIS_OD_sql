@@ -35,10 +35,12 @@ def TTIME_Logit(x_in, p, a2):
 max_rat = 3
 max_PAX = 15
 max_dist = 500
+max_thresh = 100
 
 x_rat = np.arange(0.01, max_rat, 0.01).tolist()
 x_PAX = np.arange(0.01, max_PAX, 0.01).tolist()
 x_dist = np.arange(0, max_dist, 0.01).tolist()
+x_thresh = np.arange(0.01, max_thresh, 0.01).tolist()
 
 #### (1) plot distance impedence (bathtub)
 
@@ -129,7 +131,32 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals2)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-#plt.savefig('C:/Users/chris/plots/Imp_demand_Logit.png', dpi=1200, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_demand_Logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.savefig('C:/Users/chris/plots/Imp_demand_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_demand_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.show()
+plt.clf()
+
+
+#### (4) Plot demand threshold (Logit)
+
+## Set parameters
+p_thresh_in = 50.0
+a2_thresh_in = 5.0
+
+
+demand_threshold_vals = []
+for i in x_thresh:
+    demand_threshold_vals.append(TTIME_Logit(i, p_thresh_in, a2_thresh_in))
+    
+plt.figure()
+plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
+plt.plot(x_thresh, demand_threshold_vals)
+plt.xlabel('Total demand [PAX / d]')
+plt.ylabel('_tbd_')
+
+# Plot singularity
+# plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
+plt.savefig('C:/Users/chris/plots/Imp_TBD_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_TBD_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
