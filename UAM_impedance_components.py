@@ -28,7 +28,10 @@ def PAX_max(x_in, d, w, s):
 	return 1-d*maxwell.pdf(w*(x_in - s))
 
 def TTIME_Logit(x_in, p, a2):
-    return (1 / (1 + np.exp(a2 * (x_in - p)) ))
+    if (x_in >= 0 and x_in > 3.0 * p):   # avoid out-of-range errors
+        return 0
+    else:
+        return (1 / (1 + np.exp(a2 * (x_in - p)) ))
 
 
 ## Create values for variables (visualization/plot only, not parametrization)
@@ -141,7 +144,7 @@ plt.clf()
 
 ## Set parameters
 p_thresh_in = 50.0
-a2_thresh_in = 5.0
+a2_thresh_in = 5.0 # negative for reverse
 
 
 demand_threshold_vals = []
@@ -152,10 +155,14 @@ plt.figure()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_thresh, demand_threshold_vals)
 plt.xlabel('Total demand [PAX / d]')
-plt.ylabel('_tbd_')
+plt.ylabel('Vertiport Efficiency (normalized)')
 
 # Plot singularity
 # plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
+
+# Plot vertiport throughput
+plt.axvline(p_thresh_in * 0.95, color='red', linestyle='dashed', linewidth=1)
+
 plt.savefig('C:/Users/chris/plots/Imp_TBD_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 #plt.savefig('C:/Users/chris/plots/Imp_TBD_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
