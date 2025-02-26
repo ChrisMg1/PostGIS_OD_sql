@@ -12,7 +12,10 @@ The metric application is done in the rsp. SQL-scripts.
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from scipy.stats import maxwell
+
+import cm_params
 
 def bathtub2 (x_in, l, r, a1l, a1r):
     if (x_in > 3.0 * r):   # avoid out-of-range errors
