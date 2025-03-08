@@ -20,30 +20,32 @@ import cm_params
 
 def bathtub2 (x_in, l, r, a1l, a1r):
     if (x_in > 3.0 * r):   # avoid out-of-range errors; ONLY FOR 'U'-SHAPE !!!
-        return 1
+        return 1.0
     elif (x_in < ((l + r) / 2)):
-        return (1 / (1 + np.exp( a1l * (x_in - l)) ))
-    elif (x_in >= ((l + r) / 2)):
-        return (1 / (1 + np.exp(-a1r * (x_in - r)) ))
+        return (1.0 / (1.0 + np.exp( a1l * (x_in - l)) ))
+    elif (x_in >= ((l + r) / 2.0)):
+        return (1.0 / (1.0 + np.exp(-a1r * (x_in - r)) ))
     else:
-        return None
+        raise ValueError("CM: Invalid Thresholds etc.")
 
 def PAX_max(x_in, d, w, s):
-	return 1-d*maxwell.pdf(w*(x_in - s))
+	return 1.0-d*maxwell.pdf(w*(x_in - s))
 
 def TTIME_Logit(x_in, p, a2):
     if (x_in > 3.0 * p):   # avoid out-of-range errors
         if (a2 >= 0.0):
-            return 0
+            return 0.0
         elif (a2 < 0.0):
-            return 1
+            return 1.0
         else:
-            raise ValueError("CM: Invalid Thresholds")
-    else:
+            raise ValueError("CM: Invalid Thresholds etc.")
+    elif (x_in <= 3.0 * p):
         return (1 / (1 + np.exp(a2 * (x_in - p)) ))
+    else:
+        raise ValueError("CM: Invalid Thresholds etc.")
 
 
-#### (1) plot distance impedence ('bathtub')
+print('(1) Plot distance impedence (bathtub)')
 
 ## Set parameters
 shift_left_dist = 75.0
@@ -70,7 +72,7 @@ plt.show()
 plt.clf()
 
 
-#### (2) Plot travel time impedance ('Logit')
+print('(2) Plot travel time impedance (Logit)')
 
 ## Set parameters
 p_in = 1.0
@@ -103,7 +105,7 @@ plt.clf()
 max_PAX = 15
 x_PAX = np.arange(0.0, max_PAX, 0.01).tolist()
 
-#### (3.1) plot vehicle capacity impedence ('Maxwell')
+print('(3.1) Plot vehicle capacity impedence (Maxwell)')
 
 ## Set parameters
 d_in = 1.7034
@@ -127,7 +129,7 @@ plt.clf()
 
 
 
-#### (3.2) plot vehicle capacity impedence ('bathtub2')
+print('(3.2) Plot vehicle capacity impedence (bathtub2)')
 
 ## Set parameters
 shift_left_PAX = 2.0
@@ -156,10 +158,10 @@ plt.clf()
 max_thresh = 1000
 x_thresh = np.arange(0.0, max_thresh, 0.01).tolist()
 
-#### (4.1) No minimum ('Logit')
+print('(4.1) No minimum (Logit)')
 
 ## Set parameters
-p_thresh_in = 768.0 # 32.0 * 24.0
+p_thresh_in = 768.0 # 32.0 * 24.0: According paper Lukas
 a2_thresh_in = -1.0 # positive/negative for reverse
 
 
@@ -183,7 +185,7 @@ plt.show()
 plt.clf()
 
 
-#### (4.2) With minimum ('bathtub2')
+print('(4.2) With minimum (bathtub2)')
 
 ## Set parameters
 shift_left_demand = 96.0 # 24 * 4: Approx. 1 flight per hour
@@ -210,7 +212,3 @@ plt.savefig('C:/Users/chris/plots/Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inc
 #plt.savefig('C:/Users/chris/plots/Imp_PAXperDAY_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
-
-
-
-
