@@ -48,7 +48,7 @@ DECLARE
     v_a_dist_l float8 := in_a_dist_l;
     v_a_dist_r float8 := in_a_dist_r;
 BEGIN
-   if (in_dist_demand > 3.0 * v_shift_r) then	-- avoid out-of-range errors
+   if (in_dist_demand > 1.5 * v_shift_r) then	-- avoid out-of-range errors; threshold is adjustable
 		return 1.0;
    elsif (in_dist_demand < ((v_shift_l + v_shift_r) / 2)) then
         return (1.0 / (1.0 + exp( v_a_dist_l * (in_dist_demand - v_shift_l)) ));
@@ -98,8 +98,6 @@ update only odpair_LVM2035_23712030_onlyBAV set
     imp_demand_new_temp = CM_DISTANCE_DEMAND_BATHTUB2(demand_all_person_purged, 96.0, 768.0, 1.0, 1.0);
 
 
-
 -- RUN whole script (not line by line) !
 
 -- todo: optimum demand prüfen; select...
-

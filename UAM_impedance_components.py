@@ -12,14 +12,12 @@ The metric application is done in the rsp. SQL-scripts.
 
 import numpy as np
 import matplotlib.pyplot as plt
-import warnings
 from scipy.stats import maxwell
-# import pandas as pd
 
 import cm_params
 
 def bathtub2 (x_in, l, r, a1l, a1r):
-    if (x_in > 3.0 * r):   # avoid out-of-range errors; ONLY FOR 'U'-SHAPE !!!
+    if (x_in > 1.5 * r):   # avoid out-of-range errors; ONLY FOR 'U'-SHAPE !!! threshold seems sufficient for bathtub, not for logit
         return 1.0
     elif (x_in < ((l + r) / 2)):
         return (1.0 / (1.0 + np.exp( a1l * (x_in - l)) ))
@@ -40,7 +38,7 @@ def TTIME_Logit(x_in, p, a2):
         else:
             raise ValueError("CM: Invalid Thresholds etc.")
     elif (x_in <= 3.0 * p):
-        return (1 / (1 + np.exp(a2 * (x_in - p)) ))
+        return (1.0 / (1.0 + np.exp(a2 * (x_in - p)) ))
     else:
         raise ValueError("CM: Invalid Thresholds etc.")
 
@@ -66,8 +64,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -147,8 +145,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals2)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_demand_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_demand_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+plt.savefig('C:/Users/chris/plots/Imp_PAXperFLIGHT_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig('C:/Users/chris/plots/Imp_PAXperFLIGHT_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
