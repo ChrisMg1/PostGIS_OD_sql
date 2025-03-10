@@ -1,6 +1,15 @@
 -- recoding of the weight functions (travel impedance) from python scripts. 
 -- Goal: Continuous Metric for OD-connections
 
+-- Script Part 1:
+
+-- This script does the following
+--- 1) defines the "factor functions" which calculate the "intermediate impedances" from the raw data
+--- 2) creates new columns in the database to store those impedances
+--- 3) applies the factor functions to fill the impedance columns
+-- now we have the intermediate impedances. In further scripts the combined impedances, the total impedance and the utilities can be calculated. 
+
+
 -- RUN whole script (not line by line); Maybe delete existing functions first. 
 
 CREATE OR REPLACE FUNCTION CM_TTIME_LOGIT_WEIGHT(
@@ -84,18 +93,16 @@ $$ language 'plpgsql' STRICT;
 
 -- Add a column with the respective impedances from the above functions
 -- Temp for some double-checks and comparisons
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_ttime_temp float8;
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_distance_temp float8;
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand_temp float8;
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand_new_temp float8;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_ttime float8;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_distance float8;
+alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand float8;
 
 
 -- Now: Bathtub function for both demand and distance impedance
 update only odpair_LVM2035_23712030_onlyBAV set 
-	imp_ttime_temp = CM_TTIME_LOGIT_WEIGHT(ttime_ratio, 1.0, 5.0),
-	imp_distance_temp = CM_DISTANCE_DEMAND_BATHTUB2(directdist, 75.0, 350.0, 0.1, 0.1),
-	imp_demand_temp = CM_DISTANCE_DEMAND_BATHTUB2((demand_all_person_purged / 24.0), 2.0, 6.0, 4.0, 4.0),  --divide by number of flights per day to have PAX/flight (e.g. 1 flight/hour);
-    imp_demand_new_temp = CM_DISTANCE_DEMAND_BATHTUB2(demand_all_person_purged, 96.0, 768.0, 1.0, 1.0);
+	imp_ttime = CM_TTIME_LOGIT_WEIGHT(ttime_ratio, 1.0, 5.0),
+	imp_distance = CM_DISTANCE_DEMAND_BATHTUB2(directdist, 75.0, 350.0, 0.1, 0.1),
+    imp_demand = CM_DISTANCE_DEMAND_BATHTUB2(demand_all_person_purged, 96.0, 768.0, 1.0, 1.0);   -- min: 1 flight per hour (4PAX * 24 h); max: Lukas paper: 32 PAX per hour (32*24); "old" was PAX per flight
 
 
 -- RUN whole script (not line by line) !

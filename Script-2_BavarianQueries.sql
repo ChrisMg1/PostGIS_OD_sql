@@ -88,13 +88,19 @@ CREATE INDEX scen4_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_a
 CREATE INDEX scen5_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen5_societyTec); -- index on affected utility column
 
 
+-- make evaluations for impedances
+select min(imp_tot_scen1_common) 		as min_imp_tot_scen1, avg(imp_tot_scen1_common) 	as avg_imp_tot_scen1, max(imp_tot_scen1_common) 	as max_imp_tot_scen1 from odpair_LVM2035_23712030_onlyBAV;
+select min(imp_tot_scen2_society) 		as min_imp_tot_scen2, avg(imp_tot_scen2_society) 	as avg_imp_tot_scen2, max(imp_tot_scen2_society) 	as max_imp_tot_scen2 from odpair_LVM2035_23712030_onlyBAV;
+select min(imp_tot_scen3_technology) 	as min_imp_tot_scen3, avg(imp_tot_scen3_technology) as avg_imp_tot_scen3, max(imp_tot_scen3_technology) as max_imp_tot_scen3 from odpair_LVM2035_23712030_onlyBAV;
+select min(imp_tot_scen4_operator) 		as min_imp_tot_scen4, avg(imp_tot_scen4_operator) 	as avg_imp_tot_scen4, max(imp_tot_scen4_operator) 	as max_imp_tot_scen4 from odpair_LVM2035_23712030_onlyBAV;
+select min(imp_tot_scen5_societyTec) 	as min_imp_tot_scen5, avg(imp_tot_scen5_societyTec) as avg_imp_tot_scen5, max(imp_tot_scen5_societyTec) as max_imp_tot_scen5 from odpair_LVM2035_23712030_onlyBAV;
 
+-- make evaluations for utilities
 select min(u_ample_scen1_common) as min_utility_scen1, avg(u_ample_scen1_common) as avg_utility_scen1, max(u_ample_scen1_common) as max_utility_scen1 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select min(u_ample_scen2_society) as min_utility_scen2, avg(u_ample_scen2_society) as avg_utility_scen2, max(u_ample_scen2_society) as max_utility_scen2 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select min(u_ample_scen3_technology) as min_utility_scen3, avg(u_ample_scen3_technology) as avg_utility_scen3, max(u_ample_scen3_technology) as max_utility_scen3 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select min(u_ample_scen4_operator) as min_utility_scen4, avg(u_ample_scen4_operator) as avg_utility_scen4, max(u_ample_scen4_operator) as max_utility_scen4 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select min(u_ample_scen5_societyTec) as min_utility_scen5, avg(u_ample_scen5_societyTec) as avg_utility_scen5, max(u_ample_scen5_societyTec) as max_utility_scen5 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-
 
 --- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
