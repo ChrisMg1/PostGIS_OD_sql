@@ -2,6 +2,7 @@
 --- It adds geom columns
 --- It makes an unique identifier for all connections (i.e. back and forth)
 
+--- can regularily be skipped, as 'odpair_LVM2035_23712030_onlyBAV' is already prepared
 
 -- add geometry columns (points and line)
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV

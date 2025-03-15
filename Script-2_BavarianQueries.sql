@@ -5,7 +5,7 @@
 ---- filter: from != to
 --- finally transfer to new database xyz
 
-
+--- this 'select into' has to be run after every update of impedances or utilities.
 select	(array_agg(fromzone_name))[1] as fromzone_name, -- make the from_zone an array, then only retain 1st element (sic! [1] not [0])
 		(array_agg(tozone_name))[1] as tozone_name, -- make the to_zone an array, then only retain 1st element (sic! [1] not [0])		
 		array_agg(imp_ttime) as imp_ttime,
@@ -44,18 +44,11 @@ select min(imp_tot_scen4_operator) 		as min_imp_tot_scen4, avg(imp_tot_scen4_ope
 select min(imp_tot_scen5_societyTec) 	as min_imp_tot_scen5, avg(imp_tot_scen5_societyTec) as avg_imp_tot_scen5, max(imp_tot_scen5_societyTec) as max_imp_tot_scen5 from odpair_LVM2035_23712030_onlyBAV;
 
 -- make evaluations for utilities
-select min(u_ample_scen1_common) as min_utility_scen1, avg(u_ample_scen1_common) as avg_utility_scen1, max(u_ample_scen1_common) as max_utility_scen1 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen2_society) as min_utility_scen2, avg(u_ample_scen2_society) as avg_utility_scen2, max(u_ample_scen2_society) as max_utility_scen2 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen3_technology) as min_utility_scen3, avg(u_ample_scen3_technology) as avg_utility_scen3, max(u_ample_scen3_technology) as max_utility_scen3 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen4_operator) as min_utility_scen4, avg(u_ample_scen4_operator) as avg_utility_scen4, max(u_ample_scen4_operator) as max_utility_scen4 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen5_societyTec) as min_utility_scen5, avg(u_ample_scen5_societyTec) as avg_utility_scen5, max(u_ample_scen5_societyTec) as max_utility_scen5 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-
---- add possible UAM travel time TODO: Not somewhere in "raw" to be able to play with params in only study area
-ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_h float8;
-ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS ttime_uam_min float8;
-
---- params: v_uam = 250km/h
-UPDATE LVM_OD_onlyBAV set ttime_uam_min = (directdist / 250) * 60 ;
+select min(u_ample_scen1_common) 		as min_utility_scen1, avg(u_ample_scen1_common) 	as avg_utility_scen1, max(u_ample_scen1_common) 	as max_utility_scen1 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select min(u_ample_scen2_society) 		as min_utility_scen2, avg(u_ample_scen2_society) 	as avg_utility_scen2, max(u_ample_scen2_society) 	as max_utility_scen2 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select min(u_ample_scen3_technology) 	as min_utility_scen3, avg(u_ample_scen3_technology) as avg_utility_scen3, max(u_ample_scen3_technology) as max_utility_scen3 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select min(u_ample_scen4_operator) 		as min_utility_scen4, avg(u_ample_scen4_operator) 	as avg_utility_scen4, max(u_ample_scen4_operator) 	as max_utility_scen4 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select min(u_ample_scen5_societyTec) 	as min_utility_scen5, avg(u_ample_scen5_societyTec) as avg_utility_scen5, max(u_ample_scen5_societyTec) as max_utility_scen5 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 --- quantiles for each scenario to copy to LaTeX
 ---- all qantiles and avg/std for scenario 1 (!! Only select, NO 'into...')
@@ -109,8 +102,10 @@ from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 select avg(u_ample_scen5_societyTec) as scen4_avg, stddev(u_ample_scen5_societyTec) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 
-
-
-
-
+-- create table for top10 (for transfer to LaTeX):
+select * from public4qgis_scen1.u_scen1p1_common_top10 order by u_ample_scen1_common desc;
+select * from public4qgis_scen2.u_scen2p1_society_top10 order by u_ample_scen2_society desc;
+select * from public4qgis_scen3.u_scen3p1_technology_top10 order by u_ample_scen3_technology desc;
+select * from public4qgis_scen4.u_scen4p1_operator_top10 order by u_ample_scen4_operator desc;
+select * from public4qgis_scen5.u_scen5p1_societytec_top10 order by u_ample_scen5_societytec desc;
 
