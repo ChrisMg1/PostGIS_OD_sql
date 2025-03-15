@@ -43,6 +43,8 @@ def TTIME_Logit(x_in, p, a2):
         raise ValueError("CM: Invalid Thresholds etc.")
 
 
+output_folder_ic = 'C:/Users/chris/plots/v02/factorFunctions/'
+
 print('(1) Plot distance impedence (bathtub)')
 
 ## Set parameters
@@ -64,8 +66,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_Distance_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -92,8 +94,8 @@ plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
 # plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -120,8 +122,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_demand_Maxwell.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -145,8 +147,8 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_PAX, PAX_vals2)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
-plt.savefig('C:/Users/chris/plots/Imp_PAXperFLIGHT_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_PAXperFLIGHT_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_PAXperFLIGHT_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_PAXperFLIGHT_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -177,8 +179,8 @@ plt.ylabel('UAM Impedance (normalized)')
 # Plot vertiport throughput
 plt.axvline(p_thresh_in * 1, color='red', linestyle='dashed', linewidth=1)
 
-plt.savefig('C:/Users/chris/plots/Imp_PAXperDAY_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_PAXperDAY_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -206,7 +208,7 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.axvline(shift_left_demand * 1, color='green', linestyle='dashed', linewidth=1) # min
 plt.axvline(shift_right_demand * 1, color='red', linestyle='dashed', linewidth=1) # max
 
-plt.savefig('C:/Users/chris/plots/Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-#plt.savefig('C:/Users/chris/plots/Imp_PAXperDAY_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
