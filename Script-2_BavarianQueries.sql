@@ -36,76 +36,87 @@ CREATE INDEX scen4_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_a
 CREATE INDEX scen5_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen5_societyTec); -- index on affected utility column
 
 
--- make evaluations for impedances
-select min(imp_tot_scen1_common) 		as min_imp_tot_scen1, avg(imp_tot_scen1_common) 	as avg_imp_tot_scen1, max(imp_tot_scen1_common) 	as max_imp_tot_scen1 from odpair_LVM2035_23712030_onlyBAV;
-select min(imp_tot_scen2_society) 		as min_imp_tot_scen2, avg(imp_tot_scen2_society) 	as avg_imp_tot_scen2, max(imp_tot_scen2_society) 	as max_imp_tot_scen2 from odpair_LVM2035_23712030_onlyBAV;
-select min(imp_tot_scen3_technology) 	as min_imp_tot_scen3, avg(imp_tot_scen3_technology) as avg_imp_tot_scen3, max(imp_tot_scen3_technology) as max_imp_tot_scen3 from odpair_LVM2035_23712030_onlyBAV;
-select min(imp_tot_scen4_operator) 		as min_imp_tot_scen4, avg(imp_tot_scen4_operator) 	as avg_imp_tot_scen4, max(imp_tot_scen4_operator) 	as max_imp_tot_scen4 from odpair_LVM2035_23712030_onlyBAV;
-select min(imp_tot_scen5_societyTec) 	as min_imp_tot_scen5, avg(imp_tot_scen5_societyTec) as avg_imp_tot_scen5, max(imp_tot_scen5_societyTec) as max_imp_tot_scen5 from odpair_LVM2035_23712030_onlyBAV;
+-- make evaluations for impedances (takes ~1min each)
+select round(min(imp_tot_scen1_common)::numeric, 4) 		as min_imp_tot_scen1, round(avg(imp_tot_scen1_common)::numeric, 4) 		as avg_imp_tot_scen1, round(max(imp_tot_scen1_common)::numeric, 4) 		as max_imp_tot_scen1 from odpair_LVM2035_23712030_onlyBAV;
+select round(min(imp_tot_scen2_society)::numeric, 4) 		as min_imp_tot_scen2, round(avg(imp_tot_scen2_society)::numeric, 4) 	as avg_imp_tot_scen2, round(max(imp_tot_scen2_society)::numeric, 4) 	as max_imp_tot_scen2 from odpair_LVM2035_23712030_onlyBAV;
+select round(min(imp_tot_scen3_technology)::numeric, 4) 	as min_imp_tot_scen3, round(avg(imp_tot_scen3_technology)::numeric, 4) 	as avg_imp_tot_scen3, round(max(imp_tot_scen3_technology)::numeric, 4) 	as max_imp_tot_scen3 from odpair_LVM2035_23712030_onlyBAV;
+select round(min(imp_tot_scen4_operator)::numeric, 4) 		as min_imp_tot_scen4, round(avg(imp_tot_scen4_operator)::numeric, 4) 	as avg_imp_tot_scen4, round(max(imp_tot_scen4_operator)::numeric, 4) 	as max_imp_tot_scen4 from odpair_LVM2035_23712030_onlyBAV;
+select round(min(imp_tot_scen5_societyTec)::numeric, 4) 	as min_imp_tot_scen5, round(avg(imp_tot_scen5_societyTec)::numeric, 4) 	as avg_imp_tot_scen5, round(max(imp_tot_scen5_societyTec)::numeric, 4) 	as max_imp_tot_scen5 from odpair_LVM2035_23712030_onlyBAV;
 
--- make evaluations for utilities
-select min(u_ample_scen1_common) 		as min_utility_scen1, avg(u_ample_scen1_common) 	as avg_utility_scen1, max(u_ample_scen1_common) 	as max_utility_scen1 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen2_society) 		as min_utility_scen2, avg(u_ample_scen2_society) 	as avg_utility_scen2, max(u_ample_scen2_society) 	as max_utility_scen2 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen3_technology) 	as min_utility_scen3, avg(u_ample_scen3_technology) as avg_utility_scen3, max(u_ample_scen3_technology) as max_utility_scen3 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen4_operator) 		as min_utility_scen4, avg(u_ample_scen4_operator) 	as avg_utility_scen4, max(u_ample_scen4_operator) 	as max_utility_scen4 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select min(u_ample_scen5_societyTec) 	as min_utility_scen5, avg(u_ample_scen5_societyTec) as avg_utility_scen5, max(u_ample_scen5_societyTec) as max_utility_scen5 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+-- make evaluations for utilities (takes some seconds each)
+select round(min(u_ample_scen1_common)::numeric, 4) 		as min_utility_scen1, round(avg(u_ample_scen1_common)::numeric, 4) 		as avg_utility_scen1, round(max(u_ample_scen1_common)::numeric, 4) 		as max_utility_scen1 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(min(u_ample_scen2_society)::numeric, 4) 		as min_utility_scen2, round(avg(u_ample_scen2_society)::numeric, 4) 	as avg_utility_scen2, round(max(u_ample_scen2_society)::numeric, 4) 	as max_utility_scen2 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(min(u_ample_scen3_technology)::numeric, 4) 	as min_utility_scen3, round(avg(u_ample_scen3_technology)::numeric, 4) 	as avg_utility_scen3, round(max(u_ample_scen3_technology)::numeric, 4) 	as max_utility_scen3 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(min(u_ample_scen4_operator)::numeric, 4) 		as min_utility_scen4, round(avg(u_ample_scen4_operator)::numeric, 4) 	as avg_utility_scen4, round(max(u_ample_scen4_operator)::numeric, 4) 	as max_utility_scen4 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(min(u_ample_scen5_societyTec)::numeric, 4) 	as min_utility_scen5, round(avg(u_ample_scen5_societyTec)::numeric, 4)	as avg_utility_scen5, round(max(u_ample_scen5_societyTec)::numeric, 4)	as max_utility_scen5 from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 --- quantiles for each scenario to copy to LaTeX
 ---- all qantiles and avg/std for scenario 1 (!! Only select, NO 'into...')
 select  
-  percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_top10, --attention: GroupedBF = 1/2 "onlyBav"
-  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common) as scen1_25perc_top75perc
+  round((percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common))::numeric, 4) as scen1_top10, --attention: GroupedBF = 1/2 "onlyBav"
+  round((percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common))::numeric, 4) as scen1_95perc_top5perc,
+  round((percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common))::numeric, 4) as scen1_75perc_top25perc,
+  round((percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common))::numeric, 4) as scen1_50perc_top50perc,
+  round((percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common))::numeric, 4) as scen1_25perc_top75perc
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select avg(u_ample_scen1_common) as scen1_avg, stddev(u_ample_scen1_common) as scen1_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(avg(u_ample_scen1_common)::numeric, 4) as scen1_avg, round(stddev(u_ample_scen1_common)::numeric, 4) as scen1_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 2 (!! Only select, NO 'into...')
 select  
-  percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_top10, --attention: GroupedBF = 1/2 "onlyBav"
-  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society) as scen2_25perc_top75perc  
+  round((percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society))::numeric, 4) as scen2_top10, --attention: GroupedBF = 1/2 "onlyBav"
+  round((percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society))::numeric, 4) as scen2_95perc_top5perc,
+  round((percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society))::numeric, 4) as scen2_75perc_top25perc,
+  round((percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society))::numeric, 4) as scen2_50perc_top50perc,
+  round((percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen2_society))::numeric, 4) as scen2_25perc_top75perc  
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select avg(u_ample_scen2_society) as scen2_avg, stddev(u_ample_scen2_society) as scen2_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(avg(u_ample_scen2_society)::numeric, 4) as scen2_avg, round(stddev(u_ample_scen2_society)::numeric, 4) as scen2_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 3 (!! Only select, NO 'into...')
 select  
-  percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_top10, --attention: GroupedBF = 1/2 "onlyBav"
-  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology) as scen3_25perc_top75perc  
+  round((percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology))::numeric, 4) as scen3_top10, --attention: GroupedBF = 1/2 "onlyBav"
+  round((percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology))::numeric, 4) as scen3_95perc_top5perc,
+  round((percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology))::numeric, 4) as scen3_75perc_top25perc,
+  round((percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology))::numeric, 4) as scen3_50perc_top50perc,
+  round((percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen3_technology))::numeric, 4) as scen3_25perc_top75perc  
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select avg(u_ample_scen3_technology) as scen3_avg, stddev(u_ample_scen3_technology) as scen3_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(avg(u_ample_scen3_technology)::numeric, 4) as scen3_avg, round(stddev(u_ample_scen3_technology)::numeric, 4) as scen3_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 4 (!! Only select, NO 'into...')
 select  
-  percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_top10, --attention: GroupedBF = 1/2 "onlyBav"
-  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator) as scen4_25perc_top75perc  
+  round((percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator))::numeric, 4) as scen4_top10, --attention: GroupedBF = 1/2 "onlyBav"
+  round((percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator))::numeric, 4) as scen4_95perc_top5perc,
+  round((percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator))::numeric, 4) as scen4_75perc_top25perc,
+  round((percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator))::numeric, 4) as scen4_50perc_top50perc,
+  round((percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen4_operator))::numeric, 4) as scen4_25perc_top75perc  
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select avg(u_ample_scen4_operator) as scen4_avg, stddev(u_ample_scen4_operator) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(avg(u_ample_scen4_operator)::numeric, 4) as scen4_avg, round(stddev(u_ample_scen4_operator)::numeric, 4) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 ---- all qantiles and avg/std for scenario 5 (!! Only select, NO 'into...')
 select  
-  percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_top10, --attention: GroupedBF = 1/2 "onlyBav"
-  percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_95perc_top5perc,
-  percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_75perc_top25perc,
-  percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_50perc_top50perc,
-  percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec) as scen5_25perc_top75perc  
+  round((percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec))::numeric, 4) as scen5_top10, --attention: GroupedBF = 1/2 "onlyBav"
+  round((percentile_disc(0.95) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec))::numeric, 4) as scen5_95perc_top5perc,
+  round((percentile_disc(0.75) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec))::numeric, 4) as scen5_75perc_top25perc,
+  round((percentile_disc(0.50) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec))::numeric, 4) as scen5_50perc_top50perc,
+  round((percentile_disc(0.25) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen5_societyTec))::numeric, 4) as scen5_25perc_top75perc  
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
-select avg(u_ample_scen5_societyTec) as scen4_avg, stddev(u_ample_scen5_societyTec) as scen4_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
+select round(avg(u_ample_scen5_societyTec)::numeric, 4) as scen5_avg, round(stddev(u_ample_scen5_societyTec)::numeric, 4) as scen5_stddev from odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 
 -- create table for top10 (for transfer to LaTeX):
 select * from public4qgis_scen1.u_scen1p1_common_top10 order by u_ample_scen1_common desc;
-select * from public4qgis_scen2.u_scen2p1_society_top10 order by u_ample_scen2_society desc;
-select * from public4qgis_scen3.u_scen3p1_technology_top10 order by u_ample_scen3_technology desc;
-select * from public4qgis_scen4.u_scen4p1_operator_top10 order by u_ample_scen4_operator desc;
-select * from public4qgis_scen5.u_scen5p1_societytec_top10 order by u_ample_scen5_societytec desc;
 
+
+-- LaTeX-parsed selects for top connections: 
+select '$', row_number() over(order by u_ample_scen1_common desc),		'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen1_common::numeric, 4), 		'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen1.u_scen1p1_common_top10 	order by u_ample_scen1_common desc;
+select '$', row_number() over(order by u_ample_scen2_society desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen2_society::numeric, 4), 		'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen2.u_scen2p1_society_top10 	order by u_ample_scen2_society desc;
+select '$', row_number() over(order by u_ample_scen3_technology desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen3_technology::numeric, 4), 	'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen3.u_scen3p1_technology_top10 order by u_ample_scen3_technology desc;
+select '$', row_number() over(order by u_ample_scen4_operator desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen4_operator::numeric, 4), 		'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen4.u_scen4p1_operator_top10 	order by u_ample_scen4_operator desc;
+select '$', row_number() over(order by u_ample_scen5_societytec desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen5_societytec::numeric, 4), 	'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen5.u_scen5p1_societytec_top10 order by u_ample_scen5_societytec desc;
+
+
+-- Select top connections as SQL
+select * from public4qgis_scen1.u_scen1p1_common_top10 		order by u_ample_scen1_common desc;
+select * from public4qgis_scen2.u_scen2p1_society_top10 	order by u_ample_scen2_society desc;
+select * from public4qgis_scen3.u_scen3p1_technology_top10 	order by u_ample_scen3_technology desc;
+select * from public4qgis_scen4.u_scen4p1_operator_top10 	order by u_ample_scen4_operator desc;
+select * from public4qgis_scen5.u_scen5p1_societytec_top10 	order by u_ample_scen5_societytec desc;

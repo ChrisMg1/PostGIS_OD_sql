@@ -71,6 +71,13 @@ plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.pdf', bbox_inches='tight',
 plt.show()
 plt.clf()
 
+print(768.0 * 1.5)
+print(bathtub2(1000, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(1150, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(1151, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(1152, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(1153, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(1154, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
 
 print('(2) Plot travel time impedance (Logit)')
 
