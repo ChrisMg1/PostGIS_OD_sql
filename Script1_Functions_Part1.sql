@@ -12,6 +12,7 @@
 
 -- RUN whole script (not line by line); Maybe delete existing functions first. 
 
+DROP FUNCTION IF EXISTS CM_TTIME_LOGIT_WEIGHT;
 CREATE OR REPLACE FUNCTION CM_TTIME_LOGIT_WEIGHT(
 	TTR_in float8,
 	in_p float8,
@@ -41,7 +42,7 @@ BEGIN
 END;
 $$ language 'plpgsql' STRICT;
 
-
+DROP FUNCTION IF exists CM_DISTANCE_DEMAND_BATHTUB2;
 CREATE OR REPLACE FUNCTION CM_DISTANCE_DEMAND_BATHTUB2(
     in_dist_demand float8,
 	in_shift_l float8, 
@@ -57,7 +58,7 @@ DECLARE
     v_a_dist_l float8 := in_a_dist_l;
     v_a_dist_r float8 := in_a_dist_r;
 BEGIN
-   if (in_dist_demand > 1.5 * v_shift_r) then	-- avoid out-of-range errors; threshold is adjustable
+   if (in_dist_demand > 2.0 * v_shift_r) then	-- avoid out-of-range errors; threshold is adjustable
 		return 1.0;
    elsif (in_dist_demand < ((v_shift_l + v_shift_r) / 2)) then
         return (1.0 / (1.0 + exp( v_a_dist_l * (in_dist_demand - v_shift_l)) ));
@@ -71,7 +72,7 @@ BEGIN
 END;
 $$ language 'plpgsql' STRICT;
 
-
+DROP FUNCTION IF exists CM_DEMAND_MAX_ADAPT_WEIGHT;
 CREATE OR REPLACE FUNCTION CM_DEMAND_MAX_ADAPT_WEIGHT(imp float)
    RETURNS float AS
 $$
@@ -102,7 +103,7 @@ alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand 
 update only odpair_LVM2035_23712030_onlyBAV set 
 	imp_ttime = CM_TTIME_LOGIT_WEIGHT(ttime_ratio, 1.0, 5.0),
 	imp_distance = CM_DISTANCE_DEMAND_BATHTUB2(directdist, 75.0, 350.0, 0.1, 0.1),
-    imp_demand = CM_DISTANCE_DEMAND_BATHTUB2(demand_all_person_purged, 96.0, 768.0, 1.0, 1.0);   -- min: 1 flight per hour (4PAX * 24 h); max: Lukas paper: 32 PAX per hour (32*24); "old" was PAX per flight
+    imp_demand = CM_DISTANCE_DEMAND_BATHTUB2(demand_all_person_purged, 96.0, 768.0, 0.1, 0.1);   -- min: 1 flight per hour (4PAX * 24 h); max: Lukas paper: 32 PAX per hour (32*24); "old" was PAX per flight
 
 
 -- RUN whole script (not line by line) !

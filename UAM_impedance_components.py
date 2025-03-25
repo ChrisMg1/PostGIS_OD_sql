@@ -17,7 +17,7 @@ from scipy.stats import maxwell
 import cm_params
 
 def bathtub2 (x_in, l, r, a1l, a1r):
-    if (x_in > 1.5 * r):   # avoid out-of-range errors; ONLY FOR 'U'-SHAPE !!! threshold seems sufficient for bathtub, not for logit
+    if (x_in > 2.0 * r):   # avoid out-of-range errors; ONLY FOR 'U'-SHAPE !!! threshold seems sufficient for bathtub, not for logit
         return 1.0
     elif (x_in < ((l + r) / 2)):
         return (1.0 / (1.0 + np.exp( a1l * (x_in - l)) ))
@@ -71,13 +71,14 @@ plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.pdf', bbox_inches='tight',
 plt.show()
 plt.clf()
 
-print(768.0 * 1.5)
-print(bathtub2(1000, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(1150, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(1151, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(1152, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(1153, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(1154, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(350.0 * 2.0)
+print(bathtub2(698, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(699, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(700, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(701, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+print(bathtub2(702, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
+
+print(bathtub2(500, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
 
 print('(2) Plot travel time impedance (Logit)')
 
@@ -169,7 +170,7 @@ print('(4.1) No minimum (Logit)')
 
 ## Set parameters
 p_thresh_in = 768.0 # 32.0 * 24.0: According paper Lukas
-a2_thresh_in = -1.0 # positive/negative for reverse
+a2_thresh_in = -0.1 # positive/negative for reverse
 
 
 demand_threshold_logit = []
@@ -197,8 +198,8 @@ print('(4.2) With minimum (bathtub2)')
 ## Set parameters
 shift_left_demand = 96.0 # 24 * 4: Approx. 1 flight per hour
 shift_right_demand = 768.0 # 32.0 * 24.0: According paper Lukas
-a1l_in_demand = 1.0
-a1r_in_demand = 1.0
+a1l_in_demand = 0.1
+a1r_in_demand = 0.1
 
 demand_threshold_bathtub = []
 
