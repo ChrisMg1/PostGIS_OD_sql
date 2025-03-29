@@ -43,7 +43,7 @@ def TTIME_Logit(x_in, p, a2):
         raise ValueError("CM: Invalid Thresholds etc.")
 
 
-output_folder_ic = 'C:/Users/chris/plots/v02/factorFunctions/'
+output_folder_ic = 'C:/Users/chris/plots/v03/factorFunctions/'
 
 print('(1) Plot distance impedence (bathtub)')
 
@@ -131,7 +131,7 @@ plt.plot(x_PAX, PAX_vals)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
 #plt.savefig(output_folder_ic + 'Imp_demand_Maxwell.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig(output_folder_ic + 'Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -156,7 +156,7 @@ plt.plot(x_PAX, PAX_vals2)
 plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
 #plt.savefig(output_folder_ic + 'Imp_PAXperFLIGHT_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig(output_folder_ic + 'Imp_PAXperFLIGHT_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_PAXperFLIGHT_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -188,7 +188,7 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.axvline(p_thresh_in * 1, color='red', linestyle='dashed', linewidth=1)
 
 #plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 

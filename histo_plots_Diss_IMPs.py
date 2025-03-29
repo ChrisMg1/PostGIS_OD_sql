@@ -42,7 +42,7 @@ R_high = 1.01
 U_low = 0.19
 U_high = 1.01
 
-output_folder = 'C:/Users/chris/plots/v02/impedancesANDutilities/'
+output_folder = 'C:/Users/chris/plots/v03/impedancesANDutilities/'
 
 ## 1a: travel time ratio distribution
 plt.figure()
