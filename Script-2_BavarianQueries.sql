@@ -21,13 +21,17 @@ select	(array_agg(fromzone_name))[1] as fromzone_name, -- make the from_zone an 
 		max(u_ample_scen3_technology) as u_ample_scen3_technology,
 		max(u_ample_scen4_operator) as u_ample_scen4_operator,
 		max(u_ample_scen5_societyTec) as u_ample_scen5_societyTec,
+		array_agg(ttime_ratio) as ttime_ratio,
 		array_agg(directdist) as directdist,
+		array_agg(demand_all_person_purged) as demand_all_person_purged,
 		ST_GeometryN(ST_Collect(geom_point_fromod), 1) as geom_point_fromod, -- make the from_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); attention for from_zone_name == from_zone_geom
 		ST_GeometryN(ST_Collect(geom_point_tood), 1) as geom_point_tood, -- make the to_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); attention for from_zone_name == from_zone_geom
 		ST_GeometryN(ST_Collect(odconnect), 1) as odconnect -- make the line (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0])
 INTO TABLE public.odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
 	FROM public.odpair_LVM2035_23712030_onlyBAV
 	group by od_concat;
+
+select * from public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 CREATE INDEX scen1_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen1_common); -- index on affected utility column
 CREATE INDEX scen2_index ON public.odpair_LVM2035_11856015_onlyBAV_groupedBF(u_ample_scen2_society); -- index on affected utility column
@@ -103,13 +107,19 @@ select round(avg(u_ample_scen5_societyTec)::numeric, 4) as scen5_avg, round(stdd
 
 
 
--- LaTeX-parsed selects for top connections: 
+-- LaTeX-parsed selects _IMPEDANCES_ for top connections: 
 select '$', row_number() over(order by u_ample_scen1_common desc),		'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen1_common::numeric, 4), 		'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen1.u_scen1p1_common_top10 	order by u_ample_scen1_common desc;
 select '$', row_number() over(order by u_ample_scen2_society desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen2_society::numeric, 4), 		'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen2.u_scen2p1_society_top10 	order by u_ample_scen2_society desc;
 select '$', row_number() over(order by u_ample_scen3_technology desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen3_technology::numeric, 4), 	'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen3.u_scen3p1_technology_top10 order by u_ample_scen3_technology desc;
 select '$', row_number() over(order by u_ample_scen4_operator desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen4_operator::numeric, 4), 		'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen4.u_scen4p1_operator_top10 	order by u_ample_scen4_operator desc;
 select '$', row_number() over(order by u_ample_scen5_societytec desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen5_societytec::numeric, 4), 	'$ & \makecell{$', round(imp_ttime[1]::numeric, 4), '$ \\ $', round(imp_ttime[2]::numeric, 4), '$} & \makecell{$', round(imp_distance[1]::numeric, 4), '$ \\ $', round(imp_distance[2]::numeric, 4), '$} & \makecell{$', round(imp_demand[1]::numeric, 4), '$ \\ $', round(imp_demand[2]::numeric, 4), '$} & $', round(directdist[1]::numeric, 4), '$ \\' from public4qgis_scen5.u_scen5p1_societytec_top10 order by u_ample_scen5_societytec desc;
 
+-- LaTeX-parsed selects _ABS-VALUES_ for top connections: 
+select '$', row_number() over(order by u_ample_scen1_common desc),		'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen1_common::numeric, 4), 		'$ & \makecell{$', round(ttime_ratio[1]::numeric, 4), '$ \\ $', round(ttime_ratio[2]::numeric, 4), '$} & $', round(directdist[2]::numeric, 4), '$ & \makecell{$', round(demand_all_person_purged[1]::numeric, 4), '$ \\ $', round(demand_all_person_purged[2]::numeric, 4), '$} \\' from public4qgis_scen1.u_scen1p1_common_top10 	order by u_ample_scen1_common desc;
+select '$', row_number() over(order by u_ample_scen2_society desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen2_society::numeric, 4), 		'$ & \makecell{$', round(ttime_ratio[1]::numeric, 4), '$ \\ $', round(ttime_ratio[2]::numeric, 4), '$} & $', round(directdist[2]::numeric, 4), '$ & \makecell{$', round(demand_all_person_purged[1]::numeric, 4), '$ \\ $', round(demand_all_person_purged[2]::numeric, 4), '$} \\' from public4qgis_scen2.u_scen2p1_society_top10 	order by u_ample_scen2_society desc;
+select '$', row_number() over(order by u_ample_scen3_technology desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen3_technology::numeric, 4), 	'$ & \makecell{$', round(ttime_ratio[1]::numeric, 4), '$ \\ $', round(ttime_ratio[2]::numeric, 4), '$} & $', round(directdist[2]::numeric, 4), '$ & \makecell{$', round(demand_all_person_purged[1]::numeric, 4), '$ \\ $', round(demand_all_person_purged[2]::numeric, 4), '$} \\' from public4qgis_scen3.u_scen3p1_technology_top10 order by u_ample_scen3_technology desc;
+select '$', row_number() over(order by u_ample_scen4_operator desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen4_operator::numeric, 4), 		'$ & \makecell{$', round(ttime_ratio[1]::numeric, 4), '$ \\ $', round(ttime_ratio[2]::numeric, 4), '$} & $', round(directdist[2]::numeric, 4), '$ & \makecell{$', round(demand_all_person_purged[1]::numeric, 4), '$ \\ $', round(demand_all_person_purged[2]::numeric, 4), '$} \\' from public4qgis_scen4.u_scen4p1_operator_top10 	order by u_ample_scen4_operator desc;
+select '$', row_number() over(order by u_ample_scen5_societytec desc), 	'$ &', fromzone_name, '--', tozone_name, '& $', round(u_ample_scen5_societytec::numeric, 4), 	'$ & \makecell{$', round(ttime_ratio[1]::numeric, 4), '$ \\ $', round(ttime_ratio[2]::numeric, 4), '$} & $', round(directdist[2]::numeric, 4), '$ & \makecell{$', round(demand_all_person_purged[1]::numeric, 4), '$ \\ $', round(demand_all_person_purged[2]::numeric, 4), '$} \\' from public4qgis_scen5.u_scen5p1_societytec_top10 order by u_ample_scen5_societytec desc;
 
 -- Select top connections as SQL
 select * from public4qgis_scen1.u_scen1p1_common_top10 		order by u_ample_scen1_common desc;

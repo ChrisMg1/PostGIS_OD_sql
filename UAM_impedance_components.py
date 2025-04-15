@@ -187,7 +187,7 @@ plt.ylabel('UAM Impedance (normalized)')
 # Plot vertiport throughput
 plt.axvline(p_thresh_in * 1, color='red', linestyle='dashed', linewidth=1)
 
-#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 #plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
@@ -216,7 +216,7 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.axvline(shift_left_demand * 1, color='green', linestyle='dashed', linewidth=1) # min
 plt.axvline(shift_right_demand * 1, color='red', linestyle='dashed', linewidth=1) # max
 
-#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()

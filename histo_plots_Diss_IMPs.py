@@ -127,7 +127,7 @@ plt.xlabel('Intermediate impedance $\mathregular{R_{demand}}$ [unitless]')
 plt.ylabel('Frequency (n=' + format(len(df['imp_demand']), ',') + ')')
 #plt.ylim( (pow(10,0),pow(10,8)) )
 y, x, _ = plt.hist(df['imp_demand'], bins='doane', color='coral', log=True)
-#plt.savefig(output_folder + 'scen0_3b_imp_demand_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig(output_folder + 'scen0_3b_imp_demand_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_3b_imp_demand_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
@@ -188,7 +188,7 @@ y, x, _ = plt.hist(df['imp_tot_scen2_society'], bins='doane', color='darkviolet'
 plt.axvline(0.0, color='darkviolet', linestyle='dashed', linewidth=1)
 plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 
-#plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
@@ -208,7 +208,7 @@ y, x, _ = plt.hist(df2['u_ample_scen2_society'], bins='doane', color='forestgree
 plt.axvline(0.25, color='forestgreen', linestyle='dashed', linewidth=1)
 plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
 
-#plt.savefig(output_folder + 'UA_scen2_society_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
+plt.savefig(output_folder + 'UA_scen2_society_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen2_society_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
