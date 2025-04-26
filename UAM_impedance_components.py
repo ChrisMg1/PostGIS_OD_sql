@@ -19,7 +19,7 @@ import cm_params
 def bathtub2 (x_in, l, r, a1l, a1r):
     if (x_in > 2.0 * r):   # avoid out-of-range errors; ONLY FOR 'U'-SHAPE !!! threshold seems sufficient for bathtub, not for logit
         return 1.0
-    elif (x_in < ((l + r) / 2)):
+    elif (x_in < ((l + r) / 2.0)):
         return (1.0 / (1.0 + np.exp( a1l * (x_in - l)) ))
     elif (x_in >= ((l + r) / 2.0)):
         return (1.0 / (1.0 + np.exp(-a1r * (x_in - r)) ))
@@ -43,13 +43,13 @@ def TTIME_Logit(x_in, p, a2):
         raise ValueError("CM: Invalid Thresholds etc.")
 
 
-output_folder_ic = 'C:/Users/chris/plots/v03/factorFunctions/'
+output_folder_ic = 'C:/Users/chris/plots/v04/factorFunctions/'
 
 print('(1) Plot distance impedence (bathtub)')
 
 ## Set parameters
-shift_left_dist = 75.0
-shift_right_dist = 350.0
+shift_left_dist = 60.0 # minimum limit according to Rothfeld et. al.
+shift_right_dist = 300.0 # from lit. review (Lilium distance)
 a1l_in_dist = 0.1
 a1r_in_dist = 0.1
 
@@ -66,6 +66,11 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.plot(x_dist, bathtub_vals)
 plt.xlabel('Distance [km]')
 plt.ylabel('UAM Impedance (normalized)')
+
+# Plot demand window
+plt.axvline(shift_left_dist * 1, color='green', linestyle='dashed', linewidth=1) # min
+plt.axvline(shift_right_dist * 1, color='red', linestyle='dashed', linewidth=1) # max
+
 #plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -132,7 +137,7 @@ plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
 #plt.savefig(output_folder_ic + 'Imp_demand_Maxwell.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 #plt.savefig(output_folder_ic + 'Imp_demand_Maxwell.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
-plt.show()
+#plt.show()
 plt.clf()
 
 
@@ -157,7 +162,7 @@ plt.xlabel('Demand [PAX / flight]')
 plt.ylabel('UAM Impedance (normalized)')
 #plt.savefig(output_folder_ic + 'Imp_PAXperFLIGHT_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 #plt.savefig(output_folder_ic + 'Imp_PAXperFLIGHT_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
-plt.show()
+#plt.show()
 plt.clf()
 
 
@@ -187,17 +192,17 @@ plt.ylabel('UAM Impedance (normalized)')
 # Plot vertiport throughput
 plt.axvline(p_thresh_in * 1, color='red', linestyle='dashed', linewidth=1)
 
-plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 #plt.savefig(output_folder_ic + 'Imp_PAXperDAY_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
-plt.show()
+#plt.show()
 plt.clf()
 
 
 print('(4.2) With minimum (bathtub2)')
 
 ## Set parameters
-shift_left_demand = 96.0 # 24 * 4: Approx. 1 flight per hour
-shift_right_demand = 768.0 # 32.0 * 24.0: According paper Lukas
+shift_left_demand = 48.0 # Approx. 1 flight per hour: 24*4=96 _OR_ 12 flights per day: 12*4=48
+shift_right_demand = 768.0 # 32.0*24.0=768: According paper Lukas, 32 PAX per hour
 a1l_in_demand = 0.1
 a1r_in_demand = 0.1
 
@@ -216,7 +221,7 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.axvline(shift_left_demand * 1, color='green', linestyle='dashed', linewidth=1) # min
 plt.axvline(shift_right_demand * 1, color='red', linestyle='dashed', linewidth=1) # max
 
-plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()

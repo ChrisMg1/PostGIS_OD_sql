@@ -10,7 +10,7 @@
 -- now we have the intermediate impedances. In further scripts the combined impedances, the total impedance and the utilities can be calculated. 
 
 
--- RUN whole script (not line by line); Maybe delete existing functions first. 
+-- RUN whole script (not line by line); Maybe delete existing functions first. (takes ~ 5.5h)
 
 DROP FUNCTION IF EXISTS CM_TTIME_LOGIT_WEIGHT;
 CREATE OR REPLACE FUNCTION CM_TTIME_LOGIT_WEIGHT(
@@ -20,8 +20,6 @@ CREATE OR REPLACE FUNCTION CM_TTIME_LOGIT_WEIGHT(
 	)
    RETURNS float8 AS
 $$
-DECLARE p_w float8 :=in_p;
-DECLARE a2_w float8 :=in_a2;
 
 BEGIN
    if (TTR_in > 3.0 * in_p) then  -- function would be out-of-range-error
@@ -60,10 +58,36 @@ DECLARE
 BEGIN
    if (in_dist_demand > 2.0 * v_shift_r) then	-- avoid out-of-range errors; threshold is adjustable
 		return 1.0;
-   elsif (in_dist_demand < ((v_shift_l + v_shift_r) / 2)) then
+   elsif (in_dist_demand < ((v_shift_l + v_shift_r) / 2.0)) then
         return (1.0 / (1.0 + exp( v_a_dist_l * (in_dist_demand - v_shift_l)) ));
-   elsif (in_dist_demand >= ((v_shift_l + v_shift_r) / 2)) then
+   elsif (in_dist_demand >= ((v_shift_l + v_shift_r) / 2.0)) then
         return (1.0 / (1.0 + exp(-v_a_dist_r * (in_dist_demand - v_shift_r)) ));
+   else
+   		return -1; -- should not happen; just test if function works
+   end if;
+   exception when others then 
+        raise exception 'Value out of range for in_dist_demand= %', in_dist_demand;
+END;
+$$ language 'plpgsql' STRICT;
+
+
+DROP FUNCTION IF exists CM_DISTANCE_DEMAND_BATHTUB2ast;
+CREATE OR REPLACE FUNCTION CM_DISTANCE_DEMAND_BATHTUB2ast(
+    in_dist_demand float8,
+	in_shift_l float8, 
+    in_shift_r float8, 
+    in_a_dist_l float8,
+    in_a_dist_r float8
+	)
+RETURNS float8 AS
+$$
+BEGIN
+   if (in_dist_demand > 2.0 * in_shift_r) then	-- avoid out-of-range errors; threshold is adjustable
+		return 1.0;
+   elsif (in_dist_demand < ((in_shift_l + in_shift_r) / 2.0)) then
+        return (1.0 / (1.0 + exp( in_a_dist_l * (in_dist_demand - in_shift_l)) ));
+   elsif (in_dist_demand >= ((in_shift_l + in_shift_r) / 2.0)) then
+        return (1.0 / (1.0 + exp(-in_a_dist_r * (in_dist_demand - in_shift_r)) ));
    else
    		return -1; -- should not happen; just test if function works
    end if;
@@ -102,10 +126,10 @@ alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand 
 -- Now: Bathtub function for both demand and distance impedance
 update only odpair_LVM2035_23712030_onlyBAV set 
 	imp_ttime = CM_TTIME_LOGIT_WEIGHT(ttime_ratio, 1.0, 5.0),
-	imp_distance = CM_DISTANCE_DEMAND_BATHTUB2(directdist, 75.0, 350.0, 0.1, 0.1),
-    imp_demand = CM_DISTANCE_DEMAND_BATHTUB2(demand_all_person_purged, 96.0, 768.0, 0.1, 0.1);   -- min: 1 flight per hour (4PAX * 24 h); max: Lukas paper: 32 PAX per hour (32*24); "old" was PAX per flight
+	imp_distance = CM_DISTANCE_DEMAND_BATHTUB2ast(directdist, 60.0, 300.0, 0.1, 0.1),
+    imp_demand = CM_DISTANCE_DEMAND_BATHTUB2ast(demand_all_person_purged, 48.0, 768.0, 0.1, 0.1);   -- min: 12 flight per day (4PAX * 12); max: Lukas paper: 32 PAX per hour (32*24); "old" was PAX per flight
 
-
+    
 -- RUN whole script (not line by line) !
 
 -- todo: optimum demand prüfen; select...
