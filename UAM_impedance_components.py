@@ -71,19 +71,10 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.axvline(shift_left_dist * 1, color='green', linestyle='dashed', linewidth=1) # min
 plt.axvline(shift_right_dist * 1, color='red', linestyle='dashed', linewidth=1) # max
 
-#plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
-
-print(350.0 * 2.0)
-print(bathtub2(698, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(699, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(700, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(701, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-print(bathtub2(702, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
-
-print(bathtub2(500, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist))
 
 print('(2) Plot travel time impedance (Logit)')
 
@@ -107,7 +98,7 @@ plt.ylabel('UAM Impedance (normalized)')
 
 # Plot singularity
 # plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
-#plt.savefig(output_folder_ic + 'Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 plt.savefig(output_folder_ic + 'Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
@@ -221,7 +212,7 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.axvline(shift_left_demand * 1, color='green', linestyle='dashed', linewidth=1) # min
 plt.axvline(shift_right_demand * 1, color='red', linestyle='dashed', linewidth=1) # max
 
-#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
 plt.savefig(output_folder_ic + 'Imp_PAXperDAY_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
