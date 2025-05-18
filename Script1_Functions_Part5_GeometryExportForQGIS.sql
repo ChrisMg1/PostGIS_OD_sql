@@ -1,10 +1,36 @@
---- make subtable subtables for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis_...')
+--- this script
+-- 1) Groups the connections to 'back-and-firth ('BF')
+-- 2) make subtable subtables (i.e. schemas) for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis_...')
 -- calculate top percentiles, including top 10 with formula
 
 --- this 'select into' has to be run after every update of impedances or utilities AND preceding update of 'odpair_LVM2035_11856015_onlyBAV_groupedBF'
 -- takes only 6 minutes ca. 
 
-
+--- this 'select into' has to be run after every update of impedances or utilities. Takes <10min
+select	(array_agg(fromzone_name))[1] as fromzone_name, -- make the from_zone an array, then only retain 1st element (sic! [1] not [0])
+		(array_agg(tozone_name))[1] as tozone_name, -- make the to_zone an array, then only retain 1st element (sic! [1] not [0])		
+		array_agg(imp_ttime) as imp_ttime,
+		array_agg(imp_distance) as imp_distance,
+		array_agg(imp_demand) as imp_demand,
+		array_agg(imp_tot_scen1_common) as imp_tot_scen1_common,
+		array_agg(imp_tot_scen2_society) as imp_tot_scen2_society,
+		array_agg(imp_tot_scen3_technology) as imp_tot_scen3_technology,
+		array_agg(imp_tot_scen4_operator) as imp_tot_scen4_operator,
+		array_agg(imp_tot_scen5_societyTec) as imp_tot_scen5_societyTec,
+		max(u_ample_scen1_common) as u_ample_scen1_common,
+		max(u_ample_scen2_society) as u_ample_scen2_society,
+		max(u_ample_scen3_technology) as u_ample_scen3_technology,
+		max(u_ample_scen4_operator) as u_ample_scen4_operator,
+		max(u_ample_scen5_societyTec) as u_ample_scen5_societyTec,
+		array_agg(ttime_ratio) as ttime_ratio,
+		array_agg(directdist) as directdist,
+		array_agg(demand_all_person_purged) as demand_all_person_purged,
+		ST_GeometryN(ST_Collect(geom_point_fromod), 1) as geom_point_fromod, -- make the from_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); attention for from_zone_name == from_zone_geom
+		ST_GeometryN(ST_Collect(geom_point_tood), 1) as geom_point_tood, -- make the to_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); attention for from_zone_name == from_zone_geom
+		ST_GeometryN(ST_Collect(odconnect), 1) as odconnect -- make the line (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0])
+INTO TABLE public.odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
+	FROM public.odpair_LVM2035_23712030_onlyBAV
+	group by od_concat;
 
 -- 1111111111111111111111111111111111111111111111111111111
 -- Scenario 1: Common scenario (equal weighting)

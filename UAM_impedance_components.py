@@ -16,7 +16,7 @@ from scipy.stats import maxwell
 
 import cm_params
 
-def bathtub2 (x_in, li, re, a1l, a1r, transp, Nmultip):
+def bathtub2(x_in, li, re, a1l, a1r, transp, Nmultip):
     l = Nmultip * li
     r = Nmultip * re    
     if (x_in > 2.0 * r):   # avoid out-of-range errors; ONLY FOR 'U'-SHAPE !!! threshold seems sufficient for bathtub, not for logit
@@ -33,14 +33,14 @@ def PAX_max(x_in, d, w, s):
 	return 1.0-d*maxwell.pdf(w*(x_in - s))
 
 def TTIME_Logit(x_in, p, a2):
-    if (x_in > 3.0 * (p+1)):   # avoid out-of-range errors
+    if (x_in > 3.0 * p):   # avoid out-of-range errors
         if (a2 >= 0.0):
             return 0.0
         elif (a2 < 0.0):
             return 1.0
         else:
             raise ValueError("CM: Invalid Thresholds etc.")
-    elif (x_in <= 3.0 * (p+1)):
+    elif (x_in <= 3.0 * p):
         return (1.0 / (1.0 + np.exp(a2 * (x_in - p)) ))
     else:
         raise ValueError("CM: Invalid Thresholds etc.")
@@ -59,11 +59,11 @@ transition_point = 0.5 # Transition from left-hand (logit) function to right-han
 
 bathtub_vals = []
 
-max_dist = 500
-x_dist = np.arange(0.0, max_dist, 0.01).tolist()
+
+x_dist = np.arange(0.0, 500, 0.01).tolist()
 
 for i in x_dist:
-    bathtub_vals.append(bathtub2(i, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist, transition_point, 1))
+    bathtub_vals.append(bathtub2(i, shift_left_dist, shift_right_dist, a1l_in_dist, a1r_in_dist, transition_point, 1.0))
 
 plt.figure()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
@@ -110,8 +110,7 @@ plt.clf()
 
 #### (3.0) Passengers
 
-max_PAX = 15
-x_PAX = np.arange(0.0, max_PAX, 0.01).tolist()
+x_PAX = np.arange(0.0, 15, 0.01).tolist()
 
 print('(3.1) Plot vehicle capacity impedence (Maxwell)')
 
@@ -149,7 +148,7 @@ transition_point = 0.5 # Transition from left-hand (logit) function to right-han
 PAX_vals2 = []
 
 for i in x_PAX:
-    PAX_vals2.append(bathtub2(i, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax, transition_point, 1))
+    PAX_vals2.append(bathtub2(i, shift_left_PAX, shift_right_PAX, a1l_in_pax, a1r_in_pax, transition_point, 1.0))
 
 plt.figure()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
@@ -165,7 +164,7 @@ plt.clf()
 #### (4.0) Total demand threshold
 
 
-x_demand = np.arange(0.0, 2500, 0.5).tolist() # ggf. wieder auf 1000 und 0.1
+x_demand = np.arange(0.0, 2500, 0.01).tolist()
 
 print('(4.1) No minimum (Logit)')
 
@@ -208,7 +207,7 @@ transition_point = 0.5 # Transition from left-hand (logit) function to right-han
 demand_threshold_bathtub = []
 
 for i in x_demand:
-    demand_threshold_bathtub.append(bathtub2(i, shift_left_demand, shift_right_demand, a1l_in_demand, a1r_in_demand, transition_point, 1))
+    demand_threshold_bathtub.append(bathtub2(i, shift_left_demand, shift_right_demand, a1l_in_demand, a1r_in_demand, transition_point, 1.0))
 
 plt.figure()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
@@ -232,7 +231,7 @@ print('(4.3) With minimum, playing around (bathtub2/LogBath)')
 
 shift_left_demand = 288.0 # e.g. 24*3*4=288 or 24*4=96 _OR_ 12 flights per day: 12*4=48
 shift_right_demand = 768.0 # 32.0*24.0=768: According paper Lukas, 32 PAX per hour
-a1l_in_demand = 0.02
+a1l_in_demand = 0.02  # 0.02
 a1r_in_demand = 0.1
 transition_point = 0.65 # Transition from left-hand (logit) function to right-hand (logit) function
 
