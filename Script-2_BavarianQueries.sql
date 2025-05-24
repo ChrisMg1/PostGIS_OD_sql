@@ -53,6 +53,7 @@ select '$' || round(min(u_ample_scen5_societyTec)::numeric, 4)	|| '$ & $' || rou
 
 
 --- quantiles for each scenario to copy to LaTeX
+
 ---- all qantiles and avg/std for scenario 1 (!! Only select, NO 'into...')
 select  
   '$' || round((percentile_disc(1.0-(9.0 / 11856015.0)) within group (order by odpair_LVM2035_11856015_onlyBAV_groupedBF.u_ample_scen1_common))::numeric, 4) || '$ & ' as scen1_top10, --attention: GroupedBF = 1/2 "onlyBav"

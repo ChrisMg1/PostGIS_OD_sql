@@ -256,4 +256,3 @@ plt.ylabel('UAM Impedance (normalized)')
 plt.savefig(output_folder_ic + 'Imp_PAXperDAY_LogBath.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
-

@@ -50,9 +50,9 @@ axes = plt.axes()
 plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('Travel Time Ratio PuT/PrT [min/min]')
 plt.ylabel('Frequency (n=' + format(len(df['ttime_ratio']), ',') + ')')
-y, x, _ = plt.hist(df['ttime_ratio'], bins='doane', color='blue', range=[0, 12])  # x-range limited due to arbitrary calibration values
-plt.axvline(df['ttime_ratio'][df.ttime_ratio <= 12.0].mean(), color='r', linestyle='dashed', linewidth=1)
-plt.text(df['ttime_ratio'][df.ttime_ratio <= 12.0].mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['ttime_ratio'][df.ttime_ratio <= 12.0].mean()), color = 'r')
+y, x, _ = plt.hist(df['ttime_ratio'], bins='doane', color='blue', range=[0, 10])  # x-range limited due to arbitrary calibration values
+plt.axvline(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean(), color='r', linestyle='dashed', linewidth=1)
+plt.text(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean()), color = 'r')
 plt.savefig(output_folder + 'scen0_1a_ttime_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_1a_ttime_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -184,7 +184,7 @@ y, x, _ = plt.hist(df['imp_tot_scen2_society'], bins='doane', color='darkviolet'
 plt.axvline(0.0, color='darkviolet', linestyle='dashed', linewidth=1)
 plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 
-plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
+#plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
@@ -204,7 +204,7 @@ y, x, _ = plt.hist(df2['u_ample_scen2_society'], bins='doane', color='forestgree
 plt.axvline(0.25, color='forestgreen', linestyle='dashed', linewidth=1)
 plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
 
-plt.savefig(output_folder + 'UA_scen2_society_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
+#plt.savefig(output_folder + 'UA_scen2_society_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen2_society_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()

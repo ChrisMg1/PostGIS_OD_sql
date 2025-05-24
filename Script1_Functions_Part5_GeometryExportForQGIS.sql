@@ -6,6 +6,7 @@
 --- this 'select into' has to be run after every update of impedances or utilities AND preceding update of 'odpair_LVM2035_11856015_onlyBAV_groupedBF'
 -- takes only 6 minutes ca. 
 
+
 --- this 'select into' has to be run after every update of impedances or utilities. Takes <10min
 select	(array_agg(fromzone_name))[1] as fromzone_name, -- make the from_zone an array, then only retain 1st element (sic! [1] not [0])
 		(array_agg(tozone_name))[1] as tozone_name, -- make the to_zone an array, then only retain 1st element (sic! [1] not [0])		
