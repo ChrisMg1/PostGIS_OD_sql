@@ -46,7 +46,7 @@ def TTIME_Logit(x_in, p, a2):
         raise ValueError("CM: Invalid Thresholds etc.")
 
 
-output_folder_ic = 'C:/Users/chris/plots/v06/factorFunctions/'
+output_folder_ic = 'C:/Users/chris/plots/v07/factorFunctions/'
 
 print('(1) Plot distance impedence (bathtub)')
 

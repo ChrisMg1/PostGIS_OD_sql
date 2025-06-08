@@ -14,23 +14,23 @@
 
 DROP FUNCTION IF EXISTS CM_TTIME_LOGIT_WEIGHT;
 CREATE OR REPLACE FUNCTION CM_TTIME_LOGIT_WEIGHT(
-	TTR_in float8,
-	in_p float8,
-	in_a2 float8
+	sql_x_in float8,
+	sql_p float8,
+	sql_a2 float8
 	)
    RETURNS float8 AS
 $$
 BEGIN
-   if (TTR_in > 3.0 * in_p) then  -- function would be out-of-range-error
-        if (in_a2 >= 0.0) then
+   if (sql_x_in > 3.0 * sql_p) then  -- function would be out-of-range-error
+        if (sql_a2 >= 0.0) then
             return 0.0;
-        elsif (in_a2 < 0.0) then
+        elsif (sql_a2 < 0.0) then
             return 1.0;
         else
             raise exception 'CM: Something wrong';
 	    end if;
-    elsif (TTR_in <= 3.0 * in_p) then
-        return (1.0 / (1.0 + exp(in_a2 * (TTR_in - in_p)) ));
+    elsif (sql_x_in <= 3.0 * sql_p) then
+        return (1.0 / (1.0 + exp(sql_a2 * (sql_x_in - sql_p)) ));
     else
         raise exception 'CM: Something wrong 1';
 	end if;
@@ -42,31 +42,31 @@ $$ language 'plpgsql' STRICT;
 
 DROP FUNCTION IF exists CM_DISTANCE_DEMAND_BATHTUB2ast; -- no redundant 'declare'
 CREATE OR REPLACE FUNCTION CM_DISTANCE_DEMAND_BATHTUB2ast(
-    in_dist_demand float8,
-	in_shift_li float8,
-    in_shift_re float8,
-    in_a_dist_l float8,
-    in_a_dist_r float8,
-    transp float8,
-    Nmultip float8
+    sql_x_in float8,
+	sql_li float8,
+    sql_re float8,
+    sql_a1l float8,
+    sql_a1r float8,
+    sql_transp float8,
+    sql_Nmultip float8
 	)
 RETURNS float8 AS
 $$
 DECLARE
-   in_shift_l float8 := Nmultip * in_shift_li;
-   in_shift_r float8 := Nmultip * in_shift_re;
+   sql_l float8 := sql_Nmultip * sql_li;
+   sql_r float8 := sql_Nmultip * sql_re;
 BEGIN
-   if (in_dist_demand > 2.0 * in_shift_r) then	-- avoid out-of-range errors; threshold is adjustable
+   if (sql_x_in > 2.0 * sql_r) then	-- avoid out-of-range errors; threshold is adjustable
 		return 1.0;
-   elsif (in_dist_demand <  ((in_shift_l + in_shift_r) * transp)) then
-        return (1.0 / (1.0 + exp( in_a_dist_l * (in_dist_demand - in_shift_l)) ));
-   elsif (in_dist_demand >= ((in_shift_l + in_shift_r) * transp)) then
-        return (1.0 / (1.0 + exp(-in_a_dist_r * (in_dist_demand - in_shift_r)) ));
+   elsif (sql_x_in <  ((sql_l + sql_r) * sql_transp)) then
+        return (1.0 / (1.0 + exp( sql_a1l * (sql_x_in - sql_l)) ));
+   elsif (sql_x_in >= ((sql_l + sql_r) * sql_transp)) then
+        return (1.0 / (1.0 + exp(-sql_a1r * (sql_x_in - sql_r)) ));
    else
    		return -1; -- should not happen; just test if function works
    end if;
    exception when others then 
-        raise exception 'Value out of range for in_dist_demand= %', in_dist_demand;
+        raise exception 'Value out of range for sql_x_in= %', sql_x_in;
 END;
 $$ language 'plpgsql' STRICT;
 
