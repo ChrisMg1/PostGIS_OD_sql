@@ -1,6 +1,6 @@
 -- todo: summe der weights und schauen, was das minimum ist; es sind m. E. immer nur 2 auf einmal "0"
 
--- Script Part 2 (takes approx. 11.5 h)
+-- Script Part 2 (takes approx. 11.5 h or 4.5 h)
 
 --- This script does the following
 ---- 1) it takes the intermediate impedances from the preceding script
