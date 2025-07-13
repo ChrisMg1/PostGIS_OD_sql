@@ -8,7 +8,8 @@
 ALTER TABLE odpair_LVM2035_23712030_onlyBAV
 	ADD COLUMN IF NOT EXISTS geom_point_fromOD geometry(Point),
 	ADD COLUMN IF NOT EXISTS geom_point_toOD geometry(Point),
-	ADD COLUMN IF NOT EXISTS ODconnect geometry(Linestring);
+	ADD COLUMN IF NOT EXISTS ODconnect geometry(Linestring),
+	ADD COLUMN IF NOT EXISTS od_concat text;
 	
 	
 -- ADD COLUMN IF NOT EXISTS allpoints geometry(Point); -- planned as merge/union to have all start/end-points only once. 
@@ -19,10 +20,23 @@ UPDATE odpair_LVM2035_23712030_onlyBAV SET
 	geom_point_fromOD = st_setsrid(st_makepoint(fromzone_xcoord, fromzone_ycoord), 32632),
 	geom_point_toOD = st_setsrid(st_makepoint(tozone_xcoord, tozone_ycoord), 32632);
 
-
 UPDATE odpair_LVM2035_23712030_onlyBAV
 	set	ODconnect = st_makeline(geom_point_fromOD, geom_point_toOD);
 
+
+
+
+-- Merge back-and-forth connections for _final evaluation_
+--- 1) Concatenate
+UPDATE odpair_LVM2035_23712030_onlyBAV set
+	od_concat = CONCAT(LEAST(fromzone_no, tozone_no), '-', GREATEST(fromzone_no, tozone_no));
+
+---1.1) Index
+CREATE EXTENSION btree_gist;
+
+CREATE INDEX od_merge_idx
+  ON odpair_LVM2035_23712030_onlyBAV
+  USING GIST (od_concat);
 --- Create geometry indexes
 	
 CREATE INDEX fromOD_geom_idx
@@ -38,19 +52,6 @@ CREATE INDEX conn_geom_idx
   USING GIST (ODconnect);
 
 
--- Merge back-and-forth connections for _final evaluation_
---- 0) Create Column
-ALTER TABLE odpair_LVM2035_23712030_onlyBAV ADD COLUMN IF NOT EXISTS od_concat text;
---- 1) Concatenate
-UPDATE odpair_LVM2035_23712030_onlyBAV set
-	od_concat = CONCAT(LEAST(fromzone_no, tozone_no), '-', GREATEST(fromzone_no, tozone_no));
-
----1.1) Index
-CREATE EXTENSION btree_gist;
-
-CREATE INDEX od_merge_idx
-  ON odpair_LVM2035_23712030_onlyBAV
-  USING GIST (od_concat);
 
 --- 2) Merge into new table --TODO, TEST at the moment, merge by avg(U) in the end
 SELECT COUNT(*) FROM (SELECT DISTINCT od_concat FROM odpair_LVM2035_23712030_onlyBAV) AS temp; --first: count possible/future rows

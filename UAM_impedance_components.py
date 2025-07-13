@@ -16,6 +16,14 @@ from scipy.stats import maxwell
 
 import cm_params
 
+plt.rc('font', size=cm_params.SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=cm_params.SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=cm_params.MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=cm_params.SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=cm_params.SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=cm_params.SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=cm_params.BIGGER_SIZE)  # fontsize of the figure title
+
 def bathtub2(x_in, li, re, a1l, a1r, transp, Nmultip):
     l = Nmultip * li
     r = Nmultip * re    
@@ -76,7 +84,7 @@ plt.axvline(shift_left_dist * 1, color='green', linestyle='dashed', linewidth=1)
 plt.axvline(shift_right_dist * 1, color='red', linestyle='dashed', linewidth=1) # max
 
 #plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_Distance_bathtub2.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -103,7 +111,7 @@ plt.ylabel('UAM Impedance (normalized)')
 # Plot singularity
 # plt.scatter(0, 1, s=100, facecolors='none', edgecolors='#1f77b4')
 #plt.savefig(output_folder_ic + 'Imp_TTratio_logit.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig(output_folder_ic + 'Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_TTratio_logit.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
 
@@ -253,6 +261,6 @@ plt.ylabel('UAM Impedance (normalized)')
 #plt.axvline(shift_right_demand * 1, color='red', linestyle='dashed', linewidth=1) # max
 
 #plt.savefig(output_folder_ic + 'Imp_PAXperDAY_LogBath.png', dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-plt.savefig(output_folder_ic + 'Imp_PAXperDAY_LogBath.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
+#plt.savefig(output_folder_ic + 'Imp_PAXperDAY_LogBath.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
