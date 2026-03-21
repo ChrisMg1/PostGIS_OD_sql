@@ -2,7 +2,7 @@
 -- create a column with passengers x travel time for each row traditional transport (filter for high metric values afterwards)
 
 
-SELECT count(*) from  odpair_lvm2035_11856015_onlybav_groupedbf where fromzone_name != tozone_name;
+SELECT count(*) from  odpair_lvm2035_11856015_onlybav_groupedbf where fromzone_name = tozone_name; --test;
 
 
 alter table lvm_od_onlybav add column IF NOT EXISTS PAX_h_BASE float;
