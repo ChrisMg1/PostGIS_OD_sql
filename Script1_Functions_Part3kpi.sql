@@ -3,7 +3,7 @@
 
 
 SELECT count(*) from  odpair_lvm2035_11856015_onlybav_groupedbf where fromzone_name = tozone_name; --test;
-
+SELECT * from  odpair_lvm2035_11856015_onlybav_groupedbf limit 15;
 
 alter table lvm_od_onlybav add column IF NOT EXISTS PAX_h_BASE float;
 -- ...and UAM

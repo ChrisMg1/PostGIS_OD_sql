@@ -95,13 +95,13 @@ $$ language 'plpgsql' STRICT;
 
 -- Add a column with the respective impedances from the above functions
 -- Temp for some double-checks and comparisons
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_ttime float8;
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_distance float8;
-alter table odpair_LVM2035_23712030_onlyBAV add column IF NOT EXISTS imp_demand float8;
+alter table odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS imp_ttime float8;
+alter table odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS imp_distance float8;
+alter table odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS imp_demand float8;
 
 
 -- Now: Bathtub function for both demand and distance impedance
-update only odpair_LVM2035_23712030_onlyBAV set 
+update only odpair_LVM2035_23712030_onlyBAV_restored set 
 	imp_ttime = CM_TTIME_LOGIT_WEIGHT(ttime_ratio, 1.0, 5.0),
 	imp_distance = CM_DISTANCE_DEMAND_BATHTUB2ast(directdist, 60.0, 300.0, 0.1, 0.1, 0.5, 1.0),
     imp_demand = CM_DISTANCE_DEMAND_BATHTUB2ast(demand_all_person_purged, 288.0, 768.0, 0.02, 0.1, 0.65, 1.0);   -- min: 12 flight per day (4PAX * 12); max: Lukas paper: 32 PAX per hour (32*24); "old" was PAX per flight

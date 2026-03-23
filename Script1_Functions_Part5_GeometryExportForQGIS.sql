@@ -6,39 +6,42 @@
 --- this 'select into' has to be run after every update of impedances or utilities AND preceding update of 'odpair_LVM2035_11856015_onlyBAV_groupedBF'
 -- takes only 6 minutes ca. 
 
-DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF_saveCOPY CASCADE;
+--DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF_saveCOPY CASCADE;
 
-CREATE TABLE public.odpair_LVM2035_11856015_onlyBAV_groupedBF_saveCOPY AS
-SELECT * FROM public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
+--CREATE TABLE public.odpair_LVM2035_11856015_onlyBAV_groupedBF_saveCOPY AS
+--SELECT * FROM public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
 
 DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF CASCADE;
 
 --- this 'select into' has to be run after every update of impedances or utilities. Takes <10min
 select	(array_agg(fromzone_name ORDER BY lower(fromzone_name)))[1] as fromzone_name, -- make the from_zone an array, then only retain 1st element (sic! [1] not [0])
-		(array_agg(tozone_name ORDER BY lower(tozone_name)))[2] as tozone_name, -- make the to_zone an array, then only retain 2nd element (sic! [2] not [1])		
-		array_agg(imp_ttime) as imp_ttime, -- informative, no need to sort the array
-		array_agg(imp_distance) as imp_distance, -- informative, no need to sort the array
-		array_agg(imp_demand) as imp_demand, -- informative, no need to sort the array
-		array_agg(imp_tot_scen1_common) as imp_tot_scen1_common, -- informative, no need to sort the array
-		array_agg(imp_tot_scen2_society) as imp_tot_scen2_society, -- informative, no need to sort the array
-		array_agg(imp_tot_scen3_technology) as imp_tot_scen3_technology, -- informative, no need to sort the array
-		array_agg(imp_tot_scen4_operator) as imp_tot_scen4_operator, -- informative, no need to sort the array
-		array_agg(imp_tot_scen5_societyTec) as imp_tot_scen5_societyTec, -- informative, no need to sort the array
+		(array_agg(tozone_name ORDER BY lower(fromzone_name)))[1] as tozone_name, -- make the to_zone an array, then only retain 2nd element (sic! [2] not [1])		
+		array_agg(imp_ttime ORDER BY lower(fromzone_name)) as imp_ttime,
+		array_agg(imp_distance ORDER BY lower(fromzone_name)) as imp_distance,
+		array_agg(imp_demand ORDER BY lower(fromzone_name)) as imp_demand,
+		array_agg(imp_tot_scen1_common ORDER BY lower(fromzone_name)) as imp_tot_scen1_common,
+		array_agg(imp_tot_scen2_society ORDER BY lower(fromzone_name)) as imp_tot_scen2_society,
+		array_agg(imp_tot_scen3_technology ORDER BY lower(fromzone_name)) as imp_tot_scen3_technology,
+		array_agg(imp_tot_scen4_operator ORDER BY lower(fromzone_name)) as imp_tot_scen4_operator,
+		array_agg(imp_tot_scen5_societyTec ORDER BY lower(fromzone_name)) as imp_tot_scen5_societyTec,
 		max(u_ample_scen1_common) as u_ample_scen1_common,
 		max(u_ample_scen2_society) as u_ample_scen2_society,
 		max(u_ample_scen3_technology) as u_ample_scen3_technology,
 		max(u_ample_scen4_operator) as u_ample_scen4_operator,
 		max(u_ample_scen5_societyTec) as u_ample_scen5_societyTec,
-		array_agg(ttime_put) as ttime_put, -- informative, no need to sort the array
-		array_agg(ttime_prt) as ttime_prt, -- informative, no need to sort the array
-		array_agg(ttime_ratio) as ttime_ratio, -- informative, no need to sort the array
-		array_agg(directdist) as directdist, -- informative, no need to sort the array
-		array_agg(demand_all_person_purged) as demand_all_person_purged, -- informative, no need to sort the array
-		ST_GeometryN(ST_Collect(geom_point_fromod), 1) as geom_point_fromod, -- make the from_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom
-		ST_GeometryN(ST_Collect(geom_point_tood), 1) as geom_point_tood, -- make the to_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom
+		array_agg(ttime_put ORDER BY lower(fromzone_name)) as ttime_put,
+		array_agg(ttime_prt ORDER BY lower(fromzone_name)) as ttime_prt,
+		array_agg(ttime_ratio ORDER BY lower(fromzone_name)) as ttime_ratio,
+		array_agg(directdist ORDER BY lower(fromzone_name)) as directdist,
+		array_agg(demand_all_person_purged ORDER BY lower(fromzone_name)) as demand_all_person_purged,
+		array_agg(demand_put ORDER BY lower(fromzone_name)) as demand_put,
+		array_agg(sum_ttime_put ORDER BY lower(fromzone_name)) as sum_ttime_put,
+		array_agg(sum_ttime_put_with_uam ORDER BY lower(fromzone_name)) as sum_ttime_put_with_uam,		
+		ST_GeometryN(ST_Collect(geom_point_fromod ORDER BY lower(fromzone_name)), 1) as geom_point_fromod, -- make the from_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom
+		ST_GeometryN(ST_Collect(geom_point_tood ORDER BY lower(fromzone_name)), 1) as geom_point_tood, -- make the to_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom
 		ST_GeometryN(ST_Collect(odconnect), 1) as odconnect -- make the line (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array
 INTO TABLE public.odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Forth'
-	FROM public.odpair_LVM2035_23712030_onlyBAV
+	FROM public.odpair_LVM2035_23712030_onlyBAV_restored
 	group by od_concat;
 
 -- 1111111111111111111111111111111111111111111111111111111
