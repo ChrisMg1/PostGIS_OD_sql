@@ -80,3 +80,6 @@ update only public.odpair_LVM2035_23712030_onlyBAV_restored set
 	u_ample_scen5_societyTec = 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
 	sum_ttime_put = 			demand_put * ttime_put ,
 	sum_ttime_put_with_uam = 	ttime_with_uam(directdist, 300.0, ttime_put, demand_put, 768.0);
+
+select fromzone_name, tozone_name, demand_put from public.odpair_LVM2035_23712030_onlyBAV_restored where sum_ttime_put_with_uam = sum_ttime_put order by demand_put desc;
+select fromzone_name, tozone_name, demand_put, sum_ttime_put, sum_ttime_put_with_uam from public.odpair_LVM2035_23712030_onlyBAV_restored where sum_ttime_put_with_uam < sum_ttime_put order by sum_ttime_put desc;

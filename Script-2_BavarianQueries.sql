@@ -126,3 +126,23 @@ select * from public4qgis_scen2.u_scen2p1_society_top10 	order by u_ample_scen2_
 select * from public4qgis_scen3.u_scen3p1_technology_top10 	order by u_ample_scen3_technology desc;
 select * from public4qgis_scen4.u_scen4p1_operator_top10 	order by u_ample_scen4_operator desc;
 select * from public4qgis_scen5.u_scen5p1_societytec_top10 	order by u_ample_scen5_societytec desc;
+
+
+-- make travel time evaluations with and without UAM
+
+SELECT 
+  SUM(sum_ttime_put_combined) AS sum_ttime_put_combined,
+  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined
+FROM public4qgis_scen1.u_scen1p1_common_top10;
+
+SELECT 
+  SUM(sum_ttime_put_combined) AS sum_ttime_put_combined,
+  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined
+FROM public4qgis_scen1.u_scen1p2_common_top100;
+
+SELECT 
+  SUM(sum_ttime_put_combined) AS sum_ttime_put_combined,
+  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined
+FROM public4qgis_scen1.u_scen1p3_common_top10000;
+
+
