@@ -129,20 +129,43 @@ select * from public4qgis_scen5.u_scen5p1_societytec_top10 	order by u_ample_sce
 
 
 -- make travel time evaluations with and without UAM
+select * FROM public4qgis_scen1.u_scen1p1_common_top10 order by u_ample_scen1_common desc;
+select * FROM public4qgis_scen1.u_scen1p2_common_top100 order by u_ample_scen1_common desc;
+select * FROM public4qgis_scen1.u_scen1p3_common_top10000 order by u_ample_scen1_common desc;
 
 SELECT 
   SUM(sum_ttime_put_combined) AS sum_ttime_put_combined,
-  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined
+  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined,
+  avg(sum_ttime_put_combined) AS avg_ttime_put_combined,
+  avg(sum_ttime_put_with_uam_combined) AS avg_ttime_put_with_uam_combined
 FROM public4qgis_scen1.u_scen1p1_common_top10;
 
 SELECT 
   SUM(sum_ttime_put_combined) AS sum_ttime_put_combined,
-  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined
-FROM public4qgis_scen1.u_scen1p2_common_top100;
+  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined,
+  avg(sum_ttime_put_combined) AS avg_ttime_put_combined,
+  avg(sum_ttime_put_with_uam_combined) AS avg_ttime_put_with_uam_combined
+  FROM public4qgis_scen1.u_scen1p2_common_top100;
 
 SELECT 
   SUM(sum_ttime_put_combined) AS sum_ttime_put_combined,
-  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined
-FROM public4qgis_scen1.u_scen1p3_common_top10000;
+  SUM(sum_ttime_put_with_uam_combined) AS sum_ttime_put_with_uam_combined,
+  avg(sum_ttime_put_combined) AS avg_ttime_put_combined,
+  avg(sum_ttime_put_with_uam_combined) AS avg_ttime_put_with_uam_combined
+  FROM public4qgis_scen1.u_scen1p3_common_top10000;
 
+COPY (
+    SELECT fromzone_name, tozone_name, u_ample_scen1_common, sum_ttime_put_combined, sum_ttime_put_with_uam_combined
+    FROM public4qgis_scen1.u_scen1p3_common_top10000
+    ORDER BY u_ample_scen1_common desc
+    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen1.csv' DELIMITER ',' CSV HEADER;
+
+COPY (
+    SELECT fromzone_name, tozone_name, u_ample_scen3_technology, sum_ttime_put_combined, sum_ttime_put_with_uam_combined
+    FROM public4qgis_scen3.u_scen3p3_technology_top10000
+    ORDER BY u_ample_scen3_technology desc
+    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen3.csv' DELIMITER ',' CSV HEADER;
+
+
+ 
 

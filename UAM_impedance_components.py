@@ -264,3 +264,8 @@ plt.ylabel('UAM Impedance (normalized)')
 #plt.savefig(output_folder_ic + 'Imp_PAXperDAY_LogBath.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
 plt.clf()
+
+
+print(bathtub2(289, shift_left_demand, shift_right_demand, a1l_in_demand, a1r_in_demand, transition_point, 1))
+
+
