@@ -155,41 +155,48 @@ SELECT
   FROM public4qgis_scen1.u_scen1p3_common_top10000;
 
 
-
 COPY (
     SELECT 
-    	t.fromzone_name, 
-    	t.tozone_name, 
-    	t.u_ample_scen1_common, 
-    	t.sum_ttime_put_combined, 
-    	t.sum_ttime_put_with_uam_combined,
-      	best_util.u1 AS best_sum_ttime_put_arr,
-      	best_util.u2 AS best_sum_ttime_put_with_uam_arr,
-      	best_util.max_value AS max_u_ample_scen1_common_arr
+    	t.fromzone_name,
+    	t.tozone_name,
+    	t.u_ample_scen1_common,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+      	best_util.max_value AS max_u_ample_scen1_common_arr    	-- scenario specific
     FROM public4qgis_scen1.u_scen1p3_common_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, v AS max_value
-      FROM unnest(t.sum_ttime_put_arr, t.sum_ttime_put_with_uam_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, v)
+      SELECT u1, u2, u3, u4, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, u3, u4, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
     ORDER BY t.u_ample_scen1_common desc
     LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen1.csv' DELIMITER ',' CSV HEADER;
-
+      	
 COPY (
     SELECT 
     	t.fromzone_name, 
     	t.tozone_name, 
-    	t.u_ample_scen2_society, 
-    	t.sum_ttime_put_combined, 
-    	t.sum_ttime_put_with_uam_combined,
-      	best_util.u1 AS best_sum_ttime_put_arr,
-      	best_util.u2 AS best_sum_ttime_put_with_uam_arr,
-      	best_util.max_value AS max_u_ample_scen2_society_arr
+    	t.u_ample_scen2_society,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+      	best_util.max_value AS max_u_ample_scen2_society_arr    	-- scenario specific
     FROM public4qgis_scen2.u_scen2p3_society_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, v AS max_value
-      FROM unnest(t.sum_ttime_put_arr, t.sum_ttime_put_with_uam_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, v)
+      SELECT u1, u2, u3, u4, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, u3, u4, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -200,16 +207,20 @@ COPY (
     SELECT 
     	t.fromzone_name, 
     	t.tozone_name, 
-    	t.u_ample_scen3_technology, 
-    	t.sum_ttime_put_combined, 
-    	t.sum_ttime_put_with_uam_combined,
-      	best_util.u1 AS best_sum_ttime_put_arr,
-      	best_util.u2 AS best_sum_ttime_put_with_uam_arr,
-      	best_util.max_value AS max_u_ample_scen3_technology_arr
+    	t.u_ample_scen3_technology,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+      	best_util.max_value AS max_u_ample_scen3_technology_arr    	-- scenario specific
     FROM public4qgis_scen3.u_scen3p3_technology_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, v AS max_value
-      FROM unnest(t.sum_ttime_put_arr, t.sum_ttime_put_with_uam_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, v)
+      SELECT u1, u2, u3, u4, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, u3, u4, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -220,21 +231,22 @@ COPY (
     SELECT 
     	t.fromzone_name, 
     	t.tozone_name, 
-    	t.u_ample_scen4_operator, 
-    	t.sum_ttime_put_combined, 
-    	t.sum_ttime_put_with_uam_combined,
-      	best_util.u1 AS best_sum_ttime_put_arr,
-      	best_util.u2 AS best_sum_ttime_put_with_uam_arr,
-      	best_util.max_value AS max_u_ample_scen4_operator_arr
+    	t.u_ample_scen4_operator,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+      	best_util.max_value AS max_u_ample_scen4_operator_arr    	-- scenario specific
     FROM public4qgis_scen4.u_scen4p3_operator_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, v AS max_value
-      FROM unnest(t.sum_ttime_put_arr, t.sum_ttime_put_with_uam_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, v)
+      SELECT u1, u2, u3, u4, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, u3, u4, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
     ORDER BY u_ample_scen4_operator desc
     LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen4.csv' DELIMITER ',' CSV HEADER;
-
- 
-

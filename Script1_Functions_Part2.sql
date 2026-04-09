@@ -69,17 +69,18 @@ alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EX
 alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen3_technology float8;
 alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen4_operator float8;
 alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen5_societyTec float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS sum_ttime_put float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS sum_ttime_put_with_uam float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam090 float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam260 float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam320 float8;
 
 update only public.odpair_LVM2035_23712030_onlyBAV_restored set
-	u_ample_scen1_common = 		exp(-ln(4)*imp_tot_scen1_common) ,
-	u_ample_scen2_society = 	exp(-ln(4)*imp_tot_scen2_society) ,
-	u_ample_scen3_technology = 	exp(-ln(4)*imp_tot_scen3_technology) ,
-	u_ample_scen4_operator = 	exp(-ln(4)*imp_tot_scen4_operator) ,
-	u_ample_scen5_societyTec = 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
-	sum_ttime_put = 			demand_put * ttime_put ,
-	sum_ttime_put_with_uam = 	ttime_with_uam(directdist, 300.0, ttime_put, demand_put, 768.0);
-
-select fromzone_name, tozone_name, demand_put from public.odpair_LVM2035_23712030_onlyBAV_restored where sum_ttime_put_with_uam = sum_ttime_put order by demand_put desc;
-select fromzone_name, tozone_name, demand_put, sum_ttime_put, sum_ttime_put_with_uam from public.odpair_LVM2035_23712030_onlyBAV_restored where sum_ttime_put_with_uam < sum_ttime_put order by sum_ttime_put desc;
+	u_ample_scen1_common		=	exp(-ln(4)*imp_tot_scen1_common) ,
+	u_ample_scen2_society		= 	exp(-ln(4)*imp_tot_scen2_society) ,
+	u_ample_scen3_technology	= 	exp(-ln(4)*imp_tot_scen3_technology) ,
+	u_ample_scen4_operator		= 	exp(-ln(4)*imp_tot_scen4_operator) ,
+	u_ample_scen5_societyTec	= 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
+	total_ttime_put				= 	demand_put * ttime_put ,
+	total_ttime_put_with_uam090 = 	ttime_with_uam(directdist, 90.0, ttime_put, demand_put, 768.0) ,	-- UAM speed 90 km/h
+	total_ttime_put_with_uam260 =	ttime_with_uam(directdist, 260.0, ttime_put, demand_put, 768.0) ,	-- UAM speed 260 km/h
+	total_ttime_put_with_uam320 =	ttime_with_uam(directdist, 320.0, ttime_put, demand_put, 768.0) ;	-- UAM speed 320 km/h
