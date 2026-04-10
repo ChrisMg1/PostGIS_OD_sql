@@ -16,8 +16,6 @@ output_folder_ic = 'C:/Users/chris/plots/v07/travelTimes/'
 cm_showfliers=False
 cm_use_log = False
 cm_common_limits = False
-plt.yscale('log')
-
 
 csv_files = [
     'C:/TUMdissDATA/ttimesPUT_top10000_scen1.csv',
@@ -120,8 +118,8 @@ for file in csv_files:
             transform=plt.gca().get_xaxis_transform()
         )
     
-    
-    plt.ylabel('wert')
+    plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
+    plt.ylabel(r'person-minutes traveled [persons $\times$ min]')
     plt.title(f'Boxplot for {file}: Sum (back and forth)')
     
     filename = 'back_and_forth_' + os.path.basename(file)
@@ -182,8 +180,8 @@ for file in csv_files:
             transform=plt.gca().get_xaxis_transform()
         )
     
-    
-    plt.ylabel('wert')
+    plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
+    plt.ylabel(r'person-minutes traveled [persons $\times$ min]')
     plt.title(f'Boxplot for {file}: Top (utility) direction')
     
     filename = 'TopWay_' + os.path.basename(file)
