@@ -73,26 +73,31 @@ for file in csv_files:
     print(df.columns)
     
     
+    
+    
     # make prints for the case that the link ist evaluated for the service in both direktions
     data = [
         df_10['total_ttime_put_combined'],
         df_10['total_ttime_put_with_uam090_combined'],
         df_10['total_ttime_put_with_uam260_combined'],
         df_10['total_ttime_put_with_uam320_combined'],
+        df_10['total_ttime_put_with_uam320noae_combined'],
         
         df_100['total_ttime_put_combined'],
         df_100['total_ttime_put_with_uam090_combined'],
         df_100['total_ttime_put_with_uam260_combined'],
         df_100['total_ttime_put_with_uam320_combined'],
+        df_100['total_ttime_put_with_uam320noae_combined'],
         
         df_10000['total_ttime_put_combined'],
         df_10000['total_ttime_put_with_uam090_combined'],
         df_10000['total_ttime_put_with_uam260_combined'],
-        df_10000['total_ttime_put_with_uam320_combined']
+        df_10000['total_ttime_put_with_uam320_combined'],
+        df_10000['total_ttime_put_with_uam320noae_combined']
     ]
     
-    positions = [1, 2, 3, 4,   6, 7, 8, 9,   11, 12, 13, 14]
-    labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h']
+    positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
+    labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty']
     
     
     plt.figure(figsize=(12, 6))
@@ -107,7 +112,7 @@ for file in csv_files:
     plt.xticks(positions, labels, rotation=25, ha='right')
     
     # set group labels
-    group_positions = [2.5, 7.5, 12.5]
+    group_positions = [3, 9, 15]
     group_labels = ['Top 10', 'Top 100', 'Top 10000']
     
     for x, label in zip(group_positions, group_labels):
@@ -141,20 +146,23 @@ for file in csv_files:
         df_10['best_total_ttime_put_with_uam090_arr'],
         df_10['best_total_ttime_put_with_uam260_arr'],
         df_10['best_total_ttime_put_with_uam320_arr'],
+        df_10['best_total_ttime_put_with_uam320noae_arr'],
         
         df_100['best_total_ttime_put_arr'],
         df_100['best_total_ttime_put_with_uam090_arr'],
         df_100['best_total_ttime_put_with_uam260_arr'],
         df_100['best_total_ttime_put_with_uam320_arr'],
+        df_100['best_total_ttime_put_with_uam320noae_arr'],
         
         df_10000['best_total_ttime_put_arr'],
         df_10000['best_total_ttime_put_with_uam090_arr'],
         df_10000['best_total_ttime_put_with_uam260_arr'],
-        df_10000['best_total_ttime_put_with_uam320_arr']
+        df_10000['best_total_ttime_put_with_uam320_arr'],
+        df_10000['best_total_ttime_put_with_uam320noae_arr']
     ]
     
-    positions = [1, 2, 3, 4,   6, 7, 8, 9,   11, 12, 13, 14]
-    labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h']
+    positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
+    labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty']
     
     
     plt.figure(figsize=(12, 6))
@@ -169,7 +177,7 @@ for file in csv_files:
     plt.xticks(positions, labels, rotation=25, ha='right')
     
     # set group labels
-    group_positions = [2.5, 7.5, 12.5]
+    group_positions = [3, 9, 15]
     group_labels = ['Top 10', 'Top 100', 'Top 10000']
     
     for x, label in zip(group_positions, group_labels):

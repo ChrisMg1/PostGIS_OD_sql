@@ -155,6 +155,14 @@ SELECT
   FROM public4qgis_scen1.u_scen1p3_common_top10000;
 
 
+-- where (ttime_put[1] < 1000 and ttime_put[2] < 1000)
+
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen1.u_scen1p3_common_top10000 order by put_speed_temp asc;
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen2.u_scen2p3_society_top10000 order by put_speed_temp desc;
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen3.u_scen3p3_technology_top10000 order by put_speed_temp desc;
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen4.u_scen4p3_operator_top10000 order by put_speed_temp desc;
+
+
 COPY (
     SELECT 
     	t.fromzone_name,
@@ -164,15 +172,17 @@ COPY (
     	t.total_ttime_put_with_uam090_combined,
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
       	best_util.max_value AS max_u_ample_scen1_common_arr    	-- scenario specific
     FROM public4qgis_scen1.u_scen1p3_common_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, u3, u4, v)
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, u3, u4, u5, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -188,15 +198,17 @@ COPY (
     	t.total_ttime_put_with_uam090_combined,
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
       	best_util.max_value AS max_u_ample_scen2_society_arr    	-- scenario specific
     FROM public4qgis_scen2.u_scen2p3_society_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, u3, u4, v)
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, u3, u4, u5, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -212,15 +224,17 @@ COPY (
     	t.total_ttime_put_with_uam090_combined,
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
       	best_util.max_value AS max_u_ample_scen3_technology_arr    	-- scenario specific
     FROM public4qgis_scen3.u_scen3p3_technology_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, u3, u4, v)
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, u3, u4, u5, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -236,15 +250,17 @@ COPY (
     	t.total_ttime_put_with_uam090_combined,
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
       	best_util.max_value AS max_u_ample_scen4_operator_arr    	-- scenario specific
     FROM public4qgis_scen4.u_scen4p3_operator_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, u3, u4, v)
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, u3, u4, u5, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
