@@ -34,22 +34,7 @@ BEGIN
 END;
 $$ language 'plpgsql' STRICT;
 
-DROP FUNCTION IF EXISTS ttime_with_uam;
-CREATE OR REPLACE FUNCTION ttime_with_uam(
-    distance_in FLOAT8,     -- km
-    speed_uam_in FLOAT8,    -- km/h
-    ttime_put_in FLOAT8,    -- min
-    demand_in FLOAT8,
-    demand_uam_threshold_in FLOAT8,
-    accegr_in FLOAT8 			-- access, egress, process (min); could e.g. be percentage of ttime_put plus penalty. Latter can be defined as input parameter
-)
-RETURNS FLOAT8 AS 
-$$
-BEGIN
-return (((distance_in / speed_uam_in) * 60) + (2 * accegr_in)) * LEAST(demand_in, demand_uam_threshold_in) +
-    ttime_put_in * GREATEST(demand_in - demand_uam_threshold_in, 0);
-END
-$$ LANGUAGE 'plpgsql' STRICT;
+
 
 alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS imp_tot_scen1_common float8;
 alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS imp_tot_scen2_society float8;
@@ -64,30 +49,3 @@ update only public.odpair_LVM2035_23712030_onlyBAV_restored set
 	imp_tot_scen4_operator = 	CM_TOTAL_IMPEDANCE(0.5, imp_ttime, 0.1, imp_distance, 1.0, imp_demand, demand_all_person_purged, 768.0) ,
 	imp_tot_scen5_societyTec = 	CM_TOTAL_IMPEDANCE(1.0, imp_ttime, 0.5, imp_distance, 0.1, imp_demand, demand_all_person_purged, 768.0) ;
 	
---- step from impedance to utility (logit, obviously), ln(4) is parameter for normalizing intended
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen1_common float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen2_society float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen3_technology float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen4_operator float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen5_societyTec float8;
-
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put float8;
-
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam090_30ae float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam260_30ae float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam320_30ae float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam320_noae float8;
-
--- make scenarios with UAM speed and access/egress and maybe 'UAM-penalty' due to ascent, descent, processing, etc. 
-
-update only public.odpair_LVM2035_23712030_onlyBAV_restored set
-	--u_ample_scen1_common		=	exp(-ln(4)*imp_tot_scen1_common) ,
-	--u_ample_scen2_society		= 	exp(-ln(4)*imp_tot_scen2_society) ,
-	--u_ample_scen3_technology	= 	exp(-ln(4)*imp_tot_scen3_technology) ,
-	--u_ample_scen4_operator		= 	exp(-ln(4)*imp_tot_scen4_operator) ,
-	--u_ample_scen5_societyTec	= 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
-	total_ttime_put				= 	demand_put * ttime_put ,
-	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist, 90.0, ttime_put, demand_put, 768.0, 15.0) ,
-	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, ttime_put, demand_put, 768.0, 15.0) ,
-	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, ttime_put, demand_put, 768.0, 15.0) ,
-	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, ttime_put, demand_put, 768.0, 0.0) ;

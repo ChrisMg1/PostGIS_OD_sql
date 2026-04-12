@@ -1,15 +1,67 @@
 --- this script
--- 1) Groups the connections to 'back-and-firth ('BF')
--- 2) make subtable subtables (i.e. schemas) for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis_...')
+
+-- Makes the transfer from impedance to utility of a connection
+-- Groups the connections to 'back-and-forth ('BF'), so that not only one way are considered
+---- Thereby make the fusions of the values
+-- make subtable subtables (i.e. schemas) for QGIS visualization; (Q)GIS operations are faster when not working with whole database (only 'public4qgis_...')
 -- calculate top percentiles, including top 10 with formula
 
---- this 'select into' has to be run after every update of impedances or utilities AND preceding update of 'odpair_LVM2035_11856015_onlyBAV_groupedBF'
--- takes only 6 minutes ca. 
+-- finally: Export to csv for visualization etc.
 
 --DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF_saveCOPY CASCADE;
 
 --CREATE TABLE public.odpair_LVM2035_11856015_onlyBAV_groupedBF_saveCOPY AS
 --SELECT * FROM public.odpair_LVM2035_11856015_onlyBAV_groupedBF;
+
+
+
+-- function for evaluating the uam travel time (relevant for final considerations)
+DROP FUNCTION IF EXISTS ttime_with_uam;
+CREATE OR REPLACE FUNCTION ttime_with_uam(
+    distance_in FLOAT8,     -- km
+    speed_uam_in FLOAT8,    -- km/h
+    ttime_put_in FLOAT8,    -- min
+    demand_in FLOAT8,
+    demand_uam_threshold_in FLOAT8,
+    accegr_in FLOAT8 			-- access, egress, process (min); could e.g. be percentage of ttime_put plus penalty. Latter can be defined as input parameter
+)
+RETURNS FLOAT8 AS 
+$$
+BEGIN
+return (((distance_in / speed_uam_in) * 60) + (2 * accegr_in)) * LEAST(demand_in, demand_uam_threshold_in) +
+    ttime_put_in * GREATEST(demand_in - demand_uam_threshold_in, 0);
+END
+$$ LANGUAGE 'plpgsql' STRICT;
+
+
+--- step from impedance to utility (logit, obviously), ln(4) is parameter for normalizing intended
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen1_common float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen2_society float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen3_technology float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen4_operator float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen5_societyTec float8;
+
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put float8;
+
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam090_30ae float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam260_30ae float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam320_30ae float8;
+alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put_with_uam320_noae float8;
+
+-- make scenarios with UAM speed and access/egress and maybe 'UAM-penalty' due to ascent, descent, processing, etc. 
+
+update only public.odpair_LVM2035_23712030_onlyBAV_restored set
+	--u_ample_scen1_common		=	exp(-ln(4)*imp_tot_scen1_common) ,
+	--u_ample_scen2_society		= 	exp(-ln(4)*imp_tot_scen2_society) ,
+	--u_ample_scen3_technology	= 	exp(-ln(4)*imp_tot_scen3_technology) ,
+	--u_ample_scen4_operator		= 	exp(-ln(4)*imp_tot_scen4_operator) ,
+	--u_ample_scen5_societyTec	= 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
+	total_ttime_put				= 	demand_put * ttime_put ,
+	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist, 90.0, ttime_put, demand_put, 768.0, 8.5) ,
+	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, ttime_put, demand_put, 768.0, 8.5) ,
+	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, ttime_put, demand_put, 768.0, 8.5) ,
+	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, ttime_put, demand_put, 768.0, 0.0) ;
+
 
 DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF CASCADE;
 
@@ -278,3 +330,109 @@ INTO TABLE public4qgis_scen5.u_scen5p4_societytec_perc95top
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen5_societytec >= (select percentile_disc(0.95) within group (order by u_ample_scen5_societytec) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+
+-- make cas export. Therefore unnest the arrays for possibility to separate evaluations. 
+
+COPY (
+    SELECT 
+    	t.fromzone_name,
+    	t.tozone_name,
+    	t.u_ample_scen1_common,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+      	best_util.max_value AS max_u_ample_scen1_common_arr    	-- scenario specific
+    FROM public4qgis_scen1.u_scen1p3_common_top10000 t
+    CROSS JOIN LATERAL (
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, u3, u4, u5, v)
+      ORDER BY v DESC
+      LIMIT 1
+  ) AS best_util
+    ORDER BY t.u_ample_scen1_common desc
+    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen1.csv' DELIMITER ',' CSV HEADER;
+      	
+COPY (
+    SELECT 
+    	t.fromzone_name, 
+    	t.tozone_name, 
+    	t.u_ample_scen2_society,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+      	best_util.max_value AS max_u_ample_scen2_society_arr    	-- scenario specific
+    FROM public4qgis_scen2.u_scen2p3_society_top10000 t
+    CROSS JOIN LATERAL (
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, u3, u4, u5, v)
+      ORDER BY v DESC
+      LIMIT 1
+  ) AS best_util
+    ORDER BY u_ample_scen2_society desc
+    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen2.csv' DELIMITER ',' CSV HEADER;
+
+COPY (
+    SELECT 
+    	t.fromzone_name, 
+    	t.tozone_name, 
+    	t.u_ample_scen3_technology,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+      	best_util.max_value AS max_u_ample_scen3_technology_arr    	-- scenario specific
+    FROM public4qgis_scen3.u_scen3p3_technology_top10000 t
+    CROSS JOIN LATERAL (
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, u3, u4, u5, v)
+      ORDER BY v DESC
+      LIMIT 1
+  ) AS best_util
+    ORDER BY u_ample_scen3_technology desc
+    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen3.csv' DELIMITER ',' CSV HEADER;
+
+COPY (
+    SELECT 
+    	t.fromzone_name, 
+    	t.tozone_name, 
+    	t.u_ample_scen4_operator,    	-- scenario specific
+    	t.total_ttime_put_combined,
+    	t.total_ttime_put_with_uam090_combined,
+    	t.total_ttime_put_with_uam260_combined,
+    	t.total_ttime_put_with_uam320_combined,
+    	t.total_ttime_put_with_uam320noae_combined,
+      	best_util.u1 AS best_total_ttime_put_arr,
+      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
+		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
+		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+      	best_util.max_value AS max_u_ample_scen4_operator_arr    	-- scenario specific
+    FROM public4qgis_scen4.u_scen4p3_operator_top10000 t
+    CROSS JOIN LATERAL (
+      SELECT u1, u2, u3, u4, u5, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, u3, u4, u5, v)
+      ORDER BY v DESC
+      LIMIT 1
+  ) AS best_util
+    ORDER BY u_ample_scen4_operator desc
+    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen4.csv' DELIMITER ',' CSV HEADER;
