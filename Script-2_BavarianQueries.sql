@@ -158,111 +158,49 @@ SELECT
 -- where (ttime_put[1] < 1000 and ttime_put[2] < 1000)
 
 select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen1.u_scen1p3_common_top10000 order by put_speed_temp asc;
-select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen2.u_scen2p3_society_top10000 order by put_speed_temp desc;
-select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen3.u_scen3p3_technology_top10000 order by put_speed_temp desc;
-select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen4.u_scen4p3_operator_top10000 order by put_speed_temp desc;
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen2.u_scen2p3_society_top10000 order by put_speed_temp asc;
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen3.u_scen3p3_technology_top10000 order by ttime_put desc;
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen4.u_scen4p3_operator_top10000 order by put_speed_temp asc;
+
+select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public.odpair_LVM2035_11856015_onlyBAV_groupedBF where (ttime_put[1] > 5000 and ttime_put[2] > 5000) order by ttime_put asc;
+select distinct ttime_put from public.odpair_LVM2035_23712030_onlyBAV_restored order by ttime_put desc;
+select ttime_put from public.odpair_LVM2035_23712030_onlyBAV_restored where ttime_put < 10000000 order by ttime_put desc;
+
+SELECT
+    width_bucket(ttime_put, 0, 1000, 20) AS bucket,
+    COUNT(*) AS freq
+FROM public.odpair_LVM2035_23712030_onlyBAV_restored
+GROUP BY bucket
+ORDER BY bucket;
+
+SELECT
+    ttime_put AS current_value,
+    LEAD(ttime_put) OVER (ORDER BY ttime_put) AS next_value,
+    LEAD(ttime_put) OVER (ORDER BY ttime_put) - ttime_put AS gap
+FROM public.odpair_LVM2035_23712030_onlyBAV_restored
+ORDER BY gap DESC
+LIMIT 1;
+
+--------------
+
+WITH vals AS (
+    SELECT DISTINCT ttime_put
+    FROM public.odpair_LVM2035_23712030_onlyBAV_restored
+    WHERE ttime_put > 10000
+),
+gaps AS (
+    SELECT
+        ttime_put AS current_value,
+        LEAD(ttime_put) OVER (ORDER BY ttime_put) AS next_value,
+        LEAD(ttime_put) OVER (ORDER BY ttime_put) - ttime_put AS gap
+    FROM vals
+)
+SELECT *
+FROM gaps
+WHERE gap IS NOT NULL
+ORDER BY gap DESC;
 
 
-COPY (
-    SELECT 
-    	t.fromzone_name,
-    	t.tozone_name,
-    	t.u_ample_scen1_common,    	-- scenario specific
-    	t.total_ttime_put_combined,
-    	t.total_ttime_put_with_uam090_combined,
-    	t.total_ttime_put_with_uam260_combined,
-    	t.total_ttime_put_with_uam320_combined,
-    	t.total_ttime_put_with_uam320noae_combined,
-      	best_util.u1 AS best_total_ttime_put_arr,
-      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
-		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
-		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
-		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
-      	best_util.max_value AS max_u_ample_scen1_common_arr    	-- scenario specific
-    FROM public4qgis_scen1.u_scen1p3_common_top10000 t
-    CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, u3, u4, u5, v)
-      ORDER BY v DESC
-      LIMIT 1
-  ) AS best_util
-    ORDER BY t.u_ample_scen1_common desc
-    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen1.csv' DELIMITER ',' CSV HEADER;
-      	
-COPY (
-    SELECT 
-    	t.fromzone_name, 
-    	t.tozone_name, 
-    	t.u_ample_scen2_society,    	-- scenario specific
-    	t.total_ttime_put_combined,
-    	t.total_ttime_put_with_uam090_combined,
-    	t.total_ttime_put_with_uam260_combined,
-    	t.total_ttime_put_with_uam320_combined,
-    	t.total_ttime_put_with_uam320noae_combined,
-      	best_util.u1 AS best_total_ttime_put_arr,
-      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
-		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
-		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
-		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
-      	best_util.max_value AS max_u_ample_scen2_society_arr    	-- scenario specific
-    FROM public4qgis_scen2.u_scen2p3_society_top10000 t
-    CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, u3, u4, u5, v)
-      ORDER BY v DESC
-      LIMIT 1
-  ) AS best_util
-    ORDER BY u_ample_scen2_society desc
-    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen2.csv' DELIMITER ',' CSV HEADER;
 
-COPY (
-    SELECT 
-    	t.fromzone_name, 
-    	t.tozone_name, 
-    	t.u_ample_scen3_technology,    	-- scenario specific
-    	t.total_ttime_put_combined,
-    	t.total_ttime_put_with_uam090_combined,
-    	t.total_ttime_put_with_uam260_combined,
-    	t.total_ttime_put_with_uam320_combined,
-    	t.total_ttime_put_with_uam320noae_combined,
-      	best_util.u1 AS best_total_ttime_put_arr,
-      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
-		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
-		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
-		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
-      	best_util.max_value AS max_u_ample_scen3_technology_arr    	-- scenario specific
-    FROM public4qgis_scen3.u_scen3p3_technology_top10000 t
-    CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, u3, u4, u5, v)
-      ORDER BY v DESC
-      LIMIT 1
-  ) AS best_util
-    ORDER BY u_ample_scen3_technology desc
-    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen3.csv' DELIMITER ',' CSV HEADER;
 
-COPY (
-    SELECT 
-    	t.fromzone_name, 
-    	t.tozone_name, 
-    	t.u_ample_scen4_operator,    	-- scenario specific
-    	t.total_ttime_put_combined,
-    	t.total_ttime_put_with_uam090_combined,
-    	t.total_ttime_put_with_uam260_combined,
-    	t.total_ttime_put_with_uam320_combined,
-    	t.total_ttime_put_with_uam320noae_combined,
-      	best_util.u1 AS best_total_ttime_put_arr,
-      	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
-		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
-		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
-		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
-      	best_util.max_value AS max_u_ample_scen4_operator_arr    	-- scenario specific
-    FROM public4qgis_scen4.u_scen4p3_operator_top10000 t
-    CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, u3, u4, u5, v)
-      ORDER BY v DESC
-      LIMIT 1
-  ) AS best_util
-    ORDER BY u_ample_scen4_operator desc
-    LIMIT 10000) TO 'C:\TUMdissDATA\ttimesPUT_top10000_scen4.csv' DELIMITER ',' CSV HEADER;
+

@@ -14,8 +14,7 @@ pd.set_option('display.max_columns', None)
 output_folder_ic = 'C:/Users/chris/plots/v07/travelTimes/'
 
 cm_showfliers=False
-cm_use_log = False
-cm_common_limits = False
+
 
 csv_files = [
     'C:/TUMdissDATA/ttimesPUT_top10000_scen1.csv',
@@ -24,40 +23,8 @@ csv_files = [
     'C:/TUMdissDATA/ttimesPUT_top10000_scen4.csv'
 ]
 
-# Step 1: Get y-limits (optional)
-if cm_common_limits:
-    cols = ['total_ttime_put_combined',
-            'total_ttime_put_with_uam090_combined',
-            'total_ttime_put_with_uam260_combined',
-            'total_ttime_put_with_uam320_combined',
-            'best_total_ttime_put_arr',
-            'best_total_ttime_put_with_uam090_arr',
-            'best_total_ttime_put_with_uam260_arr',
-            'best_total_ttime_put_with_uam320_arr']
-    
-    y_min = float('inf')
-    y_max = float('-inf')
-    
-    for file in csv_files:
-        df = pd.read_csv(file)
-        
-        data = df[cols]
-        
-        Q1 = data.quantile(0.25)
-        Q3 = data.quantile(0.75)
-        IQR = Q3 - Q1
-        
-        lower = (Q1 - 1.5 * IQR).min()
-        upper = (Q3 + 1.5 * IQR).max()
-        
-        y_min = min(y_min, lower)
-        y_max = max(y_max, upper)
-        
-        real_min = data.min().min()
-        y_min = max(real_min, y_min)
 
-
-# Step 2: Plot files
+# Plot files
 for file in csv_files:
     
     # load CSV
@@ -102,11 +69,8 @@ for file in csv_files:
     
     plt.figure(figsize=(12, 6))
     plt.boxplot(data, positions=positions, showfliers=cm_showfliers)
-        
-    if cm_use_log:
-        plt.yscale('log')
-    if cm_common_limits:
-        plt.ylim(y_min, y_max)
+
+
     
     # set labels as xticks
     plt.xticks(positions, labels, rotation=25, ha='right')
@@ -168,11 +132,7 @@ for file in csv_files:
     plt.figure(figsize=(12, 6))
     plt.boxplot(data, positions=positions, showfliers=cm_showfliers)
     
-    if cm_use_log:
-        plt.yscale('log')
-    if cm_common_limits:
-        plt.ylim(y_min, y_max)
-    
+   
     # set labels as xticks
     plt.xticks(positions, labels, rotation=25, ha='right')
     

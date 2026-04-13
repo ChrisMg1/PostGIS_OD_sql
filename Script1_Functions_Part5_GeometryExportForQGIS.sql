@@ -27,19 +27,17 @@ CREATE OR REPLACE FUNCTION ttime_with_uam(
 )
 RETURNS FLOAT8 AS 
 $$
-BEGIN
-return (((distance_in / speed_uam_in) * 60) + (2 * accegr_in)) * LEAST(demand_in, demand_uam_threshold_in) +
+select (((distance_in / speed_uam_in) * 60) + (2 * accegr_in)) * LEAST(demand_in, demand_uam_threshold_in) +
     ttime_put_in * GREATEST(demand_in - demand_uam_threshold_in, 0);
-END
-$$ LANGUAGE 'plpgsql' STRICT;
+$$ LANGUAGE sql STRICT IMMUTABLE;
 
 
 --- step from impedance to utility (logit, obviously), ln(4) is parameter for normalizing intended
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen1_common float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen2_society float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen3_technology float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen4_operator float8;
-alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen5_societyTec float8;
+--alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen1_common float8;
+--alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen2_society float8;
+--alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen3_technology float8;
+--alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen4_operator float8;
+--alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS u_ample_scen5_societyTec float8;
 
 alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EXISTS total_ttime_put float8;
 
@@ -56,11 +54,11 @@ update only public.odpair_LVM2035_23712030_onlyBAV_restored set
 	--u_ample_scen3_technology	= 	exp(-ln(4)*imp_tot_scen3_technology) ,
 	--u_ample_scen4_operator		= 	exp(-ln(4)*imp_tot_scen4_operator) ,
 	--u_ample_scen5_societyTec	= 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
-	total_ttime_put				= 	demand_put * ttime_put ,
-	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist, 90.0, ttime_put, demand_put, 768.0, 8.5) ,
-	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, ttime_put, demand_put, 768.0, 8.5) ,
-	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, ttime_put, demand_put, 768.0, 8.5) ,
-	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, ttime_put, demand_put, 768.0, 0.0) ;
+	total_ttime_put				= 	demand_put * least(ttime_put, 24*60) ,
+	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
+	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
+	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) , -- 17min aus Rothfeld et al hatte sich bewährt (15min + 2min = 2*8.5min)
+	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, 0.0) ; -- Platzhalter für Extremwerte-Test
 
 
 DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF CASCADE;

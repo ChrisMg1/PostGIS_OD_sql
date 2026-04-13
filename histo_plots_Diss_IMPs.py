@@ -7,6 +7,7 @@ Created on Sat Aug 17 20:40:04 2024
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 import cm_params
 
 plt.rc('font', size=cm_params.SMALL_SIZE)          # controls default text sizes
@@ -42,6 +43,43 @@ R_high = 1.01
 U_low = 0.19
 U_high = 1.01
 
+# 0: Just to check PuT travel time distribution
+
+data_temp = df['ttime_put'].dropna()
+
+plt.figure(figsize=(10, 6))
+
+counts, bin_edges = np.histogram(data_temp, bins=50)
+
+plt.hist(data_temp, bins=5000, edgecolor='black', alpha=0.7)
+
+top5_idx = np.argsort(counts)[-5:]
+
+for i in top5_idx:
+    bin_left = bin_edges[i]
+    bin_right = bin_edges[i + 1]
+    bin_center = (bin_left + bin_right) / 2
+
+    plt.text(
+        bin_center,
+        counts[i],
+        f"{bin_left:.1f}-{bin_right:.1f}",
+        ha='center',
+        va='bottom',
+        fontsize=9,
+        rotation=45
+    )
+
+plt.xlabel('ttime_put')
+plt.ylabel('Frequency')
+plt.title('Histogram of ttime_put')
+
+plt.tight_layout()
+plt.show()
+plt.close()
+
+
+
 output_folder = 'C:/Users/chris/plots/v07/impedancesANDutilities/'
 
 ## 1a: travel time ratio distribution
@@ -56,7 +94,7 @@ plt.text(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean()*1.1, y.max() * 0.97, '
 plt.savefig(output_folder + 'scen0_1a_ttime_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_1a_ttime_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 ## 1b: travel time ratio impedance (imp_ttime)
 plt.figure()
@@ -68,7 +106,7 @@ y, x, _ = plt.hist(df['imp_ttime'], bins='doane', color='coral')
 plt.savefig(output_folder + 'scen0_1b_imp_ttime_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_1b_imp_ttime_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 
@@ -84,7 +122,7 @@ plt.text(df['directdist'].mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['
 plt.savefig(output_folder + 'scen0_2a_distance_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_2a_distance_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 ## 2b: distance impedance (imp_distance)
 plt.figure()
@@ -96,7 +134,7 @@ y, x, _ = plt.hist(df['imp_distance'], bins='doane', color='coral')
 plt.savefig(output_folder + 'scen0_2b_imp_distance_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_2b_imp_distance_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 
@@ -113,7 +151,7 @@ plt.text(df['demand_all_person_purged'].mean()*1.1, y.max() * 0.97, 'mean: {:.2f
 plt.savefig(output_folder + 'scen0_3a_demand_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_3a_demand_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 ## 3b: demand impedance (imp_demand)
 plt.figure()
@@ -126,7 +164,7 @@ y, x, _ = plt.hist(df['imp_demand'], bins='doane', color='coral', log=True)
 plt.savefig(output_folder + 'scen0_3b_imp_demand_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_3b_imp_demand_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 
@@ -147,7 +185,7 @@ plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'imp_tot_scen1_common_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen1_common_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Utility Scenario 1 (df2$u_ample_scen1_common)
@@ -167,7 +205,7 @@ plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'UA_scen1_common_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen1_common_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Combined impedance Scenario 2 (df$imp_tot_scen2_society)
@@ -187,7 +225,7 @@ plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Utility Scenario 2 (df2$u_ample_scen2_society)
@@ -207,7 +245,7 @@ plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'UA_scen2_society_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen2_society_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Combined impedance Scenario 3 (df$imp_tot_scen3_technology)
@@ -227,7 +265,7 @@ plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'imp_tot_scen3_technology_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen3_technology_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Utility Scenario 3 (df2$u_ample_scen3_technology)
@@ -247,7 +285,7 @@ plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'UA_scen3_technology_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen3_technology_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Combined impedance Scenario 4 (df$imp_tot_scen4_operator)
@@ -267,7 +305,7 @@ plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'imp_tot_scen4_operator_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen4_operator_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Utility Scenario 4 (df2$u_ample_scen4_operator)
@@ -287,7 +325,7 @@ plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'UA_scen4_operator_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen4_operator_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
-plt.clf()
+plt.close()
 
 
 ## Combined impedance Scenario 5 (df$imp_tot_scen5_societytec)
@@ -307,7 +345,7 @@ plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'imp_tot_scen5_societyTec_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 #plt.savefig(output_folder + 'imp_tot_scen5_societyTec_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 #plt.show()
-plt.clf()
+plt.close()
 
 
 ## Utility Scenario 5 (df2$u_ample_scen5_societytec)
@@ -327,4 +365,4 @@ plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
 #plt.savefig(output_folder + 'UA_scen5_societyTec_11856015.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 #plt.savefig(output_folder + 'UA_scen5_societyTec_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 #plt.show()
-plt.clf()
+plt.close()
