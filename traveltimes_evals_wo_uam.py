@@ -13,7 +13,7 @@ pd.set_option('display.max_columns', None)
 
 output_folder_ic = 'C:/Users/chris/plots/v07/travelTimes/'
 
-cm_showfliers=False
+cm_showfliers=True
 
 
 csv_files = [
@@ -93,13 +93,10 @@ for file in csv_files:
     
     filename = 'back_and_forth_' + os.path.basename(file)
     output_name = filename.replace(".csv", ".pdf")
-    
-    
-    
     #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
     plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
     
-    plt.show()
+    #plt.show()
     plt.close()
     
     
@@ -154,9 +151,55 @@ for file in csv_files:
     
     filename = 'TopWay_' + os.path.basename(file)
     output_name = filename.replace(".csv", ".pdf")
+    #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+    plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
+    
+    #plt.show()
+    plt.close()
+       
+    
+    ### Plots for occupance
+    # Select column
+    data = [
+        df_10['uam_occupancy_combined'],
+        df_10['best_uam_occupancy_arr'],
+        
+        df_100['uam_occupancy_combined'],
+        df_100['best_uam_occupancy_arr'],
+        
+        df_10000['uam_occupancy_combined'],
+        df_10000['best_uam_occupancy_arr']
+    ]
+    
+    positions = [1, 2,  4, 5,  7, 8]
+    labels = ['combined', 'array', 'combined', 'array', 'combined', 'array']
     
     
+    plt.figure(figsize=(12, 6))
+    plt.boxplot(data, positions=positions, showfliers=cm_showfliers)
     
+   
+    # set labels as xticks
+    plt.xticks(positions, labels, rotation=25, ha='right')
+    
+    # set group labels
+    group_positions = [1.5, 4.5, 7.5]
+    group_labels = ['Top 10', 'Top 100', 'Top 10000']
+    
+    for x, label in zip(group_positions, group_labels):
+        plt.text(
+            x, -0.25, label,
+            ha='center',
+            va='top',
+            transform=plt.gca().get_xaxis_transform()
+        )
+    
+    plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
+    plt.ylabel(r'UAM occupancy [percent]')
+    plt.title(f'Boxplot for {file}: Occupancy')
+    
+    filename = 'OccuOneAndBothWay_' + os.path.basename(file)
+    output_name = filename.replace(".csv", ".pdf")
     #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
     plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
     

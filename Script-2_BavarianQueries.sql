@@ -157,6 +157,8 @@ SELECT
 
 -- where (ttime_put[1] < 1000 and ttime_put[2] < 1000)
 
+select count(*) from public.odpair_LVM2035_23712030_onlyBAV_restored where demand_put < 0;
+
 select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen1.u_scen1p3_common_top10000 order by put_speed_temp asc;
 select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen2.u_scen2p3_society_top10000 order by put_speed_temp asc;
 select ttime_put, demand_put, total_ttime_put_combined, total_ttime_put_with_uam260_combined, (directdist[1] * 60.0 / ttime_put[1]) as put_speed_temp from public4qgis_scen3.u_scen3p3_technology_top10000 order by ttime_put desc;
@@ -199,6 +201,8 @@ SELECT *
 FROM gaps
 WHERE gap IS NOT NULL
 ORDER BY gap DESC;
+
+
 
 
 

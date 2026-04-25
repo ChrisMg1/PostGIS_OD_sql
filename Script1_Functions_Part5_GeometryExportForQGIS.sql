@@ -48,17 +48,17 @@ alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EX
 
 -- make scenarios with UAM speed and access/egress and maybe 'UAM-penalty' due to ascent, descent, processing, etc. 
 
-update only public.odpair_LVM2035_23712030_onlyBAV_restored set
+--update only public.odpair_LVM2035_23712030_onlyBAV_restored set
 	--u_ample_scen1_common		=	exp(-ln(4)*imp_tot_scen1_common) ,
 	--u_ample_scen2_society		= 	exp(-ln(4)*imp_tot_scen2_society) ,
 	--u_ample_scen3_technology	= 	exp(-ln(4)*imp_tot_scen3_technology) ,
 	--u_ample_scen4_operator		= 	exp(-ln(4)*imp_tot_scen4_operator) ,
 	--u_ample_scen5_societyTec	= 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
-	total_ttime_put				= 	demand_put * least(ttime_put, 24*60) ,
-	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
-	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
-	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) , -- 17min aus Rothfeld et al hatte sich bewährt (15min + 2min = 2*8.5min)
-	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, 0.0) ; -- Platzhalter für Extremwerte-Test
+	--total_ttime_put				= 	demand_put * least(ttime_put, 24*60) ,
+	--total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
+	--total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
+	--total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) , -- 17min aus Rothfeld et al beispielsweise (15min + 2min = 2*8.5min)
+	--total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, 0.0) ; -- Platzhalter für Extremwerte-Test
 
 
 DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF CASCADE;
@@ -90,6 +90,7 @@ select	(array_agg(fromzone_name ORDER BY fromzone_name))[1] as fromzone_name, --
 		array_agg(directdist ORDER BY fromzone_name) as directdist,
 		array_agg(demand_all_person_purged ORDER BY fromzone_name) as demand_all_person_purged,
 		array_agg(demand_put ORDER BY fromzone_name) as demand_put,
+		-- evaluate travel times
 		array_agg(total_ttime_put ORDER BY fromzone_name) as total_ttime_put_arr,
 		sum(total_ttime_put) as total_ttime_put_combined,		
 		array_agg(total_ttime_put_with_uam090_30ae ORDER BY fromzone_name) as total_ttime_put_with_uam090_arr,
@@ -100,6 +101,10 @@ select	(array_agg(fromzone_name ORDER BY fromzone_name))[1] as fromzone_name, --
 		sum(total_ttime_put_with_uam320_30ae) as total_ttime_put_with_uam320_combined,		
 		array_agg(total_ttime_put_with_uam320_noae ORDER BY fromzone_name) as total_ttime_put_with_uam320noae_arr,
 		sum(total_ttime_put_with_uam320_noae) as total_ttime_put_with_uam320noae_combined,		
+		-- evaluate occupancy
+		array_agg( (demand_put / 768.0) ORDER BY fromzone_name) as uam_occupancy_arr, -- 768.0 maximum UAM capa, to be adjusted
+		avg( (demand_put / 768.0) ) as uam_occupancy_combined, -- 768.0 maximum UAM capa, to be adjusted
+		-- make geometries
 		ST_GeometryN(ST_Collect(geom_point_fromod ORDER BY fromzone_name), 1) as geom_point_fromod, -- make the from_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom
 		ST_GeometryN(ST_Collect(geom_point_tood ORDER BY fromzone_name), 1) as geom_point_tood, -- make the to_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom
 		ST_GeometryN(ST_Collect(odconnect), 1) as odconnect -- make the line (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array
@@ -127,7 +132,8 @@ from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 -- create top 10000 in this scenario in separate 'scheme'
-SELECT fromzone_name, tozone_name, u_ample_scen1_common, u_ample_scen1_common_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen1_common, geom_point_fromod, geom_point_tood, odconnect
+-- Top 10,000 is 'special' because used for export
+SELECT fromzone_name, tozone_name, u_ample_scen1_common, u_ample_scen1_common_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen1_common, uam_occupancy_arr, uam_occupancy_combined, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen1.u_scen1p3_common_top10000
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(1.0-(9999.0 / 11856015.0)) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
@@ -172,7 +178,8 @@ from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen2_society >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 -- create top 10000 in this scenario in separate 'scheme'
-select fromzone_name, tozone_name, u_ample_scen2_society, u_ample_scen2_society_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen2_society, geom_point_fromod, geom_point_tood, odconnect
+-- Top 10,000 is 'special' because used for export
+select fromzone_name, tozone_name, u_ample_scen2_society, u_ample_scen2_society_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen2_society, uam_occupancy_arr, uam_occupancy_combined, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen2.u_scen2p3_society_top10000
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen2_society >= (select percentile_disc(1.0-(9999.0 / 11856015.0)) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
@@ -216,7 +223,8 @@ from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen3_technology >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 -- create top 10000 in this scenario in separate 'scheme'
-SELECT fromzone_name, tozone_name, u_ample_scen3_technology, u_ample_scen3_technology_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen3_technology, geom_point_fromod, geom_point_tood, odconnect
+-- Top 10,000 is 'special' because used for export
+SELECT fromzone_name, tozone_name, u_ample_scen3_technology, u_ample_scen3_technology_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen3_technology, uam_occupancy_arr, uam_occupancy_combined, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen3.u_scen3p3_technology_top10000
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen3_technology >= (select percentile_disc(1.0-(9999.0 / 11856015.0)) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
@@ -260,7 +268,8 @@ from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 -- create top 10000 in this scenario in separate 'scheme'
-SELECT fromzone_name, tozone_name, u_ample_scen4_operator, u_ample_scen4_operator_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen4_operator, geom_point_fromod, geom_point_tood, odconnect
+-- Top 10,000 is 'special' because used for export
+SELECT fromzone_name, tozone_name, u_ample_scen4_operator, u_ample_scen4_operator_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen4_operator, uam_occupancy_arr, uam_occupancy_combined, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen4.u_scen4p3_operator_top10000
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(1.0-(9999.0 / 11856015.0)) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
@@ -304,7 +313,8 @@ from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen5_societytec >= (select percentile_disc(1.0-(99.0 / 11856015.0)) within group (order by u_ample_scen5_societytec) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 -- create top 10000 in this scenario in separate 'scheme'
-SELECT fromzone_name, tozone_name, u_ample_scen5_societytec, u_ample_scen5_societytec_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen5_societytec, geom_point_fromod, geom_point_tood, odconnect
+-- Top 10,000 is 'special' because used for export
+SELECT fromzone_name, tozone_name, u_ample_scen5_societytec, u_ample_scen5_societytec_arr, imp_ttime, imp_distance, imp_demand, ttime_ratio, ttime_put, ttime_prt, demand_all_person_purged, demand_put, total_ttime_put_arr, total_ttime_put_combined, total_ttime_put_with_uam090_arr, total_ttime_put_with_uam090_combined, total_ttime_put_with_uam260_arr, total_ttime_put_with_uam260_combined, total_ttime_put_with_uam320_arr, total_ttime_put_with_uam320_combined, total_ttime_put_with_uam320noae_arr, total_ttime_put_with_uam320noae_combined, directdist, imp_tot_scen5_societytec, uam_occupancy_arr, uam_occupancy_combined, geom_point_fromod, geom_point_tood, odconnect
 INTO TABLE public4qgis_scen5.u_scen5p3_societytec_top10000
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen5_societytec >= (select percentile_disc(1.0-(9999.0 / 11856015.0)) within group (order by u_ample_scen5_societytec) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
@@ -329,8 +339,7 @@ from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen5_societytec >= (select percentile_disc(0.95) within group (order by u_ample_scen5_societytec) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
 
--- make cas export. Therefore unnest the arrays for possibility to separate evaluations. 
-
+-- make csv export. Therefore unnest the arrays for possibility to separate evaluations. 
 COPY (
     SELECT 
     	t.fromzone_name,
@@ -341,16 +350,18 @@ COPY (
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
     	t.total_ttime_put_with_uam320noae_combined,
+    	t.uam_occupancy_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
-		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,		
+		best_util.u6 AS best_uam_occupancy_arr,		
       	best_util.max_value AS max_u_ample_scen1_common_arr    	-- scenario specific
     FROM public4qgis_scen1.u_scen1p3_common_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, u3, u4, u5, v)
+      SELECT u1, u2, u3, u4, u5, u6, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.uam_occupancy_arr, t.u_ample_scen1_common_arr) AS x(u1, u2, u3, u4, u5, u6, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -367,16 +378,18 @@ COPY (
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
     	t.total_ttime_put_with_uam320noae_combined,
+    	t.uam_occupancy_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
 		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+		best_util.u6 AS best_uam_occupancy_arr,
       	best_util.max_value AS max_u_ample_scen2_society_arr    	-- scenario specific
     FROM public4qgis_scen2.u_scen2p3_society_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, u3, u4, u5, v)
+      SELECT u1, u2, u3, u4, u5, u6, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.uam_occupancy_arr, t.u_ample_scen2_society_arr) AS x(u1, u2, u3, u4, u5, u6, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -393,16 +406,18 @@ COPY (
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
     	t.total_ttime_put_with_uam320noae_combined,
+    	t.uam_occupancy_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
 		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+		best_util.u6 AS best_uam_occupancy_arr,
       	best_util.max_value AS max_u_ample_scen3_technology_arr    	-- scenario specific
     FROM public4qgis_scen3.u_scen3p3_technology_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, u3, u4, u5, v)
+      SELECT u1, u2, u3, u4, u5, u6, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.uam_occupancy_arr, t.u_ample_scen3_technology_arr) AS x(u1, u2, u3, u4, u5, u6, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
@@ -419,16 +434,18 @@ COPY (
     	t.total_ttime_put_with_uam260_combined,
     	t.total_ttime_put_with_uam320_combined,
     	t.total_ttime_put_with_uam320noae_combined,
+    	t.uam_occupancy_combined,
       	best_util.u1 AS best_total_ttime_put_arr,
       	best_util.u2 AS best_total_ttime_put_with_uam090_arr,
 		best_util.u3 AS best_total_ttime_put_with_uam260_arr,
 		best_util.u4 AS best_total_ttime_put_with_uam320_arr,
 		best_util.u5 AS best_total_ttime_put_with_uam320noae_arr,
+		best_util.u6 AS best_uam_occupancy_arr,
       	best_util.max_value AS max_u_ample_scen4_operator_arr    	-- scenario specific
     FROM public4qgis_scen4.u_scen4p3_operator_top10000 t
     CROSS JOIN LATERAL (
-      SELECT u1, u2, u3, u4, u5, v AS max_value
-      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, u3, u4, u5, v)
+      SELECT u1, u2, u3, u4, u5, u6, v AS max_value
+      FROM unnest(t.total_ttime_put_arr, t.total_ttime_put_with_uam090_arr, t.total_ttime_put_with_uam260_arr, t.total_ttime_put_with_uam320_arr, t.total_ttime_put_with_uam320noae_arr, t.uam_occupancy_arr, t.u_ample_scen4_operator_arr) AS x(u1, u2, u3, u4, u5, u6, v)
       ORDER BY v DESC
       LIMIT 1
   ) AS best_util
