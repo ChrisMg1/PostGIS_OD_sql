@@ -101,9 +101,9 @@ select	(array_agg(fromzone_name ORDER BY fromzone_name))[1] as fromzone_name, --
 		sum(total_ttime_put_with_uam320_30ae) as total_ttime_put_with_uam320_combined,		
 		array_agg(total_ttime_put_with_uam320_noae ORDER BY fromzone_name) as total_ttime_put_with_uam320noae_arr,
 		sum(total_ttime_put_with_uam320_noae) as total_ttime_put_with_uam320noae_combined,		
-		-- evaluate occupancy
-		array_agg( (demand_put / 768.0) ORDER BY fromzone_name) as uam_occupancy_arr, -- 768.0 maximum UAM capa, to be adjusted
-		avg( (demand_put / 768.0) ) as uam_occupancy_combined, -- 768.0 maximum UAM capa, to be adjusted
+		-- evaluate possible occupancy
+		array_agg( (demand_all_person_purged / 768.0) ORDER BY fromzone_name) as uam_occupancy_arr, -- 768.0 maximum UAM capa, to be adjusted
+		avg( (demand_all_person_purged / 768.0) ) as uam_occupancy_combined, -- 768.0 maximum UAM capa, to be adjusted
 		-- make geometries
 		ST_GeometryN(ST_Collect(geom_point_fromod ORDER BY fromzone_name), 1) as geom_point_fromod, -- make the from_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom
 		ST_GeometryN(ST_Collect(geom_point_tood ORDER BY fromzone_name), 1) as geom_point_tood, -- make the to_zone_point (geom) an array ('collection' with geom), then only retain 1st element (sic! [1] not [0]); for plotting only; no need to sort the array; attention for from_zone_name == from_zone_geom

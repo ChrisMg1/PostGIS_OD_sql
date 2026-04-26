@@ -7,13 +7,12 @@ Created on Mon Mar 30 14:24:21 2026
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 import os
 
 pd.set_option('display.max_columns', None)
 
 output_folder_ic = 'C:/Users/chris/plots/v07/travelTimes/'
-
-cm_showfliers=True
 
 
 csv_files = [
@@ -68,8 +67,13 @@ for file in csv_files:
     
     
     plt.figure(figsize=(12, 6))
-    plt.boxplot(data, positions=positions, showfliers=cm_showfliers)
-
+    box = plt.boxplot(data, positions=positions, patch_artist=True, showfliers=False)
+    
+    # Optional: Nicer colors
+    colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5'] * 3
+    for patch, color in zip(box['boxes'], colors):
+        patch.set_facecolor(color)
+        
 
     
     # set labels as xticks
@@ -87,6 +91,9 @@ for file in csv_files:
             transform=plt.gca().get_xaxis_transform()
         )
     
+    # Optional: Borders and grid
+    for x in [6, 12]:
+        plt.axvline(x, color='grey', linestyle='--', linewidth=0.7)
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
     plt.ylabel(r'person-minutes traveled [persons $\times$ min]')
     plt.title(f'Boxplot for {file}: Sum (back and forth)')
@@ -96,7 +103,7 @@ for file in csv_files:
     #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
     plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
     
-    #plt.show()
+    plt.show()
     plt.close()
     
     
@@ -127,7 +134,14 @@ for file in csv_files:
     
     
     plt.figure(figsize=(12, 6))
-    plt.boxplot(data, positions=positions, showfliers=cm_showfliers)
+    box = plt.boxplot(data, positions=positions, patch_artist=True, showfliers=False)
+    
+    # Optional: Nicer colors
+    colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5'] * 3
+    for patch, color in zip(box['boxes'], colors):
+        patch.set_facecolor(color)
+        
+
     
    
     # set labels as xticks
@@ -145,6 +159,10 @@ for file in csv_files:
             transform=plt.gca().get_xaxis_transform()
         )
     
+    
+    # Optional: Borders and grid
+    for x in [6, 12]:
+        plt.axvline(x, color='grey', linestyle='--', linewidth=0.7)
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
     plt.ylabel(r'person-minutes traveled [persons $\times$ min]')
     plt.title(f'Boxplot for {file}: Top (utility) direction')
@@ -154,7 +172,7 @@ for file in csv_files:
     #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
     plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
     
-    #plt.show()
+    plt.show()
     plt.close()
        
     
@@ -172,11 +190,20 @@ for file in csv_files:
     ]
     
     positions = [1, 2,  4, 5,  7, 8]
-    labels = ['combined', 'array', 'combined', 'array', 'combined', 'array']
+    labels = ['back and forth\n(average)', 'top direction', 'back and forth\n(average)', 'top direction', 'back and forth\n(average)', 'top direction']
     
     
     plt.figure(figsize=(12, 6))
-    plt.boxplot(data, positions=positions, showfliers=cm_showfliers)
+    box = plt.boxplot(data, positions=positions, patch_artist=True, showfliers=True)
+    
+    # Optional: Nicer colors
+    colors = ['#2f5597', '#f7b6d2'] * 3
+    for patch, color in zip(box['boxes'], colors):
+        patch.set_facecolor(color)
+    
+    # Optional: Borders
+    for x in [3, 6]:
+        plt.axvline(x, color='grey', linestyle='--', linewidth=0.7)
     
    
     # set labels as xticks
@@ -188,14 +215,22 @@ for file in csv_files:
     
     for x, label in zip(group_positions, group_labels):
         plt.text(
-            x, -0.25, label,
+            x, -0.15, label,
             ha='center',
             va='top',
             transform=plt.gca().get_xaxis_transform()
         )
     
+    # Format y-axis as percent
+    ax = plt.gca()
+    ax.yaxis.set_major_formatter(mtick.StrMethodFormatter("{x:.0%}"))
+    ax.set_ylim([-0.05,1.4])
+    
+    # Highlight 100% line
+    ax.axhline(1, color='#c44e52', linestyle='--', linewidth=2, alpha=0.8)
+
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
-    plt.ylabel(r'UAM occupancy [percent]')
+    plt.ylabel('OD demand / UAM capacity [%]')
     plt.title(f'Boxplot for {file}: Occupancy')
     
     filename = 'OccuOneAndBothWay_' + os.path.basename(file)
