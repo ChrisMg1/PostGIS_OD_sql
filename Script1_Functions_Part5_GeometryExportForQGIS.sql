@@ -21,9 +21,9 @@ CREATE OR REPLACE FUNCTION ttime_with_uam(
     distance_in FLOAT8,     -- km
     speed_uam_in FLOAT8,    -- km/h
     ttime_put_in FLOAT8,    -- min
-    demand_in FLOAT8,
-    demand_uam_threshold_in FLOAT8,
-    accegr_in FLOAT8 			-- access, egress, process (min); could e.g. be percentage of ttime_put plus penalty. Latter can be defined as input parameter
+    demand_in FLOAT8,		-- PuT demand, not total demand, because we want the travel time in puclib transport
+    demand_uam_threshold_in FLOAT8,	-- maximum UAM throughout
+    accegr_in FLOAT8 			-- access, egress, process (min)  2X!; could e.g. be percentage of ttime_put plus penalty. Latter can be defined as input parameter
 )
 RETURNS FLOAT8 AS 
 $$
@@ -48,17 +48,17 @@ alter table public.odpair_LVM2035_23712030_onlyBAV_restored add column IF NOT EX
 
 -- make scenarios with UAM speed and access/egress and maybe 'UAM-penalty' due to ascent, descent, processing, etc. 
 
---update only public.odpair_LVM2035_23712030_onlyBAV_restored set
+update only public.odpair_LVM2035_23712030_onlyBAV_restored set
 	--u_ample_scen1_common		=	exp(-ln(4)*imp_tot_scen1_common) ,
 	--u_ample_scen2_society		= 	exp(-ln(4)*imp_tot_scen2_society) ,
 	--u_ample_scen3_technology	= 	exp(-ln(4)*imp_tot_scen3_technology) ,
 	--u_ample_scen4_operator		= 	exp(-ln(4)*imp_tot_scen4_operator) ,
 	--u_ample_scen5_societyTec	= 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
 	--total_ttime_put				= 	demand_put * least(ttime_put, 24*60) ,
-	--total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
-	--total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) ,
-	--total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(15, 0.1 * least(ttime_put, 24*60)) ) , -- 17min aus Rothfeld et al beispielsweise (15min + 2min = 2*8.5min)
-	--total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, 0.0) ; -- Platzhalter für Extremwerte-Test
+	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 24*60), demand_put, 768.0, least(16, 0.25 * least(ttime_put, 24*60)) ) ,
+	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 24*60), demand_put, 768.0, least(16, 0.25 * least(ttime_put, 24*60)) ) ,
+	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(16, 0.25 * least(ttime_put, 24*60)) ) , -- Aus Rothfeld et al beispielsweise ("30min + 120s = 2 * 15min + 2 * 1min =  2 * 16 min"); Reisezeitanteil 0.35 aus https://www.sciencedirect.com/science/article/abs/pii/S0967070X03000957?utm_source=chatgpt.com
+	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, 0.0) ; -- Platzhalter für Extremwerte-Test
 
 
 DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF CASCADE;

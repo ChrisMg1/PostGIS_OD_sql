@@ -10,6 +10,10 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import os
 
+
+cm_print_title = True
+cm_show_LaTeX = False
+
 pd.set_option('display.max_columns', None)
 
 output_folder_ic = 'C:/Users/chris/plots/v07/travelTimes/'
@@ -64,6 +68,35 @@ for file in csv_files:
     
     positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
     labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty']
+        
+    # get stats...
+    rows = []
+    for label, series in zip(labels, data):
+        s = series.dropna()
+        
+        q1 = s.quantile(0.25)
+        median = s.quantile(0.5)
+        q3 = s.quantile(0.75)
+        iqr = q3 - q1
+        
+        rows.append({
+            "Dataset": label,
+            "Min": s.min(),
+            "Q1": q1,
+            "Median": median,
+            "Q3": q3,
+            "Max": s.max(),
+            "IQR": iqr
+        })
+
+    df_stats = pd.DataFrame(rows)
+    print(f'Stats for {file}: Sum (back and forth)')
+    # ... and format as latex
+    if cm_show_LaTeX:
+        latex_table = df_stats.to_latex(index=False, float_format="%.2f")
+        print(latex_table)
+    else:        
+        print(df_stats)
     
     
     plt.figure(figsize=(12, 6))
@@ -96,7 +129,8 @@ for file in csv_files:
         plt.axvline(x, color='grey', linestyle='--', linewidth=0.7)
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
     plt.ylabel(r'person-minutes traveled [persons $\times$ min]')
-    plt.title(f'Boxplot for {file}: Sum (back and forth)')
+    if cm_print_title:
+        plt.title(f'Boxplot for {file}: Sum (back and forth)')
     
     filename = 'back_and_forth_' + os.path.basename(file)
     output_name = filename.replace(".csv", ".pdf")
@@ -132,6 +166,36 @@ for file in csv_files:
     positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
     labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty']
     
+    # get stats...
+    rows = []
+    for label, series in zip(labels, data):
+        s = series.dropna()
+        
+        q1 = s.quantile(0.25)
+        median = s.quantile(0.5)
+        q3 = s.quantile(0.75)
+        iqr = q3 - q1
+        
+        rows.append({
+            "Dataset": label,
+            "Min": s.min(),
+            "Q1": q1,
+            "Median": median,
+            "Q3": q3,
+            "Max": s.max(),
+            "IQR": iqr
+        })
+
+    df_stats = pd.DataFrame(rows)
+    print(f'Stats for {file}: Top (utility) direction')
+    # ... and format as latex
+    if cm_show_LaTeX:
+        latex_table = df_stats.to_latex(index=False, float_format="%.2f")
+        print(latex_table)
+    else:        
+        print(df_stats)
+    
+    
     
     plt.figure(figsize=(12, 6))
     box = plt.boxplot(data, positions=positions, patch_artist=True, showfliers=False)
@@ -165,7 +229,8 @@ for file in csv_files:
         plt.axvline(x, color='grey', linestyle='--', linewidth=0.7)
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
     plt.ylabel(r'person-minutes traveled [persons $\times$ min]')
-    plt.title(f'Boxplot for {file}: Top (utility) direction')
+    if cm_print_title:
+        plt.title(f'Boxplot for {file}: Top (utility) direction')
     
     filename = 'TopWay_' + os.path.basename(file)
     output_name = filename.replace(".csv", ".pdf")
@@ -191,6 +256,36 @@ for file in csv_files:
     
     positions = [1, 2,  4, 5,  7, 8]
     labels = ['back and forth\n(average)', 'top direction', 'back and forth\n(average)', 'top direction', 'back and forth\n(average)', 'top direction']
+    
+    
+    # get stats...
+    rows = []
+    for label, series in zip(labels, data):
+        s = series.dropna()
+        
+        q1 = s.quantile(0.25)
+        median = s.quantile(0.5)
+        q3 = s.quantile(0.75)
+        iqr = q3 - q1
+        
+        rows.append({
+            "Dataset": label,
+            "Min": s.min(),
+            "Q1": q1,
+            "Median": median,
+            "Q3": q3,
+            "Max": s.max(),
+            "IQR": iqr
+        })
+    df_stats = pd.DataFrame(rows)
+    print(f'Stats for {file}: Occupancy')
+    # ... and format as latex
+    if cm_show_LaTeX:
+        latex_table = df_stats.to_latex(index=False, float_format="%.2f")
+        print(latex_table)
+    else:        
+        print(df_stats)
+    
     
     
     plt.figure(figsize=(12, 6))
@@ -231,7 +326,8 @@ for file in csv_files:
 
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
     plt.ylabel('OD demand / UAM capacity [%]')
-    plt.title(f'Boxplot for {file}: Occupancy')
+    if cm_print_title:
+        plt.title(f'Boxplot for {file}: Occupancy')
     
     filename = 'OccuOneAndBothWay_' + os.path.basename(file)
     output_name = filename.replace(".csv", ".pdf")
