@@ -67,7 +67,7 @@ for file in csv_files:
     ]
     
     positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
-    labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty']
+    labels = ['PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d', 'PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d', 'PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d']
         
     # get stats...
     rows = []
@@ -114,7 +114,7 @@ for file in csv_files:
     
     # set group labels
     group_positions = [3, 9, 15]
-    group_labels = ['Top 10', 'Top 100', 'Top 10000']
+    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
     
     for x, label in zip(group_positions, group_labels):
         plt.text(
@@ -164,7 +164,7 @@ for file in csv_files:
     ]
     
     positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
-    labels = ['no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty', 'no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h no pnty']
+    labels = ['PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d', 'PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d', 'PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d']
     
     # get stats...
     rows = []
@@ -213,7 +213,7 @@ for file in csv_files:
     
     # set group labels
     group_positions = [3, 9, 15]
-    group_labels = ['Top 10', 'Top 100', 'Top 10000']
+    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
     
     for x, label in zip(group_positions, group_labels):
         plt.text(
@@ -306,11 +306,11 @@ for file in csv_files:
     
     # set group labels
     group_positions = [1.5, 4.5, 7.5]
-    group_labels = ['Top 10', 'Top 100', 'Top 10000']
+    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
     
     for x, label in zip(group_positions, group_labels):
         plt.text(
-            x, -0.15, label,
+            x, -0.25, label,
             ha='center',
             va='top',
             transform=plt.gca().get_xaxis_transform()
@@ -325,7 +325,7 @@ for file in csv_files:
     ax.axhline(1, color='#c44e52', linestyle='--', linewidth=2, alpha=0.8)
 
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
-    plt.ylabel('OD demand / UAM capacity [%]')
+    plt.ylabel('OD demand / max. UAM capacity [%]')
     if cm_print_title:
         plt.title(f'Boxplot for {file}: Occupancy')
     
