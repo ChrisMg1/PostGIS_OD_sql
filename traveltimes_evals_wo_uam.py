@@ -12,7 +12,7 @@ import os
 
 
 cm_print_title = True
-cm_show_LaTeX = False
+cm_show_LaTeX = True
 
 pd.set_option('display.max_columns', None)
 
@@ -133,9 +133,8 @@ for file in csv_files:
         plt.title(f'Boxplot for {file}: Sum (back and forth)')
     
     filename = 'back_and_forth_' + os.path.basename(file)
-    output_name = filename.replace(".csv", ".pdf")
-    #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-    plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".png"), dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".pdf"), bbox_inches='tight', transparent=True) ## pdf for LaTeX
     
     plt.show()
     plt.close()
@@ -233,9 +232,8 @@ for file in csv_files:
         plt.title(f'Boxplot for {file}: Top (utility) direction')
     
     filename = 'TopWay_' + os.path.basename(file)
-    output_name = filename.replace(".csv", ".pdf")
-    #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-    plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".png"), dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".pdf"), bbox_inches='tight', transparent=True) ## pdf for LaTeX
     
     plt.show()
     plt.close()
@@ -330,9 +328,8 @@ for file in csv_files:
         plt.title(f'Boxplot for {file}: Occupancy')
     
     filename = 'OccuOneAndBothWay_' + os.path.basename(file)
-    output_name = filename.replace(".csv", ".pdf")
-    #plt.savefig(output_folder_ic + output_name, dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-    plt.savefig(output_folder_ic + output_name, bbox_inches='tight', transparent=True) ## pdf for LaTeX
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".png"), dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".pdf"), bbox_inches='tight', transparent=True) ## pdf for LaTeX
     
     plt.show()
     plt.close()
