@@ -12,7 +12,7 @@ import os
 import re
 
 
-cm_print_title = True
+cm_print_title = False
 cm_show_LaTeX = True
 
 pd.set_option('display.max_columns', None)
@@ -42,129 +42,6 @@ for file in csv_files:
     df_10000 = df.head(10000)
     
     # print(df.columns)
-    
-    
-    
-    
-    # make prints for the case that the link ist evaluated for the service in both direktions
-    data = [
-        df_10['total_ttime_put_combined'],
-        df_10['total_ttime_put_with_uam090_combined'],
-        df_10['total_ttime_put_with_uam260_combined'],
-        df_10['total_ttime_put_with_uam320_combined'],
-        df_10['total_ttime_put_with_uam320noae_combined'],
-        
-        df_100['total_ttime_put_combined'],
-        df_100['total_ttime_put_with_uam090_combined'],
-        df_100['total_ttime_put_with_uam260_combined'],
-        df_100['total_ttime_put_with_uam320_combined'],
-        df_100['total_ttime_put_with_uam320noae_combined'],
-        
-        df_10000['total_ttime_put_combined'],
-        df_10000['total_ttime_put_with_uam090_combined'],
-        df_10000['total_ttime_put_with_uam260_combined'],
-        df_10000['total_ttime_put_with_uam320_combined'],
-        df_10000['total_ttime_put_with_uam320noae_combined']
-    ]
-    
-    positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
-    labels = ['PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d'] * 3
-        
-    
-    
-    
-    plt.figure(figsize=(12, 6))
-    box = plt.boxplot(data, positions=positions, patch_artist=True, showfliers=False)
-    
-    # Optional: Nicer colors
-    colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5'] * 3
-    for patch, color in zip(box['boxes'], colors):
-        patch.set_facecolor(color)
-        
-
-    
-    # set labels as ticks
-    plt.xticks(positions, labels, rotation=25, ha='right', fontsize=14)
-    plt.yticks(fontsize=14)
-    
-    # set group labels
-    group_positions = [3, 9, 15]
-    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
-    
-    for x, label in zip(group_positions, group_labels):
-        plt.text(
-            x, -0.3, label,
-            ha='center',
-            va='top',
-            fontsize=16,
-            transform=plt.gca().get_xaxis_transform()
-        )
-    
-    # Optional: Borders and grid
-    for x in [6, 12]:
-        plt.axvline(x, color='grey', linestyle='--', linewidth=0.7)
-    plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
-    plt.ylabel(r'Person-minutes traveled [persons $\times$ min]', fontsize=16)
-    if cm_print_title:
-        plt.title(f'Boxplot for {file}: Sum (back and forth)')
-    
-    filename = 'eval_PAXt_back_and_forth_' + os.path.basename(file)
-    plt.savefig(output_folder_ic + filename.replace(".csv", ".png"), dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
-    plt.savefig(output_folder_ic + filename.replace(".csv", ".pdf"), bbox_inches='tight', transparent=True) ## pdf for LaTeX
-    
-    
-    # get stats...
-    rows = []
-    for label, series in zip(labels, data):
-        s = series.dropna()
-        
-        q1 = s.quantile(0.25)
-        median = s.quantile(0.5)
-        q3 = s.quantile(0.75)
-        iqr = q3 - q1
-        
-        rows.append({
-            "Dataset": label,
-            "Min": s.min(),
-            "Q1": q1,
-            "Median": median,
-            "Q3": q3,
-            "Max": s.max(),
-            "IQR": iqr
-        })
-
-    df_stats = pd.DataFrame(rows)
-    print(f'Stats for {file}: Sum (back and forth)')
-    # ... and format as latex
-    if cm_show_LaTeX:
-        # group the roes in buckets; 
-        # !CM important: this is 'hard coded' and makes the groups from the dataset
-        latex_group_sizes = [5, 5, 5]
-        
-        # create group names from the names in the plot; crop after top 10 etc.        
-        latex_group_labels = [latex_label[:latex_label.rfind("0") + 1] for latex_label in group_labels]
-        
-        # create the groups from the names above
-        latex_groups = [latex_label for latex_size, latex_label in zip(latex_group_sizes, latex_group_labels) for _ in range(latex_size) ]
-        
-        # some index stuff
-        latex_subindex = [""] * len(df_stats)
-        df_stats.index = pd.MultiIndex.from_arrays( [latex_groups, latex_subindex])
-        
-        # export to latex table with pandas
-        latex_table = df_stats.to_latex(multirow=True, index=True, index_names=False, escape=True, float_format="%.2f")
-    
-        # remove clines
-        latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
-        
-        # print latex table
-        print(latex_table)
-    else:        
-        print(df_stats)
-        
-        
-    plt.show()
-    plt.close()
     
     
     
@@ -289,6 +166,129 @@ for file in csv_files:
         
     plt.show()
     plt.close()
+    
+    # make prints for the case that the link ist evaluated for the service in both direktions
+    data = [
+        df_10['total_ttime_put_combined'],
+        df_10['total_ttime_put_with_uam090_combined'],
+        df_10['total_ttime_put_with_uam260_combined'],
+        df_10['total_ttime_put_with_uam320_combined'],
+        df_10['total_ttime_put_with_uam320noae_combined'],
+        
+        df_100['total_ttime_put_combined'],
+        df_100['total_ttime_put_with_uam090_combined'],
+        df_100['total_ttime_put_with_uam260_combined'],
+        df_100['total_ttime_put_with_uam320_combined'],
+        df_100['total_ttime_put_with_uam320noae_combined'],
+        
+        df_10000['total_ttime_put_combined'],
+        df_10000['total_ttime_put_with_uam090_combined'],
+        df_10000['total_ttime_put_with_uam260_combined'],
+        df_10000['total_ttime_put_with_uam320_combined'],
+        df_10000['total_ttime_put_with_uam320noae_combined']
+    ]
+    
+    positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
+    labels = ['PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d'] * 3
+        
+    
+    
+    
+    plt.figure(figsize=(12, 6))
+    box = plt.boxplot(data, positions=positions, patch_artist=True, showfliers=False)
+    
+    # Optional: Nicer colors
+    colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5'] * 3
+    for patch, color in zip(box['boxes'], colors):
+        patch.set_facecolor(color)
+        
+
+    
+    # set labels as ticks
+    plt.xticks(positions, labels, rotation=25, ha='right', fontsize=14)
+    plt.yticks(fontsize=14)
+    
+    # set group labels
+    group_positions = [3, 9, 15]
+    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
+    
+    for x, label in zip(group_positions, group_labels):
+        plt.text(
+            x, -0.3, label,
+            ha='center',
+            va='top',
+            fontsize=16,
+            transform=plt.gca().get_xaxis_transform()
+        )
+    
+    # Optional: Borders and grid
+    for x in [6, 12]:
+        plt.axvline(x, color='grey', linestyle='--', linewidth=0.7)
+    plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
+    plt.ylabel(r'Person-minutes traveled [persons $\times$ min]', fontsize=16)
+    if cm_print_title:
+        plt.title(f'Boxplot for {file}: Sum (back and forth)')
+    
+    filename = 'eval_PAXt_back_and_forth_' + os.path.basename(file)
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".png"), dpi=600, bbox_inches='tight', transparent=True) ## png/dpi for (hi-res) poster-plot
+    plt.savefig(output_folder_ic + filename.replace(".csv", ".pdf"), bbox_inches='tight', transparent=True) ## pdf for LaTeX
+    
+    
+    # get stats...
+    rows = []
+    for label, series in zip(labels, data):
+        s = series.dropna()
+        
+        q1 = s.quantile(0.25)
+        median = s.quantile(0.5)
+        q3 = s.quantile(0.75)
+        iqr = q3 - q1
+        
+        rows.append({
+            "Dataset": label,
+            "Min": s.min(),
+            "Q1": q1,
+            "Median": median,
+            "Q3": q3,
+            "Max": s.max(),
+            "IQR": iqr
+        })
+
+    df_stats = pd.DataFrame(rows)
+    print(f'Stats for {file}: Sum (back and forth)')
+    # ... and format as latex
+    if cm_show_LaTeX:
+        # group the roes in buckets; 
+        # !CM important: this is 'hard coded' and makes the groups from the dataset
+        latex_group_sizes = [5, 5, 5]
+        
+        # create group names from the names in the plot; crop after top 10 etc.        
+        latex_group_labels = [latex_label[:latex_label.rfind("0") + 1] for latex_label in group_labels]
+        
+        # create the groups from the names above
+        latex_groups = [latex_label for latex_size, latex_label in zip(latex_group_sizes, latex_group_labels) for _ in range(latex_size) ]
+        
+        # some index stuff
+        latex_subindex = [""] * len(df_stats)
+        df_stats.index = pd.MultiIndex.from_arrays( [latex_groups, latex_subindex])
+        
+        # export to latex table with pandas
+        latex_table = df_stats.to_latex(multirow=True, index=True, index_names=False, escape=True, float_format="%.2f")
+    
+        # remove clines
+        latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
+        
+        # print latex table
+        print(latex_table)
+    else:        
+        print(df_stats)
+        
+        
+    plt.show()
+    plt.close()
+    
+    
+    
        
     
     ### Plots for occupance
