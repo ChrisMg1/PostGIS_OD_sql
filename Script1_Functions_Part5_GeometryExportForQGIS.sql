@@ -55,10 +55,10 @@ update only public.odpair_LVM2035_23712030_onlyBAV_restored set
 	--u_ample_scen4_operator		= 	exp(-ln(4)*imp_tot_scen4_operator) ,
 	--u_ample_scen5_societyTec	= 	exp(-ln(4)*imp_tot_scen5_societyTec) ,
 	--total_ttime_put				= 	demand_put * least(ttime_put, 24*60) ,
-	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 24*60), demand_put, 768.0, least(16.0, 0.25 * least(ttime_put, 24.0 * 60.0)) ) , -- Remove values from the required model calibration that are no longer necessary at this stage. 
-	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 24*60), demand_put, 768.0, least(16.0, 0.25 * least(ttime_put, 24.0 * 60.0)) ) ,
-	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(16.0, 0.25 * least(ttime_put, 24.0 * 60.0)) ) , -- Aus Rothfeld et al beispielsweise ("30min + 120s = 2 * 15min + 2 * 1min =  2 * 16 min"); Reisezeitanteil 0.35 aus https://www.sciencedirect.com/science/article/abs/pii/S0967070X03000957?utm_source=chatgpt.com
-	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(1.0, 0.25 * least(ttime_put, 24.0 * 60.0)) ) ; -- Platzhalter für Extremwerte-Test; z. B. door to door mit 60sec access resp. egress
+	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 24*60), demand_put, 768.0, least(16.0, 1.0 + 0.25 * least(ttime_put, 24.0 * 60.0)) ) , -- Remove values from the required model calibration that are no longer necessary at this stage. 
+	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 24*60), demand_put, 768.0, least(16.0, 1.0 + 0.25 * least(ttime_put, 24.0 * 60.0)) ) ,
+	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, least(16.0, 1.0 + 0.25 * least(ttime_put, 24.0 * 60.0)) ) , -- Aus Rothfeld et al beispielsweise ("30min + 120s = 2 * 15min + 2 * 1min =  2 * 16 min"); Reisezeitanteil 0.25 aus https://www.sciencedirect.com/science/article/abs/pii/S0967070X03000957?utm_source=chatgpt.com
+	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 24*60), demand_put, 768.0, 1.0 ) ; -- Platzhalter für Extremwerte-Test; z. B. door to door mit 60sec access resp. egress
 
 
 DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF CASCADE;
