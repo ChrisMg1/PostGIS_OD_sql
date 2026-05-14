@@ -11,6 +11,60 @@ import matplotlib.ticker as mtick
 import os
 import re
 
+def calculate_mean_median_stats(in_labels, in_data):
+    rows = []
+
+    for label, series in zip(in_labels, in_data):
+        s = series.dropna()
+
+        mean = s.mean()
+        median = s.median()
+
+        rows.append({
+            "Dataset": label,
+            "Mean": mean,
+            "Median": median
+        })
+
+    df_stats = pd.DataFrame(rows)
+
+    # Referenzwerte der ersten Serie
+    ref_mean = df_stats.loc[0, "Mean"]
+    ref_median = df_stats.loc[0, "Median"]
+
+    # Prozentuale Entwicklung relativ zur ersten Serie
+    df_stats["Mean_Change_%"] = (
+        (df_stats["Mean"] - ref_mean) / ref_mean * 100
+    )
+
+    df_stats["Median_Change_%"] = (
+        (df_stats["Median"] - ref_median) / ref_median * 100
+    )
+
+    return df_stats.round(2)
+
+def boxplot_vals(in_labels, in_data):
+    rows = []
+    for label, series in zip(in_labels, in_data):
+        s = series.dropna()
+
+        q1 = s.quantile(0.25)
+        median = s.quantile(0.5)
+        q3 = s.quantile(0.75)
+        iqr = q3 - q1
+        
+        rows.append({
+            "Dataset": label,
+            "Min": s.min(),
+            "Q1": q1,
+            "Median": median,
+            "Q3": q3,
+            "Max": s.max(),
+            "IQR": iqr
+        })
+
+    return pd.DataFrame(rows)
+
 
 cm_print_title = False
 cm_show_LaTeX = True
@@ -115,26 +169,7 @@ for file in csv_files:
     
     
     # get stats...
-    rows = []
-    for label, series in zip(labels, data):
-        s = series.dropna()
-        
-        q1 = s.quantile(0.25)
-        median = s.quantile(0.5)
-        q3 = s.quantile(0.75)
-        iqr = q3 - q1
-        
-        rows.append({
-            "Dataset": label,
-            "Min": s.min(),
-            "Q1": q1,
-            "Median": median,
-            "Q3": q3,
-            "Max": s.max(),
-            "IQR": iqr
-        })
-
-    df_stats = pd.DataFrame(rows)
+    df_stats = boxplot_vals(labels, data)
     print(f'Stats for {file}: Top (utility) direction')
     # ... and format as latex
     if cm_show_LaTeX:
@@ -162,6 +197,9 @@ for file in csv_files:
         print(latex_table)
     else:        
         print(df_stats)
+        
+    # Finally medians, means, differences:
+    print(calculate_mean_median_stats(labels, data))
         
         
     plt.show()
@@ -235,26 +273,7 @@ for file in csv_files:
     
     
     # get stats...
-    rows = []
-    for label, series in zip(labels, data):
-        s = series.dropna()
-        
-        q1 = s.quantile(0.25)
-        median = s.quantile(0.5)
-        q3 = s.quantile(0.75)
-        iqr = q3 - q1
-        
-        rows.append({
-            "Dataset": label,
-            "Min": s.min(),
-            "Q1": q1,
-            "Median": median,
-            "Q3": q3,
-            "Max": s.max(),
-            "IQR": iqr
-        })
-
-    df_stats = pd.DataFrame(rows)
+    df_stats = boxplot_vals(labels, data)
     print(f'Stats for {file}: Sum (back and forth)')
     # ... and format as latex
     if cm_show_LaTeX:
@@ -283,7 +302,9 @@ for file in csv_files:
     else:        
         print(df_stats)
         
-        
+    # Finally medians, means, differences:
+    print(calculate_mean_median_stats(labels, data))
+    
     plt.show()
     plt.close()
     
@@ -356,26 +377,8 @@ for file in csv_files:
     plt.savefig(output_folder_ic + filename.replace(".csv", ".pdf"), bbox_inches='tight', transparent=True) ## pdf for LaTeX
     
     
-    # get stats...
-    rows = []
-    for label, series in zip(labels, data):
-        s = series.dropna()
-        
-        q1 = s.quantile(0.25)
-        median = s.quantile(0.5)
-        q3 = s.quantile(0.75)
-        iqr = q3 - q1
-        
-        rows.append({
-            "Dataset": label,
-            "Min": s.min(),
-            "Q1": q1,
-            "Median": median,
-            "Q3": q3,
-            "Max": s.max(),
-            "IQR": iqr
-        })
-    df_stats = pd.DataFrame(rows)
+    # get stats... 
+    df_stats = boxplot_vals(labels, data)
     print(f'Stats for {file}: Occupancy')
     # ... and format as latex
     if cm_show_LaTeX:
@@ -404,7 +407,8 @@ for file in csv_files:
     else:        
         print(df_stats)
         
-        
+    # Finally medians, means, differences:
+    print(calculate_mean_median_stats(labels, data))        
         
     plt.show()
     plt.close()
