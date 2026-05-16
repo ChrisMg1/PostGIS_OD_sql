@@ -11,35 +11,50 @@ import matplotlib.ticker as mtick
 import os
 import re
 
-def calculate_mean_median_stats(in_labels, in_data):
+
+def calculate_mean_median_stats(in_labels, in_data, n_boxes):
     rows = []
 
     for label, series in zip(in_labels, in_data):
         s = series.dropna()
 
-        mean = s.mean()
-        median = s.median()
-
         rows.append({
             "Dataset": label,
-            "Mean": mean,
-            "Median": median
+            "Median": s.median(),
+            "Mean": s.mean(),
+            "Min": s.min()
         })
 
     df_stats = pd.DataFrame(rows)
 
-    # Referenzwerte der ersten Serie
-    ref_mean = df_stats.loc[0, "Mean"]
-    ref_median = df_stats.loc[0, "Median"]
+    # Neue Spalten vorbereiten
+    df_stats["Median_Change_%"] = 0.0
+    df_stats["Mean_Change_%"] = 0.0
+    df_stats["Min_Change_%"] = 0.0
 
-    # Prozentuale Entwicklung relativ zur ersten Serie
-    df_stats["Mean_Change_%"] = (
-        (df_stats["Mean"] - ref_mean) / ref_mean * 100
-    )
+    # Blockweise Referenzen setzen
+    for start_idx in range(0, len(df_stats), n_boxes):
 
-    df_stats["Median_Change_%"] = (
-        (df_stats["Median"] - ref_median) / ref_median * 100
-    )
+        # Referenz = erste Zeile des aktuellen Blocks
+        ref_median = df_stats.loc[start_idx, "Median"]
+        ref_mean = df_stats.loc[start_idx, "Mean"]
+        ref_min = df_stats.loc[start_idx, "Min"]
+
+        # Ende des Blocks
+        end_idx = min(start_idx + n_boxes, len(df_stats))
+
+        # Prozentänderungen innerhalb des Blocks berechnen
+        df_stats.loc[start_idx:end_idx-1, "Median_Change_%"] = (
+            (df_stats.loc[start_idx:end_idx-1, "Median"] - ref_median) / ref_median * 100
+        )
+        
+        df_stats.loc[start_idx:end_idx-1, "Mean_Change_%"] = (
+            (df_stats.loc[start_idx:end_idx-1, "Mean"] - ref_mean) / ref_mean * 100
+        )
+        
+        df_stats.loc[start_idx:end_idx-1, "Min_Change_%"] = (
+            (df_stats.loc[start_idx:end_idx-1, "Min"] - ref_min) / ref_min * 100
+        )        
 
     return df_stats.round(2)
 
@@ -65,6 +80,27 @@ def boxplot_vals(in_labels, in_data):
 
     return pd.DataFrame(rows)
 
+def format_LaTeX(in_stats, in_sizes, in_labels):
+    # 'in_sizes': group the rows in buckets; 
+    # ! CM important: this is 'hard coded' and makes the groups from the dataset
+        
+    # create group names from the names in the plot; crop after top 10 etc.        
+    latex_group_labels = [latex_label[:latex_label.rfind("0") + 1] for latex_label in in_labels]
+    
+    # create the groups from the names above
+    latex_groups = [latex_label for latex_size, latex_label in zip(in_sizes, latex_group_labels) for _ in range(latex_size) ]
+    
+    # some index stuff
+    latex_subindex = [""] * len(in_stats)
+    in_stats.index = pd.MultiIndex.from_arrays( [latex_groups, latex_subindex])
+    
+    # export to latex table with pandas
+    latex_table = in_stats.to_latex(multirow=True, index=True, index_names=False, escape=True, float_format="%.2f")
+
+    # remove clines
+    latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
+    
+    return latex_table
 
 cm_print_title = False
 cm_show_LaTeX = True
@@ -121,7 +157,7 @@ for file in csv_files:
     ]
     
     positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
-    labels = ['PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d'] * 3
+    labels = ['PuT no AAM', 'with AAM 90 km/h', 'with AAM 260 km/h', 'with AAM 320 km/h', 'with AAM 320 km/h D2D'] * 3
     
     
     plt.figure(figsize=(12, 6))
@@ -141,7 +177,7 @@ for file in csv_files:
     
     # set group labels
     group_positions = [3, 9, 15]
-    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
+    group_labels = ['Top 10 edges', 'Top 100 edges', 'Top 10000 edges']
     
     for x, label in zip(group_positions, group_labels):
         plt.text(
@@ -170,36 +206,15 @@ for file in csv_files:
     
     # get stats...
     df_stats = boxplot_vals(labels, data)
-    print(f'Stats for {file}: Top (utility) direction')
+    print(f'Stats for {file}: Top (utility) edges')
     # ... and format as latex
     if cm_show_LaTeX:
-        # group the roes in buckets; 
-        # !CM important: this is 'hard coded' and makes the groups from the dataset
-        latex_group_sizes = [5, 5, 5]
-        
-        # create group names from the names in the plot; crop after top 10 etc.        
-        latex_group_labels = [latex_label[:latex_label.rfind("0") + 1] for latex_label in group_labels]
-        
-        # create the groups from the names above
-        latex_groups = [latex_label for latex_size, latex_label in zip(latex_group_sizes, latex_group_labels) for _ in range(latex_size) ]
-        
-        # some index stuff
-        latex_subindex = [""] * len(df_stats)
-        df_stats.index = pd.MultiIndex.from_arrays( [latex_groups, latex_subindex])
-        
-        # export to latex table with pandas
-        latex_table = df_stats.to_latex(multirow=True, index=True, index_names=False, escape=True, float_format="%.2f")
-    
-        # remove clines
-        latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
-        
-        # print latex table
-        print(latex_table)
+        print(format_LaTeX(df_stats, [5, 5, 5], group_labels))
     else:        
         print(df_stats)
         
     # Finally medians, means, differences:
-    print(calculate_mean_median_stats(labels, data))
+    print(calculate_mean_median_stats(labels, data, 5))
         
         
     plt.show()
@@ -227,7 +242,7 @@ for file in csv_files:
     ]
     
     positions = [1, 2, 3, 4, 5,   7, 8, 9, 10, 11,   13, 14, 15, 16, 17]
-    labels = ['PuT no UAM', 'with UAM 90 km/h', 'with UAM 260 km/h', 'with UAM 320 km/h', 'with UAM 320 km/h d2d'] * 3
+    labels = ['PuT no AAM', 'with AAM 90 km/h', 'with AAM 260 km/h', 'with AAM 320 km/h', 'with AAM 320 km/h D2D'] * 3
         
     
     
@@ -248,7 +263,7 @@ for file in csv_files:
     
     # set group labels
     group_positions = [3, 9, 15]
-    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
+    group_labels = ['Top 10 connections', 'Top 100 connections', 'Top 10000 connections']
     
     for x, label in zip(group_positions, group_labels):
         plt.text(
@@ -277,39 +292,15 @@ for file in csv_files:
     print(f'Stats for {file}: Sum (back and forth)')
     # ... and format as latex
     if cm_show_LaTeX:
-        # group the roes in buckets; 
-        # !CM important: this is 'hard coded' and makes the groups from the dataset
-        latex_group_sizes = [5, 5, 5]
-        
-        # create group names from the names in the plot; crop after top 10 etc.        
-        latex_group_labels = [latex_label[:latex_label.rfind("0") + 1] for latex_label in group_labels]
-        
-        # create the groups from the names above
-        latex_groups = [latex_label for latex_size, latex_label in zip(latex_group_sizes, latex_group_labels) for _ in range(latex_size) ]
-        
-        # some index stuff
-        latex_subindex = [""] * len(df_stats)
-        df_stats.index = pd.MultiIndex.from_arrays( [latex_groups, latex_subindex])
-        
-        # export to latex table with pandas
-        latex_table = df_stats.to_latex(multirow=True, index=True, index_names=False, escape=True, float_format="%.2f")
-    
-        # remove clines
-        latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
-        
-        # print latex table
-        print(latex_table)
+        print(format_LaTeX(df_stats, [5, 5, 5], group_labels))
     else:        
         print(df_stats)
         
     # Finally medians, means, differences:
-    print(calculate_mean_median_stats(labels, data))
+    print(calculate_mean_median_stats(labels, data, 5))
     
     plt.show()
-    plt.close()
-    
-    
-    
+    plt.close()  
        
     
     ### Plots for occupance
@@ -326,7 +317,7 @@ for file in csv_files:
     ]
     
     positions = [1, 2,  4, 5,  7, 8]
-    labels = ['back and forth\n(average)', 'top direction'] * 3
+    labels = ['back and forth\n(average)', 'top edges'] * 3
         
     
     plt.figure(figsize=(12, 6))
@@ -348,7 +339,7 @@ for file in csv_files:
     
     # set group labels
     group_positions = [1.5, 4.5, 7.5]
-    group_labels = ['Top 10 UAM connections', 'Top 100 UAM connections', 'Top 10000 UAM connections']
+    group_labels = ['Top 10 connections', 'Top 100 connections', 'Top 10000 connections']
     
     for x, label in zip(group_positions, group_labels):
         plt.text(
@@ -382,33 +373,12 @@ for file in csv_files:
     print(f'Stats for {file}: Occupancy')
     # ... and format as latex
     if cm_show_LaTeX:
-        # group the roes in buckets; 
-        # !CM important: this is 'hard coded' and makes the groups from the dataset
-        latex_group_sizes = [2, 2, 2]
-        
-        # create group names from the names in the plot; crop after top 10 etc.        
-        latex_group_labels = [latex_label[:latex_label.rfind("0") + 1] for latex_label in group_labels]
-        
-        # create the groups from the names above
-        latex_groups = [latex_label for latex_size, latex_label in zip(latex_group_sizes, latex_group_labels) for _ in range(latex_size) ]
-        
-        # some index stuff
-        latex_subindex = [""] * len(df_stats)
-        df_stats.index = pd.MultiIndex.from_arrays( [latex_groups, latex_subindex])
-        
-        # export to latex table with pandas
-        latex_table = df_stats.to_latex(multirow=True, index=True, index_names=False, escape=True, float_format="%.2f")
-    
-        # remove clines
-        latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
-        
-        # print latex table
-        print(latex_table)
+        print(format_LaTeX(df_stats, [2, 2, 2], group_labels))    # [2, 2, 2] wegen jeweils zwei boxplots pro gruppe (one-way und both)
     else:        
         print(df_stats)
         
     # Finally medians, means, differences:
-    print(calculate_mean_median_stats(labels, data))        
+    print(calculate_mean_median_stats(labels, data, 2))
         
     plt.show()
     plt.close()
