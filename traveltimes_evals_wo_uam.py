@@ -80,7 +80,7 @@ def boxplot_vals(in_labels, in_data):
 
     return pd.DataFrame(rows)
 
-def format_LaTeX(in_stats, in_sizes, in_labels):
+def format_LaTeX(in_stats, in_sizes, in_labels, in_regex):
     # 'in_sizes': group the rows in buckets; 
     # ! CM important: this is 'hard coded' and makes the groups from the dataset
         
@@ -96,9 +96,14 @@ def format_LaTeX(in_stats, in_sizes, in_labels):
     
     # export to latex table with pandas
     latex_table = in_stats.to_latex(multirow=True, index=True, index_names=False, escape=True, float_format="%.2f")
-
-    # remove clines
-    latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
+    
+    if in_regex:
+        # remove clines
+        latex_table = re.sub(r"\\cline\{1-\d+\}", "", latex_table)
+        
+        # remove empty columns
+        latex_table = re.sub(r'&\s*&', '&', latex_table)
+        latex_table = re.sub(r'\\begin\{tabular\}\{lll', r'\\begin{tabular}{ll', latex_table, count=1)
     
     return latex_table
 
@@ -209,7 +214,7 @@ for file in csv_files:
     print(f'Stats for {file}: Top (utility) edges')
     # ... and format as latex
     if cm_show_LaTeX:
-        print(format_LaTeX(df_stats, [5, 5, 5], group_labels))
+        print(format_LaTeX(df_stats, [5, 5, 5], group_labels, True))
     else:        
         print(df_stats)
         
@@ -292,7 +297,7 @@ for file in csv_files:
     print(f'Stats for {file}: Sum (back and forth)')
     # ... and format as latex
     if cm_show_LaTeX:
-        print(format_LaTeX(df_stats, [5, 5, 5], group_labels))
+        print(format_LaTeX(df_stats, [5, 5, 5], group_labels, True))
     else:        
         print(df_stats)
         
@@ -373,7 +378,7 @@ for file in csv_files:
     print(f'Stats for {file}: Occupancy')
     # ... and format as latex
     if cm_show_LaTeX:
-        print(format_LaTeX(df_stats, [2, 2, 2], group_labels))    # [2, 2, 2] wegen jeweils zwei boxplots pro gruppe (one-way und both)
+        print(format_LaTeX(df_stats, [2, 2, 2], group_labels, True))    # [2, 2, 2] wegen jeweils zwei boxplots pro gruppe (one-way und both)
     else:        
         print(df_stats)
         

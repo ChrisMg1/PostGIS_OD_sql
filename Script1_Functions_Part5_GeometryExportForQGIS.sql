@@ -58,7 +58,7 @@ update only public.odpair_LVM2035_23712030_onlyBAV_restored set
 	total_ttime_put_with_uam090_30ae = 	ttime_with_uam(directdist,  90.0, least(ttime_put, 12.0 * 60.0), demand_put, 768.0, 1.0 + least(15.0, 0.25 * least(ttime_put, 12.0 * 60.0)) ) ,
 	total_ttime_put_with_uam260_30ae =	ttime_with_uam(directdist, 260.0, least(ttime_put, 12.0 * 60.0), demand_put, 768.0, 1.0 + least(15.0, 0.25 * least(ttime_put, 12.0 * 60.0)) ) ,
 	total_ttime_put_with_uam320_30ae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 12.0 * 60.0), demand_put, 768.0, 1.0 + least(15.0, 0.25 * least(ttime_put, 12.0 * 60.0)) ) , -- Aus Rothfeld et al beispielsweise ("30min + 120s = 2 * 15min + 2 * 1min =  2 * 16 min"); Reisezeitanteil 0.25 aus https://www.sciencedirect.com/science/article/abs/pii/S0967070X03000957?utm_source=chatgpt.com
-	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 12.0 * 60.0), demand_put, 768.0, 1.0 ) ; -- Platzhalter für Extremwerte-Test; z. B. door to door mit 60sec access resp. egress
+	total_ttime_put_with_uam320_noae =	ttime_with_uam(directdist, 320.0, least(ttime_put, 12.0 * 60.0), demand_put, demand_put, 1.0 ) ; -- Platzhalter für Extremwerte-Test; z. B. door to door mit 60sec access resp. egress; no capa limit, etc.
 
 
 DROP TABLE IF EXISTS public.odpair_LVM2035_11856015_onlyBAV_groupedBF CASCADE;
