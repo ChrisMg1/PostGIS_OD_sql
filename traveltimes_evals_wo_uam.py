@@ -364,7 +364,7 @@ for file in csv_files:
     ax.axhline(1, color='#c44e52', linestyle='--', linewidth=2, alpha=0.8)
 
     plt.grid(color='grey', linestyle='dotted', linewidth=0.5, axis='y')
-    plt.ylabel('OD demand / max. UAM capacity [%]', fontsize=18)
+    plt.ylabel('OD demand / max. AAM capacity [%]', fontsize=18)
     if cm_print_title:
         plt.title(f'Boxplot for {file}: Occupancy')
     

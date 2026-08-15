@@ -292,7 +292,6 @@ INTO TABLE public4qgis_scen4.u_scen4p4_operator_perc95top
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
-
 -- 555555555555555555555555555555555555555555555555555
 -- Scenario 5: SocietyTec scenario ()
 -- 555555555555555555555555555555555555555555555555555
