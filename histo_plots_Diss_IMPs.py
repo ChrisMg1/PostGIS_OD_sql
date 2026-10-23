@@ -80,7 +80,7 @@ plt.close()
 
 
 
-output_folder = 'C:/Users/chris/plots/v07/impedancesANDutilities/'
+output_folder = 'C:/Users/chris/plots/v08/impedancesANDutilities/'
 
 ## 1a: travel time ratio distribution
 plt.figure()
@@ -89,8 +89,11 @@ plt.grid(color='grey', linestyle='dotted', linewidth=0.5)
 plt.xlabel('Travel Time Ratio PuT/PrT [min/min]')
 plt.ylabel('Frequency (n=' + format(len(df['ttime_ratio']), ',') + ')')
 y, x, _ = plt.hist(df['ttime_ratio'], bins='doane', color='blue', range=[0, 10])  # x-range limited due to arbitrary calibration values
-plt.axvline(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean(), color='r', linestyle='dashed', linewidth=1)
-plt.text(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean()), color = 'r')
+# clip to upper 10.0 to avoid model calibration artifacts. Impedance calculations (postgres) are unaffected
+plt.axvline(df['ttime_ratio'].clip(upper=10).mean(), color='r', linestyle='dashed', linewidth=1)
+plt.text(df['ttime_ratio'].clip(upper=10).mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['ttime_ratio'].clip(upper=10).mean()), color = 'r')
+#plt.axvline(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean(), color='r', linestyle='dashed', linewidth=1)
+#plt.text(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean()*1.1, y.max() * 0.97, 'mean: {:.2f}'.format(df['ttime_ratio'][df.ttime_ratio <= 10.0].mean()), color = 'r')
 plt.savefig(output_folder + 'scen0_1a_ttime_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'scen0_1a_ttime_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
