@@ -80,7 +80,7 @@ plt.close()
 
 
 
-output_folder = 'C:/Users/chris/plots/v08/impedancesANDutilities/'
+output_folder = 'C:/Users/chris/plots/v09/impedancesANDutilities/'
 
 ## 1a: travel time ratio distribution
 plt.figure()
@@ -185,6 +185,9 @@ y, x, _ = plt.hist(df['imp_tot_scen1_common'], bins='doane', color='darkviolet')
 plt.axvline(0.0, color='darkviolet', linestyle='dashed', linewidth=1)
 plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 
+# Output highest bin:
+print(f"Highest bin center Combined impedance Scenario 1: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
+
 #plt.savefig(output_folder + 'imp_tot_scen1_common_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen1_common_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -204,6 +207,9 @@ y, x, _ = plt.hist(df2['u_ample_scen1_common'], bins='doane', color='forestgreen
 # Plot min and max values
 plt.axvline(0.25, color='forestgreen', linestyle='dashed', linewidth=1)
 plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
+
+# Output highest bin:
+print(f"Highest bin center Utility Scenario 1: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
 
 #plt.savefig(output_folder + 'UA_scen1_common_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen1_common_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
@@ -225,6 +231,9 @@ y, x, _ = plt.hist(df['imp_tot_scen2_society'], bins='doane', color='darkviolet'
 plt.axvline(0.0, color='darkviolet', linestyle='dashed', linewidth=1)
 plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 
+# Output highest bin:
+print(f"Highest bin center Combined impedance Scenario 2: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
+
 #plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen2_society_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -244,6 +253,9 @@ y, x, _ = plt.hist(df2['u_ample_scen2_society'], bins='doane', color='forestgree
 # Plot min and max values
 plt.axvline(0.25, color='forestgreen', linestyle='dashed', linewidth=1)
 plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
+
+# Output highest bin:
+print(f"Highest bin center Utility Scenario 2: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
 
 #plt.savefig(output_folder + 'UA_scen2_society_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen2_society_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
@@ -265,6 +277,9 @@ y, x, _ = plt.hist(df['imp_tot_scen3_technology'], bins='doane', color='darkviol
 plt.axvline(0.0, color='darkviolet', linestyle='dashed', linewidth=1)
 plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 
+# Output highest bin:
+print(f"Highest bin center Combined impedance Scenario 3: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
+
 #plt.savefig(output_folder + 'imp_tot_scen3_technology_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen3_technology_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -284,6 +299,9 @@ y, x, _ = plt.hist(df2['u_ample_scen3_technology'], bins='doane', color='forestg
 # Plot min and max values
 plt.axvline(0.25, color='forestgreen', linestyle='dashed', linewidth=1)
 plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
+
+# Output highest bin:
+print(f"Highest bin center Utility Scenario 3: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
 
 #plt.savefig(output_folder + 'UA_scen3_technology_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen3_technology_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
@@ -305,6 +323,9 @@ y, x, _ = plt.hist(df['imp_tot_scen4_operator'], bins='doane', color='darkviolet
 plt.axvline(0.0, color='darkviolet', linestyle='dashed', linewidth=1)
 plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 
+# Output highest bin:
+print(f"Highest bin center Combined impedance Scenario 4: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
+
 #plt.savefig(output_folder + 'imp_tot_scen4_operator_23712030.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'imp_tot_scen4_operator_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 plt.show()
@@ -324,6 +345,9 @@ y, x, _ = plt.hist(df2['u_ample_scen4_operator'], bins='doane', color='forestgre
 # Plot min and max values
 plt.axvline(0.25, color='forestgreen', linestyle='dashed', linewidth=1)
 plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
+
+# Output highest bin:
+print(f"Highest bin center Utility Scenario 4: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
 
 #plt.savefig(output_folder + 'UA_scen4_operator_11856015.png', dpi=500, bbox_inches='tight', transparent=True) ## high-res for poster
 plt.savefig(output_folder + 'UA_scen4_operator_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
@@ -345,6 +369,9 @@ y, x, _ = plt.hist(df['imp_tot_scen5_societytec'], bins='doane', color='darkviol
 plt.axvline(0.0, color='darkviolet', linestyle='dashed', linewidth=1)
 plt.axvline(1.0, color='darkviolet', linestyle='dashed', linewidth=1)
 
+# Output highest bin:
+print(f"Highest bin center Combined impedance Scenario 5: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
+
 #plt.savefig(output_folder + 'imp_tot_scen5_societyTec_23712030.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 #plt.savefig(output_folder + 'imp_tot_scen5_societyTec_23712030.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX
 #plt.show()
@@ -364,6 +391,9 @@ y, x, _ = plt.hist(df2['u_ample_scen5_societytec'], bins='doane', color='forestg
 # Plot min and max values
 plt.axvline(0.25, color='forestgreen', linestyle='dashed', linewidth=1)
 plt.axvline(1.00, color='forestgreen', linestyle='dashed', linewidth=1)
+
+# Output highest bin:
+print(f"Highest bin center Utility Scenario 5: {(x[np.argmax(y)] + x[np.argmax(y)+1])/2:.6f}, Frequency: {int(max(y))}")
 
 #plt.savefig(output_folder + 'UA_scen5_societyTec_11856015.png', dpi=1200, bbox_inches='tight', transparent=True) ## high-res for poster
 #plt.savefig(output_folder + 'UA_scen5_societyTec_11856015.pdf', bbox_inches='tight', transparent=True) ## pdf for LaTeX

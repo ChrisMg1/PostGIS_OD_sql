@@ -112,6 +112,7 @@ INTO TABLE public.odpair_LVM2035_11856015_onlyBAV_groupedBF --BF: 'Back and Fort
 	FROM public.odpair_LVM2035_23712030_onlyBAV_restored
 	group by od_concat;
 
+
 -- 1111111111111111111111111111111111111111111111111111111
 -- Scenario 1: Common scenario (equal weighting)
 -- 1111111111111111111111111111111111111111111111111111111
@@ -157,6 +158,8 @@ INTO TABLE public4qgis_scen1.u_scen1p4_common_perc95top
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen1_common >= (select percentile_disc(0.95) within group (order by u_ample_scen1_common) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+---- Optional: Various selects for checks etc.
+--select fromzone_name, tozone_name, u_ample_scen1_common from public.odpair_LVM2035_11856015_onlyBAV_groupedBF order by u_ample_scen1_common desc;
 
 -- 2222222222222222222222222222222222222222222222222222222
 -- Scenario 2: Society scenario (weighting on travel time)
@@ -202,6 +205,8 @@ INTO TABLE public4qgis_scen2.u_scen2p4_society_perc95top
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen2_society >= (select percentile_disc(0.95) within group (order by u_ample_scen2_society) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+---- Optional: Various selects for checks etc.
+--select fromzone_name, tozone_name, u_ample_scen2_society from public.odpair_LVM2035_11856015_onlyBAV_groupedBF order by u_ample_scen2_society desc;
 
 -- 3333333333333333333333333333333333333333333333333333333
 -- Scenario 3: Technology scenario (weighting on distance)
@@ -247,6 +252,8 @@ INTO TABLE public4qgis_scen3.u_scen3p4_technology_perc95top
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen3_technology >= (select percentile_disc(0.95) within group (order by u_ample_scen3_technology) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
 
+---- Optional: Various selects for checks etc.
+--select fromzone_name, tozone_name, u_ample_scen3_technology from public.odpair_LVM2035_11856015_onlyBAV_groupedBF order by u_ample_scen3_technology desc;
 
 -- 444444444444444444444444444444444444444444444444444
 -- Scenario 4: Operator scenario (weighting on demand)
@@ -291,6 +298,9 @@ select fromzone_name, tozone_name, u_ample_scen4_operator, u_ample_scen4_operato
 INTO TABLE public4qgis_scen4.u_scen4p4_operator_perc95top
 from public.odpair_LVM2035_11856015_onlyBAV_groupedBF
 where u_ample_scen4_operator >= (select percentile_disc(0.95) within group (order by u_ample_scen4_operator) as temp_percentile from public.odpair_LVM2035_11856015_onlyBAV_groupedBF);
+
+---- Optional: Various selects for checks etc.
+--select fromzone_name, tozone_name, u_ample_scen4_operator from public.odpair_LVM2035_11856015_onlyBAV_groupedBF order by u_ample_scen4_operator desc;
 
 -- 555555555555555555555555555555555555555555555555555
 -- Scenario 5: SocietyTec scenario ()
